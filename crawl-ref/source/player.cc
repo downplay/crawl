@@ -776,6 +776,12 @@ void update_vision_range()
         you.current_vision = you.current_vision * 3 / 4;
 
     ASSERT(you.current_vision > 0);
+
+    // TODO: If I make the LOS variable based on spell power this should change;
+    // will have to store radius on a new key
+    if (you.duration[DUR_LUNAR_FISSURE])
+        you.current_vision = 0;
+
     set_los_radius(you.current_vision);
 }
 

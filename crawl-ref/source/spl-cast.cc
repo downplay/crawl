@@ -2546,6 +2546,9 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
     case SPELL_PILEDRIVER:
         return cast_piledriver(powc, fail);
 
+    case SPELL_LUNAR_FISSURE:
+        return cast_lunar_fissure(powc, you, fail);
+
     // Just to do extra messaging; spell is handled by default zapping
     case SPELL_COMBUSTION_BREATH:
     case SPELL_GLACIAL_BREATH:
@@ -2840,6 +2843,8 @@ static dice_def _spell_damage(spell_type spell, int power)
             return iood_damage(power, INFINITE_DISTANCE, false);
         case SPELL_IRRADIATE:
             return irradiate_damage(power, false);
+        case SPELL_LUNAR_FISSURE:
+            return lunar_fissure_damage(power, false);
         case SPELL_SHATTER:
             return shatter_damage(power);
         case SPELL_SCORCH:

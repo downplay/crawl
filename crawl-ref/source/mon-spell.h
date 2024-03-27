@@ -2052,7 +2052,7 @@ static const mon_spellbook mspell_list[] =
 
     {  MST_MOON_TROLL,
       {
-       { SPELL_CORROSIVE_BOLT, 50, MON_SPELL_WIZARD },
+       { SPELL_LUNAR_FISSURE, 50, MON_SPELL_NATURAL },
       }
     },
 

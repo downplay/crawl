@@ -389,6 +389,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_GOLUBRIAS_PASSAGE,
     SPELL_SILENCE,
     SPELL_LEHUDIBS_CRYSTAL_SPEAR,
+    SPELL_LUNAR_FISSURE,
 },
 
 { // Book of Blasting
@@ -445,6 +446,7 @@ static const vector<spell_type> spellbook_templates[] =
     SPELL_TELEPORT_OTHER,
     SPELL_GELLS_GAVOTTE,
     SPELL_DISPERSAL,
+    SPELL_LUNAR_FISSURE,
 },
 
 { // Book of Dangerous Friends

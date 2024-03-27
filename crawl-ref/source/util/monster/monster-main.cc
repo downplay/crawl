@@ -335,6 +335,12 @@ static string mi_calc_irradiate_damage(const monster &mon)
     return dice_def_string(irradiate_damage(pow));
 }
 
+static string mi_calc_lunar_fissure_damage(const monster &mon)
+{
+    const int pow = mons_power_for_hd(SPELL_LUANR_FISSURE, mon.get_hit_dice());
+    return dice_def_string(lunar_fissure_damage(pow));
+}
+
 static string mi_calc_resonance_strike_damage(monster* mons)
 {
     const int pow = mons->spell_hd(SPELL_RESONANCE_STRIKE);
@@ -393,6 +399,8 @@ static string mons_human_readable_spell_damage_string(monster* monster,
             return dice_def_string(polar_vortex_dice(pow, true)) + "*";
         case SPELL_IRRADIATE:
             return mi_calc_irradiate_damage(*monster);
+        case SPELL_LUNAR_FISSURE:
+            return mi_calc_lunar_fissure(*monster);
         case SPELL_VAMPIRIC_DRAINING:
             return mi_calc_vampiric_drain_damage(monster);
         case SPELL_MAJOR_HEALING:

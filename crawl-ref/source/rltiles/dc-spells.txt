@@ -22,6 +22,7 @@ fulminant_prism FULMINANT_PRISM
 searing_ray SEARING_RAY
 momentum_strike MOMENTUM_STRIKE
 irradiate IRRADIATE
+searing_ray LUNAR_FISSURE
 
 %sdir gui/spells/earth
 iron_shot IRON_SHOT

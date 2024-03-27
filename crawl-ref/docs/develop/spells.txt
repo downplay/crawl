@@ -134,8 +134,7 @@ fire, blood to ice, and the creation and manipulation of mutagenic radiation.
 Poison as an effect itself is intended to be relatively strong early on and to
 fall off later. While other forms of Alchemy and multi-school spells eventually
 provide non-poison damage, they have notable limitations and caveats of player
-risk even at higher spell levels, and the overall school still has level
-limitations compared to all other schools.
+risk even at higher spell levels.
 
 Note: Most of the self-warping spells were moved over to the Shapeshifting 
 skill, which uses talismans. To keep the identity of both this school and those

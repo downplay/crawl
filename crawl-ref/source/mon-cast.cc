@@ -1298,6 +1298,7 @@ static int _mons_power_hd_factor(spell_type spell)
         case SPELL_BATTLESPHERE:
         case SPELL_IGNITE_POISON:
         case SPELL_IRRADIATE:
+        case SPELL_LUNAR_FISSURE:
         case SPELL_FOXFIRE:
         case SPELL_MANIFOLD_ASSAULT:
             return 6;
@@ -1940,6 +1941,7 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_SUMMON_HELL_SENTINEL:
     case SPELL_STOKE_FLAMES:
     case SPELL_IRRADIATE:
+    case SPELL_LUNAR_FISSURE:
     case SPELL_FUNERAL_DIRGE:
     case SPELL_MANIFOLD_ASSAULT:
     case SPELL_REGENERATE_OTHER:
@@ -6409,6 +6411,10 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         cast_irradiate(splpow, *mons, false);
         return;
 
+    case SPELL_LUNAR_FISSURE:
+        cast_lunar_fissure(splpow, *mons, false);
+        return;
+
     case SPELL_SUMMON_GREATER_DEMON:
         duration  = min(2 + mons->spell_hd(spell_cast) / 10, 6);
 
@@ -7944,6 +7950,9 @@ ai_action::goodness monster_spell_goodness(monster* mon, spell_type spell)
 
     case SPELL_IRRADIATE:
         return _should_irradiate(*mon);
+
+    case SPELL_LUNAR_FISSURE:
+        return ai_action::good_or_impossible(!mon->has_ench(ENCH_BLIND));
 
     case SPELL_DRUIDS_CALL:
         // Don't cast unless there's at least one valid target

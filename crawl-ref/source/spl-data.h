@@ -3342,6 +3342,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_LUNAR_FISSURE, "Lunar Fissure",
+    spschool::alchemy | spschool::translocation,
+    spflag::utility | spflag::destructive | spflag::chaotic | spflag::area,
+    9,
+    200,
+    -1, -1,
+    0,
+    TILEG_LUNAR_FISSURE,
+},
+
+{
     SPELL_AGONY, "Agony",
     spschool::necromancy,
     spflag::dir_or_target | spflag::not_self | spflag::needs_tracer

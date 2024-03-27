@@ -504,7 +504,7 @@ void revive()
         }
     }
 
-    update_vision_range(); // in case you had darkness cast before
+    update_vision_range(); // in case you had Lunar Fissure cast before
     you.props[CORROSION_KEY] = 0;
 
     undrain_hp(9999);

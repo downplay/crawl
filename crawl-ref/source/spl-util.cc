@@ -1253,6 +1253,15 @@ string spell_uselessness_reason(spell_type spell, bool temp, bool prevent,
             return lowercase_first(you.no_tele_reason(true));
         break;
 
+    case SPELL_LUNAR_FISSURE:
+        // Also affected by -Blink
+        if (temp && you.duration[DUR_LUNAR_FISSURE])
+            return "performing this again so soon would risk tearing apart"
+                   " the very fabric of reality.";
+        if (temp && you.duration[DUR_BLINK_COOLDOWN])
+            return "you are too translocationally unstable to form a link"
+                   " to the moon.";
+        
     case SPELL_SWIFTNESS:
         if (you.stasis())
             return "your stasis precludes magical swiftness.";
@@ -1531,9 +1540,11 @@ bool spell_no_hostile_in_range(spell_type spell)
     case SPELL_FIRE_STORM:
         return false;
 
+    // XXX: These checks look a bit buggy as they aren't accounting for unaffected 
     case SPELL_OLGREBS_TOXIC_RADIANCE:
     case SPELL_IGNITION:
     case SPELL_FROZEN_RAMPARTS:
+    case SPELL_LUNAR_FISSURE:
         return minRange > you.current_vision;
 
     // Special handling for cloud spells.
