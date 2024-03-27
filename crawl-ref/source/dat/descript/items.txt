@@ -867,6 +867,25 @@ Smooth as a spider's silk, white as the eyes of some crawling thing which has
 lived too long in the dark, this gem buzzes with a fearful potential. Still, to
 a certain eye, it possesses a strange allure...
 %%%%
+moonstone moondial
+
+There are some these days who claim that the Moon is merely a lump of rock
+orbiting the sky! As any mage knows, it is in fact an even mix of both rock
+and condensed pure magical energy, which sustains her solemn glow.
+
+This timepiece was hewn from a fragment of such moon rock, although how such
+a piece was brought to this world may never be known, nor what master artificer
+might have been skilled enough to work it.
+
+When the timepiece is ready it will strike full moon, unleashing in the process
+a monstrous surge of magical energy and moonlight. Anything that fails to
+resist will find themselves blinded and magically contaminated, including the
+wielder. Beings that cannot be blinded by ordinary light may still find
+themselves blinded by moonlight.
+
+The duration of the effect and its ability to overcome resistance increases
+with Evocations skill.
+%%%%
 morningstar
 
 A mace with a head covered in short spikes.

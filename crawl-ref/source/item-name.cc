@@ -57,6 +57,7 @@
 #include "unwind.h"
 #include "viewgeom.h"
 #include "zot.h" // gem_clock_active
+#include "spl-monench.h"
 
 static bool _is_consonant(char let);
 static char _random_vowel();
@@ -1020,6 +1021,7 @@ static string misc_type_name(int type)
     case MISC_TIN_OF_TREMORSTONES:       return "tin of tremorstones";
     case MISC_CONDENSER_VANE:            return "condenser vane";
     case MISC_GRAVITAMBOURINE:           return "Gell's gravitambourine";
+    case MISC_MOONDIAL:                  return "moonstone moondial";
 
     default:
         return "buggy miscellaneous item";
@@ -1833,14 +1835,21 @@ string item_def::name_aux(description_level_type desc, bool terse, bool ident,
 
         buff << misc_type_name(item_typ);
 
-        if (is_xp_evoker(*this) && !dbname && !evoker_charges(sub_type))
-            buff << " (inert)";
-        else if (is_xp_evoker(*this) &&
-                 !dbname && evoker_max_charges(sub_type) > 1)
+        if (is_xp_evoker(*this) && !dbname)
         {
-            buff << " (" << evoker_charges(sub_type) << "/"
-                 << evoker_max_charges(sub_type) << ")";
-        }
+            if (sub_type == MISC_MOONDIAL)
+            {
+                buff << " (" << moon_phase_name(evoker_charges(sub_type))
+                     << " moon)";
+            }
+            else if (!evoker_charges(sub_type))
+                buff << " (inert)";
+            else if (evoker_max_charges(sub_type) > 1)
+            {
+                buff << " (" << evoker_charges(sub_type) << "/"
+                    << evoker_max_charges(sub_type) << ")";
+            }
+        } 
 
         break;
     }

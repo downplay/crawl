@@ -74,6 +74,7 @@
 #include "spl-book.h"
 #include "spl-goditem.h"
 #include "spl-miscast.h"
+#include "spl-monench.h"
 #include "spl-summoning.h"
 #include "spl-util.h"
 #include "stash.h"
@@ -2984,12 +2985,21 @@ string get_item_description(const item_def &item,
                 description << "\n\n";
                 // slightly redundant with uselessness desc..
                 const int charges = evoker_charges(item.sub_type);
-                if (charges > 1)
+                const bool is_moondial = item.sub_type == MISC_MOONDIAL;
+                if (is_moondial)
+                {
+                    const int affect_percent = charges * 25;
+                    description << "Phase: " << moon_phase_name(charges)
+                                << " moon, affecting " << affect_percent << "% of visible targets."
+                                << " Once activated";
+                }
+                else if (charges > 1)
                     description << "Charges: " << charges << ". Once all charges have been used";
                 else
                     description << "Once activated";
-                description << ", this device is rendered temporarily inert. "
-                            << "However, it recharges as you gain experience.";
+                description << ", this device is rendered temporarily inert. However, "
+                            << (is_moondial ? "the phases advance" : "it recharges")
+                            << " as you gain experience.";
 
                 const string damage_str = evoke_damage_string(item);
                 if (damage_str != "")

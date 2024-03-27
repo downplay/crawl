@@ -1165,6 +1165,7 @@ misc_phantom_mirror MISC_PHANTOM_MIRROR
 misc_zigfig MISC_ZIGGURAT
 misc_quad MISC_QUAD_DAMAGE
 misc_tambourine MISC_TAMBOURINE
+misc_moondial MISC_MOONDIAL
 %sdir item/misc/runes
 generic MISC_RUNE_OF_ZOT
 rune_tartarus RUNE_TARTARUS

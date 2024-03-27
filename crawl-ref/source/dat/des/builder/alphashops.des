@@ -105,7 +105,7 @@
        "giant spiked club", "book of geomancy", "granite talisman",
        "glaive", "gold dragon scales", "grand grimoire", "great mace",
        "great sword", "pair of gloves", "great wizards, vol. ii",
-       "great wizards, vol. vii" }
+       "great wizards, vol. vii", "gell's gravitambourine" }
 
       elseif s == "H" then i = { "halberd", "hand axe",
        "hand cannon", "potion of heal wounds",
@@ -130,7 +130,8 @@
        "book of minor magic", "book of misfortune", "maw talisman",
        "morningstar", "mace", "potion of magic", "wand of mindburst",
        "ring of magical power", "amulet of magic regeneration", "potion of might",
-       "potion of mutation", "book of the moon", "book of movement" }
+       "potion of mutation", "book of the moon", "book of movement",
+       "moonstone moondial" }
 
       elseif s == "N" then i = { "book of necromancy",
        "necronomicon", "scroll of noise", "manual of necromancy" }

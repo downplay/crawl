@@ -922,7 +922,7 @@ static const item_set_def item_sets[] =
                                               MISC_TIN_OF_TREMORSTONES } },
     { "ally misc",          OBJ_MISCELLANY, { MISC_BOX_OF_BEASTS,
                                               MISC_SACK_OF_SPIDERS } },
-    { "control misc",       OBJ_MISCELLANY, { MISC_PHIAL_OF_FLOODS,
+    { "control misc",       OBJ_MISCELLANY, { MISC_PHIAL_OF_FLOODS, MISC_MOONDIAL,
                                               MISC_GRAVITAMBOURINE } },
 };
 COMPILE_CHECK(ARRAYSZ(item_sets) == NUM_ITEM_SET_TYPES);
@@ -3372,6 +3372,8 @@ static string _xp_evoker_recharge_msg(const item_def &evoker, int gained, bool s
     const string msg = silenced ? edata->recharge_msg.silent : edata->recharge_msg.noisy;
     if (!msg.empty())
         return msg;
+    if (edata->recharge_msg.custom)
+        return edata->recharge_msg.custom(evoker_charges(evoker.sub_type), silenced);
     if (edata->max_charges == 1)
         return "%s has recharged.";
     return make_stringf("%%s has regained %s charge%s.",

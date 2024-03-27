@@ -1849,6 +1849,7 @@ namespace quiver
             case MISC_QUAD_DAMAGE:
             case MISC_PHANTOM_MIRROR:
             case MISC_GRAVITAMBOURINE:
+            case MISC_MOONDIAL:
                 return false;
             default:
                 return true;

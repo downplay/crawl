@@ -335,12 +335,6 @@ static string mi_calc_irradiate_damage(const monster &mon)
     return dice_def_string(irradiate_damage(pow));
 }
 
-static string mi_calc_lunar_fissure_damage(const monster &mon)
-{
-    const int pow = mons_power_for_hd(SPELL_LUANR_FISSURE, mon.get_hit_dice());
-    return dice_def_string(lunar_fissure_damage(pow));
-}
-
 static string mi_calc_resonance_strike_damage(monster* mons)
 {
     const int pow = mons->spell_hd(SPELL_RESONANCE_STRIKE);

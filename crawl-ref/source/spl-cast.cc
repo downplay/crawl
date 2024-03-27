@@ -2843,8 +2843,6 @@ static dice_def _spell_damage(spell_type spell, int power)
             return iood_damage(power, INFINITE_DISTANCE, false);
         case SPELL_IRRADIATE:
             return irradiate_damage(power, false);
-        case SPELL_LUNAR_FISSURE:
-            return lunar_fissure_damage(power, false);
         case SPELL_SHATTER:
             return shatter_damage(power);
         case SPELL_SCORCH:

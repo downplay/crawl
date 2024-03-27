@@ -642,6 +642,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
         MSPELL_LOGIC_NONE,
         18, // 1.5x iceblast
     } },
+    // TODO: Should probably add Fissure here instead of special cases
 };
 
 /// Create the appropriate casting logic for a simple conjuration.
@@ -1298,7 +1299,6 @@ static int _mons_power_hd_factor(spell_type spell)
         case SPELL_BATTLESPHERE:
         case SPELL_IGNITE_POISON:
         case SPELL_IRRADIATE:
-        case SPELL_LUNAR_FISSURE:
         case SPELL_FOXFIRE:
         case SPELL_MANIFOLD_ASSAULT:
             return 6;

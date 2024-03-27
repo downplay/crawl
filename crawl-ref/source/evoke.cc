@@ -971,6 +971,24 @@ static bool _gravitambourine(dist *target)
     return true;
 }
 
+static int _moondial_power(int charges)
+{
+    return 1 + (charges - 1) * 50
+           + min(49, max(1, you.skill(SK_EVOCATIONS, 2) - 5));
+}
+
+static bool _moondial(int charges)
+{
+    const spret ret = your_spells(SPELL_LUNAR_FISSURE,
+            _moondial_power(charges),
+            false, nullptr, nullptr);
+
+    if (ret == spret::abort)
+        return false;
+
+    return true;
+}
+
 static transformation _form_for_talisman(const item_def &talisman)
 {
     if (you.using_talisman(talisman))
@@ -1178,6 +1196,23 @@ bool evoke_item(item_def& item, dist *preselect)
                 return false;
             break;
 
+        case MISC_MOONDIAL:
+        {
+            int phase = evoker_charges(item.sub_type);
+            if (_moondial(phase))
+            {
+                // Expend all charges
+                for (int n = 0; n < phase; n++)
+                {
+                    expend_xp_evoker(item.sub_type);
+                    practise_evoking(3);
+                }
+            }
+            else
+                return false;
+            break;
+        }
+
         case MISC_HORN_OF_GERYON:
             if (!_evoke_horn_of_geryon())
                 return false;
@@ -1376,6 +1411,11 @@ string evoke_damage_string(const item_def& item)
             return spell_damage_string(SPELL_GRAVITAS, true,
                 _gravitambourine_power());
         }
+        else if (item.sub_type == MISC_MOONDIAL)
+        {
+            return spell_damage_string(SPELL_LUNAR_FISSURE, true,
+                _moondial_power(item.charges));
+        }
         else
             return "";
     }
@@ -1400,6 +1440,8 @@ string evoke_noise_string(const item_def& item)
             return spell_noise_string(SPELL_TREMORSTONE);
         else if (item.sub_type == MISC_GRAVITAMBOURINE)
             return spell_noise_string(SPELL_GRAVITAS);
+        else if (item.sub_type == MISC_MOONDIAL)
+            return spell_noise_string(SPELL_LUNAR_FISSURE);
         else
             return "";
     }

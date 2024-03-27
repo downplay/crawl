@@ -673,6 +673,14 @@ void init_element_colours()
                               {20,  LIGHTGREEN},
                               {100, LIGHTGREY},
                             }));
+    add_element_colour(new random_element_colour_calc(
+                            ETC_MOON, "moon",
+                            { {20,  LIGHTCYAN},
+                              {20,  CYAN},
+                              {20,  LIGHTBLUE},
+                              {20,  LIGHTGREY},
+                              {20,  DARKGREY},
+                            }));
     // redefined by Lua later
     add_element_colour(new element_colour_calc(
                             ETC_DISCO, "disco", _etc_random

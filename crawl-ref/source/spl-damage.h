@@ -53,8 +53,6 @@ dice_def shatter_damage(int pow, monster *mons = nullptr, bool random = false);
 int terrain_shatter_chance(coord_def where, const actor &agent);
 spret cast_irradiate(int powc, actor &caster, bool fail);
 dice_def irradiate_damage(int powc, bool random = true);
-dice_def lunar_fissure_damage(int powc, bool random = true);
-spret cast_lunar_fissure(int powc, actor &caster, bool fail);
 bool ignite_poison_affects_cell(const coord_def where, actor* agent);
 spret cast_ignite_poison(actor *agent, int pow, bool fail,
                               bool tracer = false);

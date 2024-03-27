@@ -4,6 +4,7 @@
 #include <string>
 
 #include "item-prop-enum.h"
+#include "spl-monench.h"
 
 // Used in spl-damage.cc for lightning rod damage calculations
 const int LIGHTNING_CHARGE_MULT = 100;
@@ -13,6 +14,8 @@ struct recharge_messages
 {
     string noisy;
     string silent;
+    // A custom message when a charge is regained
+    string (*custom)(int charges, bool silenced);
 };
 
 struct evoker_data
@@ -40,5 +43,11 @@ static const unordered_map<misc_item_type, evoker_data, std::hash<int>> xp_evoke
     { MISC_CONDENSER_VANE, { "condenser_debt", 10, 1 } },
     { MISC_GRAVITAMBOURINE, { "tambourine_debt", 10, 2,
         { "%s jingles faintly as it regains its power." },
+    }},
+    { MISC_MOONDIAL, { "moondial_debt", 8, 4,
+        { "", "", [](int charges, bool /*silenced*/){
+            return "The moondial turns to indicate the " +
+                   moon_phase_name(charges) + ".";
+        } },
     }},
 };

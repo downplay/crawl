@@ -2052,7 +2052,8 @@ static const mon_spellbook mspell_list[] =
 
     {  MST_MOON_TROLL,
       {
-       { SPELL_LUNAR_FISSURE, 50, MON_SPELL_NATURAL },
+        // At 137 power, 50% of the room have 74% chance of effect
+       { SPELL_LUNAR_FISSURE, 137, MON_SPELL_NATURAL },
       }
     },
 

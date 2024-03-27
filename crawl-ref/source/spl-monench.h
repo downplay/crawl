@@ -20,3 +20,6 @@ bool enfeeble_monster(monster &mon, int pow);
 spret cast_vile_clutch(int pow, bolt &beam, bool fail);
 bool start_ranged_constriction(actor& caster, actor& target, int duration,
                                constrict_type type);
+
+string moon_phase_name(int phase);
+spret cast_lunar_fissure(int powc, actor &caster, bool fail);

@@ -843,23 +843,6 @@ its victims, weakening them and reducing their armour. The caster is not left
 entirely unaffected; some of the magic lingers, enough to leave them
 dangerously contaminated after a few castings.
 %%%%
-Lunar Fissure spell
-
-There are some these days who claim that the Moon is merely a lump of rock
-orbiting the sky! As any mage knows, she is in fact an even mix of both rock
-and condensed pure magical energy, which sustains her solemn glow.
-
-For one skilled enough it is possible to displace a fragment of the Moon into
-one's own hand and then, through transmutation, to rip asunder the very
-bonds that bind this matter together, unleashing in the process a monstrous
-surge of magical energy and moonlight.
-
-Anything in sight will be blinded, including the caster, whose line of sight
-will be reduced to zero for a short number of turns; as well as receving a
-heavy dose of contamination. While blinded it is not possible to read or aim,
-and you will be unable to blink, but you are able to move freely and perform
-most other actions.
-%%%%
 Iskenderun's Battlesphere spell
 
 Conjures a small globe of magical energy. Each time its creator casts a
