@@ -655,7 +655,8 @@ static beam_type _chaos_beam_flavour(bolt* beam)
           3, BEAM_PETRIFY,
           3, BEAM_SLEEP,
          // Combined weight for poly and clone effects.
-          4, BEAM_POLYMORPH);
+          4, BEAM_POLYMORPH,
+          5, BEAM_LIGHT);
 
     return flavour;
 }
@@ -4170,8 +4171,8 @@ void bolt::affect_player()
 
     }
 
-    if (flavour == BEAM_LIGHT && one_chance_in(3))
-        confuse_player(random_range(2, 3));
+    if (flavour == BEAM_LIGHT)
+        blind_player(2 + random2avg(10, 4));
 
     if (flavour == BEAM_MIASMA && final_dam > 0)
         was_affected = miasma_player(agent(), name);
@@ -4213,7 +4214,6 @@ void bolt::affect_player()
     // Right now just ignore the physical component.
     // what about acid?
     you.expose_to_element(flavour, 2, false);
-
 
     // Manticore spikes
     if (origin_spell == SPELL_THROW_BARBS && final_dam > 0)

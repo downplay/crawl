@@ -1651,7 +1651,7 @@ bool melee_attack::player_aux_test_hit()
 
     bool auto_hit = one_chance_in(30);
 
-    if (to_hit >= evasion || auto_hit)
+    if (to_hit / player_blindness_to_hit_divider() >= evasion || auto_hit)
         return true;
 
     mprf("Your %s misses %s.", aux_attack.c_str(),

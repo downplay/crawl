@@ -4921,6 +4921,38 @@ void barb_player(int turns, int pow)
     }
 }
 
+/**
+ * Increase the player's confusion duration.
+ *
+ * @param amount   The number of turns to increase confusion duration by.
+ * @param quiet    Whether to suppress messaging on success/failure.
+ * @return         Whether confusion was successful.
+ */
+void blind_player(int amount)
+{
+    ASSERT(!crawl_state.game_is_arena());
+
+    if (amount <= 0)
+        return;
+
+    // 
+    const int current = you.duration[DUR_BLIND];
+    if (current < amount * BASELINE_DELAY) {
+        you.set_duration(DUR_BLIND, amount);
+        you.check_awaken(500);
+        if (current > 0) {
+            mpr("You are blinded for an even longer time.");
+        } else {
+            mpr("You are blinded!");
+        }
+        learned_something_new(HINT_YOU_ENCHANTED);
+        xom_is_stimulated((you.duration[DUR_BLIND] - current)
+                           / BASELINE_DELAY);
+    } else {
+        mpr("You could not be any more blinded.");
+    }
+}
+
 void dec_berserk_recovery_player(int delay)
 {
     if (!you.duration[DUR_BERSERK_COOLDOWN])

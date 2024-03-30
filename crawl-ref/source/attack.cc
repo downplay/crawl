@@ -1030,14 +1030,30 @@ int attack::calc_damage()
     return 0;
 }
 
+int attack::player_blindness_to_hit_divider()
+{
+    if (attacker->is_player() && you.duration[DUR_BLIND])
+    {
+        // Divides to hit by a factor increasing with distance to the target
+        const int distance = max(abs(defender->pos().x - attacker->pos().x),
+                                 abs(defender->pos().y - attacker->pos().y));
+        return distance + 1;
+    }
+    return 1;
+}
+
 int attack::test_hit(int to_land, int ev, bool randomise_ev)
 {
     int margin = AUTOMATIC_HIT;
+
     if (randomise_ev)
         ev = random2avg(2*ev, 2);
     if (to_land >= AUTOMATIC_HIT)
         return true;
-    else if (x_chance_in_y(MIN_HIT_MISS_PERCENTAGE, 100))
+
+    to_land /= player_blindness_to_hit_divider();
+
+    if (x_chance_in_y(MIN_HIT_MISS_PERCENTAGE, 100))
         margin = (random2(2) ? 1 : -1) * AUTOMATIC_HIT;
     else
         margin = to_land - ev;

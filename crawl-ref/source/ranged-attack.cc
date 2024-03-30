@@ -714,7 +714,9 @@ bool ranged_attack::apply_missile_brand()
     case SPMSL_BLINDING:
         if (!dart_check(brand))
             break;
-        if (defender->is_monster())
+        if (defender->is_player())
+            blind_player(damage_done);
+        else
         {
             monster* mon = defender->as_monster();
             if (mons_can_be_blinded(mon->type))

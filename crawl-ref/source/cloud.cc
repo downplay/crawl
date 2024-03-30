@@ -2052,6 +2052,11 @@ static const vector<chaos_effect> chaos_effects = {
             return _is_chaos_slowable(victim) && !victim.res_petrify();
         }, BEAM_PETRIFY,
     },
+    {
+        "blinding", 5, [](const actor &victim) {
+            return victim.is_player() || mons_can_be_dazzled(victim.as_monster()->type);
+        }, BEAM_LIGHT,
+    },
 };
 
 // Applies a debuff-style random chaos effect to an actor. This may have a source,
