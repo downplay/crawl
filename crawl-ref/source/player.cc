@@ -4922,11 +4922,9 @@ void barb_player(int turns, int pow)
 }
 
 /**
- * Increase the player's confusion duration.
+ * Increase the player's blindness duration.
  *
- * @param amount   The number of turns to increase confusion duration by.
- * @param quiet    Whether to suppress messaging on success/failure.
- * @return         Whether confusion was successful.
+ * @param amount   The number of turns to increase blindness duration by.
  */
 void blind_player(int amount)
 {
