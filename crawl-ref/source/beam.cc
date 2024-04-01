@@ -4001,6 +4001,19 @@ static const vector<pie_effect> pie_effects = {
         },
         4
     },
+    {
+        "glitter bomb",
+        [](const actor &defender) {
+            // For now it's a player-only pie as there are enough ways to blind monsters anyway
+            // and dazzle_monster assymes
+            return defender.is_player();
+        },
+        [](actor &defender, const bolt &/*beam*/) {
+            ASSERT(defender.is_player());
+            blind_player(random_range(16, 36), MAGENTA);
+        },
+        8
+    },
 };
 
 static pie_effect _random_pie_effect(const actor &defender)
@@ -4172,7 +4185,7 @@ void bolt::affect_player()
     }
 
     if (flavour == BEAM_LIGHT)
-        blind_player(2 + random2avg(10, 4));
+        blind_player(2 + random2avg(10, 4), ETC_SILVER);
 
     if (flavour == BEAM_MIASMA && final_dam > 0)
         was_affected = miasma_player(agent(), name);

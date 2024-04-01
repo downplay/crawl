@@ -4926,17 +4926,17 @@ void barb_player(int turns, int pow)
  *
  * @param amount   The number of turns to increase blindness duration by.
  */
-void blind_player(int amount)
+void blind_player(int amount, colour_t flavour_colour)
 {
     ASSERT(!crawl_state.game_is_arena());
 
     if (amount <= 0)
         return;
 
-    // 
     const int current = you.duration[DUR_BLIND];
     if (current < amount * BASELINE_DELAY) {
         you.set_duration(DUR_BLIND, amount);
+        you.props[BLIND_COLOUR_KEY] = flavour_colour;
         you.check_awaken(500);
         if (current > 0) {
             mpr("You are blinded for an even longer time.");
@@ -4949,6 +4949,12 @@ void blind_player(int amount)
     } else {
         mpr("You could not be any more blinded.");
     }
+}
+
+int blind_player_distance_to(coord_def pos)
+{
+    coord_def player_pos = you.pos();
+    return max(abs(pos.x - player_pos.x), abs(pos.y - player_pos.y));
 }
 
 void dec_berserk_recovery_player(int delay)

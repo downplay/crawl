@@ -219,6 +219,9 @@ int attack::calc_pre_roll_to_hit(bool random)
         // mutation
         if (you.get_mutation_level(MUT_EYEBALLS))
             mhit += 2 * you.get_mutation_level(MUT_EYEBALLS) + 1;
+
+        // blindness
+        mhit /= player_blindness_to_hit_divider();
     }
     else    // Monster to-hit.
     {
@@ -1032,12 +1035,10 @@ int attack::calc_damage()
 
 int attack::player_blindness_to_hit_divider()
 {
-    if (attacker->is_player() && you.duration[DUR_BLIND])
+    if (defender && attacker->is_player() && you.duration[DUR_BLIND])
     {
         // Divides to hit by a factor increasing with distance to the target
-        const int distance = max(abs(defender->pos().x - attacker->pos().x),
-                                 abs(defender->pos().y - attacker->pos().y));
-        return distance + 1;
+        return 1 + blind_player_distance_to(defender->pos());
     }
     return 1;
 }
@@ -1050,8 +1051,6 @@ int attack::test_hit(int to_land, int ev, bool randomise_ev)
         ev = random2avg(2*ev, 2);
     if (to_land >= AUTOMATIC_HIT)
         return true;
-
-    to_land /= player_blindness_to_hit_divider();
 
     if (x_chance_in_y(MIN_HIT_MISS_PERCENTAGE, 100))
         margin = (random2(2) ? 1 : -1) * AUTOMATIC_HIT;

@@ -1699,6 +1699,14 @@ void draw_cell(screen_cell_t *cell, const coord_def &gc,
                                && (env.map_knowledge(gc).flags & MAP_WITHHELD)
                                && !feat_is_solid(env.grid(gc)));
 
+#ifdef USE_TILE
+    if (you.duration[DUR_BLIND] && you.see_cell(gc))
+    {
+        cell->flash_colour = real_colour(you.props[BLIND_COLOUR_KEY].get_int());
+        cell->flash_alpha = 32 + blind_player_distance_to(gc) * 16;
+    }
+#endif
+
     // Alter colour if flashing the characters vision.
     if (flash_colour)
     {
