@@ -4,13 +4,13 @@ This is the Webtiles server for Dungeon Crawl Stone Soup. It is a server that
 allows users to play DCSS in a web browser. You can use it for small, personal
 setups or for large public servers. It consists of three main parts:
 
-* A python package that implements the server, using the
+- A python package that implements the server, using the
   [Tornado](https://www.tornadoweb.org/en/stable/) library. By and large, this
   code should work with any version of DCSS that supports webtiles.
-* Static html/javascript, and other support files that are independent
+- Static html/javascript, and other support files that are independent
   of the version of DCSS that is running, found in [templates/](templates/),
   [static/](static/), and [contrib/](contrib/).
-* Version-specific html/javascript, found in [game_data/](game_data/). Files
+- Version-specific html/javascript, found in [game_data/](game_data/). Files
   here are specific to the version of the crawl binary at the same point in
   the repository.
 
@@ -21,21 +21,65 @@ app's code.
 
 ## Contents
 
-* [Prerequisites](#prerequisites)
-* [Running the server for testing purposes](#running-the-server-for-testing-purposes)
-* [Running a production server](#running-a-production-server)
-* [Contributing](#contributing)
+- [Running with Docker](#docker)
+- [Prerequisites](#prerequisites)
+- [Running the server for testing purposes](#running-the-server-for-testing-purposes)
+- [Running a production server](#running-a-production-server)
+- [Contributing](#contributing)
+
+## Running with Docker
+
+This is the easiest way to run a webtiles server locally for testing.
+The only prequisite is Docker itself. If you still want to install and run
+everything on your local system, or you you want to run a production server,
+skip to [Prerequisites](#prerequisites) and read from there.
+
+### Build the Docker container
+
+This only needs to be done once ever, unless the system dependencies change,
+or your Docker cache is cleared.
+
+```
+./docker/build-docker.sh
+```
+
+### Start the Docker container
+
+This gives you an interactive prompt inside the container. Port 8080 is
+exposed and routed to 127.0.0.1.
+
+```
+./docker/start-docker.sh
+```
+
+### Build and run server inside container
+
+Now you have an interactive prompt inside the container you can run
+the scripts that were copied there. To build a webtiles build of crawl:
+
+```
+./build-crawl.sh
+```
+
+Once a build is there, run the server:
+
+```
+./start-webtiles.sh
+```
+
+Since port 8080 is mapped to localhost you should now be able to go to
+http://127.0.0.1:8080 and play webtiles.
 
 ## Prerequisites
 
 To run the server, you need:
 
-* Linux, macOS, or windows using WSL (MinGW webtiles is not supported).
-* Python 3.6 or newer. (Earlier versions may work but are not supported.)
-* The Python dependencies specified in `requirements/`, in particular,
-  minimally to just run the server, you need Tornado 6+  and `pyyaml` (also
+- Linux, macOS, or windows using WSL (MinGW webtiles is not supported).
+- Python 3.6 or newer. (Earlier versions may work but are not supported.)
+- The Python dependencies specified in `requirements/`, in particular,
+  minimally to just run the server, you need Tornado 6+ and `pyyaml` (also
   required for building the crawl binary).
-* A build of DCSS with webtiles support.
+- A build of DCSS with webtiles support.
 
 To get webtiles support in the binary, you'll need to compile DCSS with `make
 WEBTILES=y` (and any other appropriate options). For publicly accessible
@@ -55,9 +99,9 @@ You can also install them manually using e.g. `pip` or `conda` and skip step 3.
 3. Compile Crawl with `make WEBTILES=y` (or `make debug WEBTILES=y`).
 4. Run the server: `python3 webserver/server.py`
 
-    If your python binary is named something else (e.g. just `python`) use that
-    instead. If you are using a virtualenv, you need to activate it every time
-    you start the server)
+   If your python binary is named something else (e.g. just `python`) use that
+   instead. If you are using a virtualenv, you need to activate it every time
+   you start the server
 
 5. Browse to [localhost:8080](http://localhost:8080/) and you should see the
    lobby.
@@ -134,7 +178,7 @@ discovered by running from within a WSL shell:
 
     ifconfig
 
-and looking for the `inet` value. This IP address will *not* be usable outside
+and looking for the `inet` value. This IP address will _not_ be usable outside
 of the machine running webtiles server, and configuring it for LAN or internet
 use is beyond the scope of this document; for more information, see:
 https://github.com/microsoft/WSL/issues/4150.
@@ -157,9 +201,9 @@ Use the requirements files `requirements/base.py3.txt`.
 The server can be configured by modifying the file `config.py`. Most of
 the options are commented or should be self-evident. Suggestions:
 
-* Set uid and gid to a non-privileged user
-* Enable logging to a file in `logging_config`
-* If required, write a script that initializes  user-specific data, like copying
+- Set uid and gid to a non-privileged user
+- Enable logging to a file in `logging_config`
+- If required, write a script that initializes user-specific data, like copying
   a default rc file if the user doesn't yet have one. You can have the script be
   run on every login by setting `init_player_program`. There is an example
   script in `util/webtiles-init-player.sh`, but you will probably want to
@@ -169,11 +213,10 @@ the options are commented or should be self-evident. Suggestions:
 
 For Python developers, several utilities are available:
 
-* `make format` -- format code
-* `make lint` -- run several Python linters (with Flake8)
-* `tox` -- run tests on all supported Python versions
-* `requirements.in/sync.sh` -- update requirements files
-
+- `make format` -- format code
+- `make lint` -- run several Python linters (with Flake8)
+- `tox` -- run tests on all supported Python versions
+- `requirements.in/sync.sh` -- update requirements files
 
 ### Code Coverage
 
