@@ -1704,7 +1704,7 @@ void draw_cell(screen_cell_t *cell, const coord_def &gc,
     if (you.duration[DUR_BLIND] && you.see_cell(gc))
     {
         cell->flash_colour = real_colour(you.props[BLIND_COLOUR_KEY].get_int());
-        cell->flash_alpha = 32 + pow(blind_player_distance_to(gc) + 2, 2);
+        cell->flash_alpha = 16 + pow(blind_player_distance_to(gc), 2);
     }
 #endif
 
