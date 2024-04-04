@@ -214,9 +214,11 @@ void DungeonRegion::pack_buffers()
             const int fcol = vbuf_cell->flash_colour;
             const int falpha = vbuf_cell->flash_alpha;
             if (fcol)
+            {
                 m_buf_flash.add(x, y, x + 1, y + 1, 
                                 falpha ? _alpha_flash_colour(fcol, falpha)
                                        : _flash_colours[fcol]);
+            }
 
             vbuf_cell++;
         }

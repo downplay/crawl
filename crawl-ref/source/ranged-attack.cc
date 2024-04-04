@@ -715,7 +715,7 @@ bool ranged_attack::apply_missile_brand()
         if (!dart_check(brand))
             break;
         if (defender->is_player())
-            blind_player(damage_done, LIGHTGREEN);
+            blind_player(damage_done, LIGHTCYAN); // Matching dart tip colour
         else
         {
             monster* mon = defender->as_monster();
