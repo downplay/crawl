@@ -4957,6 +4957,16 @@ int blind_player_distance_to(coord_def pos)
     return max(abs(pos.x - player_pos.x), abs(pos.y - player_pos.y));
 }
 
+int blind_player_to_hit_divider(const monster* mons)
+{
+    if (you.duration[DUR_BLIND])
+    {
+        // Divides to hit by a factor increasing with distance to the target
+        return 1 + blind_player_distance_to(mons->pos());
+    }
+    return 1;
+}
+
 void dec_berserk_recovery_player(int delay)
 {
     if (!you.duration[DUR_BERSERK_COOLDOWN])

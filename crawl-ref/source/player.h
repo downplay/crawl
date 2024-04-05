@@ -1188,6 +1188,7 @@ void dec_slow_player(int delay);
 void barb_player(int turns, int pow);
 void blind_player(int turns, colour_t flavour_colour = LIGHTGREY);
 int blind_player_distance_to(coord_def pos);
+int blind_player_to_hit_divider(const monster* mons);
 void dec_berserk_recovery_player(int delay);
 
 bool haste_player(int turns, bool rageext = false);

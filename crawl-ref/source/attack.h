@@ -133,7 +133,6 @@ protected:
     int apply_rev_penalty(int damage) const;
     virtual int calc_damage();
     int lighting_effects();
-    int player_blindness_to_hit_divider();
     int test_hit(int to_hit, int ev, bool randomise_ev);
     int apply_defender_ac(int damage, int damage_max = 0,
                           ac_type ac_rule = ac_type::normal) const;
