@@ -5405,7 +5405,10 @@ void bolt::affect_monster(monster* mon)
     int beam_hit = hit;
 
     if (beam_hit != AUTOMATIC_HIT)
+    {
         beam_hit = apply_lighting(beam_hit, *mon);
+        beam_hit = div_round_up(beam_hit, blind_player_to_hit_divider(mon));
+    }
 
     // The monster may block the beam.
     if (!engulfs && is_blockable() && attempt_block(mon))
