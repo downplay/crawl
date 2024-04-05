@@ -4934,21 +4934,15 @@ void blind_player(int amount, colour_t flavour_colour)
         return;
 
     const int current = you.duration[DUR_BLIND];
-    if (current < amount * BASELINE_DELAY)
-    {
-        you.set_duration(DUR_BLIND, amount);
-        you.props[BLIND_COLOUR_KEY] = flavour_colour;
-        you.check_awaken(500);
-        if (current > 0)
-            mpr("You are blinded for an even longer time.");
-        else
-            mpr("You are blinded!");
-        learned_something_new(HINT_YOU_ENCHANTED);
-        xom_is_stimulated((you.duration[DUR_BLIND] - current)
-                           / BASELINE_DELAY);
-    }
+    you.increase_duration(DUR_BLIND, amount, 50);
+    you.props[BLIND_COLOUR_KEY] = flavour_colour;
+    you.check_awaken(500);
+    if (current > 0)
+        mpr("You are blinded for an even longer time.");
     else
-        mpr("You could not be any more blinded.");
+        mpr("You are blinded!");
+    learned_something_new(HINT_YOU_ENCHANTED);
+    xom_is_stimulated((you.duration[DUR_BLIND] - current) / BASELINE_DELAY);
 }
 
 int blind_player_distance_to(coord_def pos)

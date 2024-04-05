@@ -1642,8 +1642,9 @@ static vector<string> _desc_electric_charge_hit_chance(const monster_info& mi)
 
     vector<string> desc;
     ostringstream result;
-    // TODO: It's actually inaccurate for blindness because to-hit will be calculated
-    // from the current distance rather than adjacent where we're going to be
+    // XXX: It's actually inaccurate for blindness because to-hit will be calculated
+    // from the current distance rather than the adjacent spot where we'll land.
+    // So the reported % will be much lower than the actual %.
     describe_to_hit(mi, result, nullptr);
     desc.emplace_back(result.str());
     return desc;

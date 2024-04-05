@@ -637,9 +637,9 @@ static const duration_def duration_data[] =
       "You may recruit a defeated apostle into your service", D_EXPIRES,
        {{ "", end_beogh_recruit_window}}},
     { DUR_BLIND, RED, "Blind", "blinded", "blindness",
-      "Your combat accuracy is reduced more the further away your target is,"
-      " and range is reduced for many spells.", D_DISPELLABLE | D_EXPIRES, {{ "",
-        [](){mprf(MSGCH_RECOVERY, "Your surroundings become clearer.");}}}},
+      "The further away your target is the more your accuracy is reduced.",
+      D_DISPELLABLE | D_EXPIRES, {{ "",
+        [](){mprf(MSGCH_RECOVERY, "Your vision returns to normal.");}}}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.

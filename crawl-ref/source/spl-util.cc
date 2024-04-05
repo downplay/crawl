@@ -1021,23 +1021,6 @@ int spell_range(spell_type spell, int pow,
         minrange++;
     }
 
-    // Player blindness reduces spell range by 1, 2 or 3 tiles
-    if (you.duration[DUR_BLIND])
-    {
-        if (minrange == LOS_RADIUS)
-            minrange -= 3;
-        else if (minrange >= 5)
-            minrange -= 2;
-        else if (minrange > 1)
-            minrange--;
-        if (maxrange == LOS_RADIUS)
-            maxrange -= 3;
-        else if (maxrange >= 5)
-            maxrange -= 2;
-        else if (maxrange > 1)
-            maxrange--;
-    }
-
     if (minrange == maxrange)
         return min(minrange, range_cap);
 
