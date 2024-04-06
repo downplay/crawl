@@ -2208,9 +2208,7 @@ void TilesFramework::redraw()
     _send_messages();
 
     if (m_need_redraw && m_view_loaded)
-    {
         _send_map(false);
-    }
 
     m_need_redraw = false;
     m_last_tick_redraw = get_milliseconds();

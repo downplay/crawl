@@ -147,7 +147,7 @@ static bool _to_hit_is_invisible(const monster_info& mi)
     if (mi.has_trivial_ench(ENCH_BLIND))
         return true;
 
-    return (you.invisible() && !mi.can_see_invisible() && !you.in_water());
+    return you.invisible() && !mi.can_see_invisible() && !you.in_water();
 }
 
 static double _to_hit_shield_chance(const monster_info& mi,

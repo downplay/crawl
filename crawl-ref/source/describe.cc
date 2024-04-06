@@ -5281,12 +5281,12 @@ void describe_to_hit(const monster_info& mi, ostringstream &result,
 
     if (verbose)
         result << "about ";
-    
+
     result << acc_pct << "% to hit";
-    
+
     if (verbose)
     {
-        result << " with "; 
+        result << " with ";
         if (weapon == nullptr)
             result << "your " << you.hand_name(true);
         else
