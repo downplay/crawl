@@ -35,6 +35,7 @@
 #include "religion.h"
 #include "shout.h"
 #include "spl-clouds.h" // explode_blastmotes_at
+#include "spl-damage.h" // dazzle_monster
 #include "spl-util.h"
 #include "state.h"
 #include "stringutil.h"
@@ -2058,7 +2059,7 @@ static const vector<chaos_effect> chaos_effects = {
             return victim.is_player() || mons_can_be_dazzled(victim.as_monster()->type);
         }, BEAM_NONE, [](actor* victim, actor* source) {
             if (victim->is_player())
-                blind_player(random_range(5, 15), ETC_CHAOS);
+                blind_player(random_range(5, 15), ETC_RANDOM);
             else
                 dazzle_monster(victim->as_monster(), 100);
             return you.can_see(*victim);

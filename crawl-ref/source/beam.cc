@@ -4010,7 +4010,7 @@ static const vector<pie_effect> pie_effects = {
         },
         [](actor &defender, const bolt &/*beam*/) {
             ASSERT(defender.is_player());
-            blind_player(random_range(16, 36), ETC_RANDOM);
+            blind_player(random_range(16, 36), ETC_GLITTER);
         },
         50 // XXX: Make lower again after testing (something like 4-8)
     },

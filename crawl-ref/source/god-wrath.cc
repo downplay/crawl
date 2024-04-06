@@ -16,6 +16,7 @@
 #include "artefact.h"
 #include "attitude-change.h"
 #include "cleansing-flame-source-type.h"
+#include "colour.h"
 #include "coordit.h"
 #include "corpse.h"
 #include "database.h"
