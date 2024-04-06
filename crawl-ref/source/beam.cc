@@ -4012,7 +4012,7 @@ static const vector<pie_effect> pie_effects = {
             ASSERT(defender.is_player());
             blind_player(random_range(16, 36), ETC_RANDOM);
         },
-        8
+        50 // XXX: Make lower again after testing (something like 4-8)
     },
 };
 
@@ -4185,7 +4185,7 @@ void bolt::affect_player()
     }
 
     if (flavour == BEAM_LIGHT)
-        blind_player(2 + random2avg(10, 4), WHITE);
+        blind_player(random_range(5, 15), WHITE);
 
     if (flavour == BEAM_MIASMA && final_dam > 0)
         was_affected = miasma_player(agent(), name);

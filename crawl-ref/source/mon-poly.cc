@@ -87,7 +87,17 @@ void monster_drop_things(monster* mons,
         }
 
         // If a monster is swimming, the items are ALREADY underwater.
-        move_item_to_grid(&item, mons->pos(), mons->swimming());
+        if (move_item_to_grid(&item, mons->pos(), mons->swimming())
+            && env.item[item].base_type == OBJ_GOLD
+            && player_under_penance(GOD_GOZAG)
+            && you.see_cell(mons->pos())
+            && x_chance_in_y(env.item[item].quantity, 100))
+        {
+            string msg = make_stringf("%s dazzles you with the glint of coin.",
+                                       god_name(GOD_GOZAG).c_str());
+            mprf(MSGCH_GOD, GOD_GOZAG, "%s", msg.c_str());
+            blind_player(10 + random2(8), ETC_GOLD);
+        }
         mons->inv[i] = NON_ITEM;
     }
 }

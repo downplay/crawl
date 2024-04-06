@@ -2053,9 +2053,16 @@ static const vector<chaos_effect> chaos_effects = {
         }, BEAM_PETRIFY,
     },
     {
-        "blinding", 5, [](const actor &victim) {
+        // XXX: Make weight lower after testing (around 5)
+        "blinding", 50, [](const actor &victim) {
             return victim.is_player() || mons_can_be_dazzled(victim.as_monster()->type);
-        }, BEAM_LIGHT,
+        }, BEAM_NONE, [](actor* victim, actor* source) {
+            if (victim->is_player())
+                blind_player(random_range(5, 15), ETC_CHAOS);
+            else
+                dazzle_monster(victim->as_monster(), 100);
+            return you.can_see(*victim);
+        },
     },
 };
 
