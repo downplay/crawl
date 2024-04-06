@@ -10,6 +10,7 @@
 #include "artefact.h"
 #include "art-enum.h"
 #include "attitude-change.h"
+#include "colour.h"
 #include "delay.h"
 #include "describe.h"
 #include "dgn-overview.h"
