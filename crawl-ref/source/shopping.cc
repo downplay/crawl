@@ -45,6 +45,7 @@
 #include "travel.h"
 #include "unicode.h"
 #include "unwind.h"
+#include "database.h"
 
 ShoppingList shopping_list;
 
@@ -1545,9 +1546,97 @@ static const char *_shop_type_suffix(shop_type type, const coord_def &where)
     return suffixnames[(where.x + where.y) % ARRAYSZ(suffixnames)];
 }
 
+string generate_shopkeeper_name(bool fancy, bool gozag)
+{
+    // Plain shops always use traditional name generator (same as Pan Lords),
+    // still a chance for fancy shops though (they will get further flowery
+    // language in the main generator anyway).
+    // if (!(gozag || fancy) || one_chance_in(3))
+    //     return make_name();
+
+    string key = (gozag ? "gozag" : fancy ? "fancy" : "plain")
+                 + string(" shopkeeper full name");
+    auto generated = getMiscString(key);
+    string name = maybe_pick_random_substring(generated);
+
+    // They can *still* use classic name but with a prefix/suffix added e.g.
+    // "Brave [Name]" or "[Name] the Brave".
+    if (name.find("@Classic_name@") != string::npos)
+        name = replace_all(name, "@Classic_name@", make_name());
+
+    return name;
+}
+
+pair<string, string> generate_shop_name(shop_type type, int shop_level, bool gozag)
+{
+    // Generate an appropriately long name for the level. Level is (2 * (absdepth || XL))
+    // depending on how it was generated, so it can get up to 54 with Gozag.
+    // We can generate some pretty succinct names so let's start at 16 and go up to 70
+    // at max (any more than this would cause display issues anyway).
+    const uint target_max = 20 + shop_level;
+    const uint target_min = 20 - shop_level / 5;
+    const size_t target_length = random_range(target_min, target_max);
+    const bool fancy = shop_level >= 20; // 20 for orc, 25 for later...
+    // string key = (gozag ? "gozag " : fancy ? "fancy " : "")
+    //              + shop_type_name(type) + " shop";
+    string key = shop_type_name(type) + " shop name";
+    auto best = make_pair(string(""), string(""));
+    size_t best_name_size = 0;
+    // Have 10 tries, and veto the lengths we don't like. Aiming to get the
+    // closest to the desired length without actually being longer.
+    for (int n=0; n<10; n++)
+    {
+        auto keeper_name = generate_shopkeeper_name(fancy, gozag);
+        auto generated = getMiscString(key);
+        if (generated.empty())
+        {
+            mprf("Empty shopkeeper name! Key: %s", key.c_str());
+            continue;
+        }
+        string name = maybe_pick_random_substring(generated);
+        name = replace_all(name, "@The_shopkeeper's@", apostrophise(keeper_name));
+        name = replace_all(name, "@The_shopkeeper@", keeper_name);
+        mprf("%s Target: %lu Found: %lu Keeper: %s Name: %s", name.c_str(), target_length, name.size(), keeper_name.c_str(), generated.c_str());
+
+        if (name.size() == target_length)
+        {
+            // Exact length, can't do any better, stop here
+            best = make_pair(name, keeper_name);
+            break;
+        }
+        else if (name.size() > target_length)
+        {
+            // Keep the name if it's the first or it's shorter than the best
+            // we found so far
+            if (best_name_size == 0 || name.size() < best_name_size)
+                best = make_pair(name, keeper_name);
+        }
+        // Name is within target but longer than best so prefer this one
+        else if (name.size() > best_name_size)
+            best = make_pair(name, keeper_name);
+        best_name_size = best.first.size();
+    }
+
+    mprf("Final: %s", best.first.c_str());
+
+    return best;
+}
+
+/**
+ * Old name builder for shops. Still used for most vault-defined shops
+ * as I don't want to mess with their creation when they've overriden
+ * shopkeeper names, shop type names, etc.
+ * 
+ * If a name has been set from the new generator during shop placement,
+ * we'll just return that instead.
+ */
 string shop_name(const shop_struct& shop)
 {
     const shop_type type = shop.type;
+
+    // New builder populates this string so just return it
+    if (!shop.full_shop_name.empty())
+        return shop.full_shop_name;
 
     string sh_name = "";
 
@@ -1556,16 +1645,7 @@ string shop_name(const shop_struct& shop)
     if (shop.shop_name == " ")
         return shop.shop_type_name;
 #endif
-    if (!shop.shop_name.empty())
-        sh_name += apostrophise(shop.shop_name) + " ";
-    else
-    {
-        uint32_t seed = static_cast<uint32_t>(shop.keeper_name[0])
-            | (static_cast<uint32_t>(shop.keeper_name[1]) << 8)
-            | (static_cast<uint32_t>(shop.keeper_name[1]) << 16);
-
-        sh_name += apostrophise(make_name(seed)) + " ";
-    }
+    sh_name += apostrophise(shop.shop_name) + " ";
 
     if (!shop.shop_type_name.empty())
         sh_name += shop.shop_type_name;

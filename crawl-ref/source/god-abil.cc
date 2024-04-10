@@ -3144,6 +3144,7 @@ static int _gozag_shop_price(int index)
 static void _setup_gozag_shop(int index, vector<shop_type> &valid_shops)
 {
     ASSERT(!you.props.exists(make_stringf(GOZAG_SHOPKEEPER_NAME_KEY, index)));
+    ASSERT(!you.props.exists(make_stringf(GOZAG_SHOP_NAME_KEY, index)));
 
     shop_type type = NUM_SHOPS;
     int choice = random2(valid_shops.size());
@@ -3152,17 +3153,11 @@ static void _setup_gozag_shop(int index, vector<shop_type> &valid_shops)
     valid_shops.erase(valid_shops.begin() + choice);
     you.props[make_stringf(GOZAG_SHOP_TYPE_KEY, index)].get_int() = type;
 
-    you.props[make_stringf(GOZAG_SHOPKEEPER_NAME_KEY, index)].get_string()
-                                    = make_name();
-
-    const bool need_suffix = type != SHOP_GENERAL
-                             && type != SHOP_GENERAL_ANTIQUE
-                             && type != SHOP_DISTILLERY;
-    you.props[make_stringf(GOZAG_SHOP_SUFFIX_KEY, index)].get_string()
-                                    = need_suffix
-                                      ? random_choose("Shoppe", "Boutique",
-                                                      "Emporium", "Shop")
-                                      : "";
+    auto names = generate_shop_name(type, you.experience_level, true);
+    you.props[make_stringf(GOZAG_SHOP_NAME_KEY, index)]
+        = names.first;
+    you.props[make_stringf(GOZAG_SHOPKEEPER_NAME_KEY, index)]
+        = names.second;
 
     you.props[make_stringf(GOZAG_SHOP_COST_KEY, index)].get_int()
         = gozag_price_for_shop();
@@ -3181,20 +3176,18 @@ static string _describe_gozag_shop(int index)
     const int cost = _gozag_shop_price(index);
 
     const char offer_letter = 'a' + index;
+
     const string shop_name =
-        apostrophise(you.props[make_stringf(GOZAG_SHOPKEEPER_NAME_KEY,
-                                            index)].get_string());
+        you.props[make_stringf(GOZAG_SHOP_NAME_KEY,
+                               index)].get_string();
     const shop_type type = _gozag_shop_type(index);
     const string type_name = shop_type_name(type);
-    const string suffix =
-        you.props[make_stringf(GOZAG_SHOP_SUFFIX_KEY, index)].get_string();
 
-    return make_stringf("  [%c] %5d gold - %s %s %s",
+    return make_stringf("  [%c] %5d gold - %s (%s)",
                         offer_letter,
                         cost,
                         shop_name.c_str(),
-                        type_name.c_str(),
-                        suffix.c_str());
+                        type_name.c_str());
 }
 
 /**
@@ -3230,24 +3223,15 @@ static int _gozag_choose_shop()
 /**
  * Make a vault spec for the gozag shop offer at the given index.
  */
-static string _gozag_shop_spec(int index)
+static shop_spec _gozag_shop_spec(int index)
 {
     const shop_type type = _gozag_shop_type(index);
     const string name =
         you.props[make_stringf(GOZAG_SHOPKEEPER_NAME_KEY, index)];
+    const string full_name =
+        you.props[make_stringf(GOZAG_SHOP_NAME_KEY, index)];
 
-    string suffix = replace_all(
-                                you.props[make_stringf(GOZAG_SHOP_SUFFIX_KEY,
-                                                       index)]
-                                .get_string(), " ", "_");
-    if (!suffix.empty())
-        suffix = " suffix:" + suffix;
-
-    return make_stringf("%s shop name:%s%s gozag",
-                        shoptype_to_str(type),
-                        replace_all(name, " ", "_").c_str(),
-                        suffix.c_str());
-
+    return shop_spec(type, name, "", "", -1, -1, false, true, full_name);
 }
 
 /**
@@ -3258,13 +3242,8 @@ static string _gozag_shop_spec(int index)
 static void _gozag_place_shop(int index)
 {
     ASSERT(env.grid(you.pos()) == DNGN_FLOOR);
-    keyed_mapspec kmspec;
-    kmspec.set_feat(_gozag_shop_spec(index), false);
-
-    feature_spec feat = kmspec.get_feat();
-    if (!feat.shop)
-        die("Invalid shop spec?");
-    place_spec_shop(you.pos(), *feat.shop, you.experience_level);
+    shop_spec spec = _gozag_shop_spec(index);
+    place_spec_shop(you.pos(), spec, you.experience_level);
 
     link_items();
     env.markers.add(new map_feature_marker(you.pos(), DNGN_ABANDONED_SHOP));
@@ -3290,6 +3269,7 @@ static bool _shop_type_valid(shop_type type)
     {
 #if TAG_MAJOR_VERSION == 34
     case SHOP_FOOD:
+        return false;
 #endif
     case SHOP_EVOKABLES:
         return !you.has_mutation(MUT_NO_ARTIFICE);
@@ -3347,9 +3327,12 @@ bool gozag_call_merchant()
 
     for (int j = 0; j < GOZAG_MAX_SHOPS; j++)
     {
+#if TAG_MAJOR_VERSION == 34
         you.props.erase(make_stringf(GOZAG_SHOPKEEPER_NAME_KEY, j));
-        you.props.erase(make_stringf(GOZAG_SHOP_TYPE_KEY, j));
         you.props.erase(make_stringf(GOZAG_SHOP_SUFFIX_KEY, j));
+#endif
+        you.props.erase(make_stringf(GOZAG_SHOP_NAME_KEY, j));
+        you.props.erase(make_stringf(GOZAG_SHOP_TYPE_KEY, j));
         you.props.erase(make_stringf(GOZAG_SHOP_COST_KEY, j));
     }
 

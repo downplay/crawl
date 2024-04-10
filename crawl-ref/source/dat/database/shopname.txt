@@ -1,0 +1,1788 @@
+###############################################################################
+# Shop and Shopkeeper Names
+###############################################################################
+# Part 1: Shopkeepers
+# While the "traditional" name generator (same as pan lord names etc.) can
+# still be used, we also have a pool of "normal-sounding" names. These are
+# intended to avoid conflicts with Unique names (present or future) as I think
+# uniques named things like "Dave" are at least fairly unlikely, as well as
+# highlighting the fact that shopkeepers are basically civilians. They are
+# also designed to sound rather like back-street junk shops you might encounter
+# somewhere like London or on a market. We could certainly add names of a
+# similar ilk from other countries but I would leave it to native speakers of
+# those countries to match the flavour.
+# We can generate fancier names for higher-value shops, and Gozag shopkeepers
+# get extra fancy names, sometimes a pair of names, and so on.
+###############################################################################
+%%%%
+# XX: Ok a lot of prefixes can be used for plain/fancy items as well
+# Separate adjectives into ones that can be used for some kinds of items and then shopkeepers
+# can also draw from those for *their* adjectives, as well as shopkeeper-only ones
+fancy shopkeeper prefix
+
+Beastly
+
+Dangerous
+
+Diabolical
+
+Dreamy
+
+Fabulous
+
+[Forg|Regr]et[table|ful|]
+
+Learned
+
+[M|Unm]emorable
+
+[M|F|Fl|Bl]ighty
+
+[Mono|Multi]syllabic
+
+Mischievous
+
+Nefarious
+
+[One|Two|Three]-Eye[d|]
+
+# Could be for potions/books/weapons/armour in that order?
+[Pint|Bite|Over|Under]-sized
+
+Powerful
+
+Fanc[y|iful]
+
+Lumin[ous|ary]
+
+Streetwise
+%%%%
+plain shopkeeper prefix
+
+Big
+
+Boring
+
+Cheeky
+
+Diddly
+
+Dodgy
+
+Doodle
+
+Easygoing
+
+Groovy
+
+Honest
+
+Lousy
+
+Mean
+
+Meek
+
+Nice
+
+Pukka
+
+Sketchy
+
+Sleepy
+
+Sly
+
+Small
+
+Smooth
+
+Sneaky
+
+Squishy
+
+Stingy
+
+Tight
+%%%%
+common shopkeeper name
+
+Andy
+
+Ba[z|za|rry]
+
+Bill[y|ie|]
+
+Bob[by|bie|]
+
+Dan[ny|]
+
+Darren
+
+Dave[y|]
+
+# Couldn't resist
+w:1
+Dibbler
+
+w:1
+Del[boy|]
+
+Derrick
+
+w:1
+Rod[ders|ney|]
+
+Fred[dy|]
+
+Jez[za|]
+
+Jim[my|bob|]
+
+Jo[e|sh|shua|]
+
+Jo[h|]n[ny|no|]
+
+Pete
+
+Phil
+
+Sam[my|antha|]
+
+Stev[ie|e|o|en]
+
+Stew[ie|]
+
+Tom[my|]
+
+Wal[ly|ter|]
+
+# Female names
+Am[y|ie]
+
+Bertha
+
+Bet[ty|tie|sy|sie|t]
+
+Helga[r|]
+
+Gem[|ima|ma]
+
+[J|G]ill[y|]
+
+Jen[ny|nie|n|]
+
+Josie
+
+Mabel
+
+Mag[|s|gie]
+
+Marg[e|aret|]
+
+Sheila
+
+[S|C]her[r|][y|ie|]
+
+Sha[z|za|ron]
+
+Kar[r|]en
+
+Kat[e|ie|y|]
+
+[K|C]atel[i|y]n
+
+Cat[heryn|herine|]
+
+Mar[y|ie]
+
+T[|r]ish[|a]
+%%%%
+plain shopkeeper name
+
+w:20
+@Classic_name@
+
+@common shopkeeper name@
+%%%%
+fancy shopkeeper name
+
+@Classic_name@
+
+@common shopkeeper name@
+%%%%
+gozag shopkeeper name
+
+w:5
+@Classic_name@
+
+@common shopkeeper name@
+%%%%
+any shopkeeper prefix
+
+@plain shopkeeper prefix@
+
+w:5
+@fancy shopkeeper prefix@
+%%%%
+plain shopkeeper full name
+
+w:5
+@plain shopkeeper prefix@ @plain shopkeeper name@
+
+w:2
+@plain shopkeeper name@ the @plain shopkeeper prefix@
+
+@plain shopkeeper name@
+%%%%
+fancy shopkeeper full name
+
+w:5
+@fancy shopkeeper name@
+
+@fancy shopkeeper name@ the @any shopkeeper prefix@
+
+@any shopkeeper prefix@ @fancy shopkeeper name@
+%%%%
+# These get really flamboyant
+gozag shopkeeper full name
+
+w:40
+@gozag shopkeeper name@
+
+w:15
+@fancy shopkeeper prefix@ @gozag shopkeeper name@
+
+w:15
+@gozag shopkeeper name@ the @fancy shopkeeper prefix@
+
+w:10
+@any shopkeeper prefix@ @plain shopkeeper prefix@ @gozag shopkeeper name@
+
+w:5
+@gozag shopkeeper name@-@gozag shopkeeper name@
+
+w:5
+@gozag shopkeeper name@ & @gozag shopkeeper name@
+
+w:2
+@any shopkeeper prefix@ @gozag shopkeeper name@ & @gozag shopkeeper name@
+
+w:1
+@any shopkeeper prefix@ @gozag shopkeeper name@ & @plain shopkeeper prefix@ @gozag shopkeeper name@
+###############################################################################
+# Part 2: Shops
+# Shop names have an entrypoint for each value in the shop_type enum.
+# In general the shop names take the simplistic form:
+# "<keeper_name>'s <noun_synonym> <shop_suffix>"
+# `noun_synonym` is a synonym for object types that the shop sells e.g.:
+# Gadget, Device, Machine, etc. for evokables.
+# `shop_suffix` is words that can be used for shop e.g. Shop, Shoppe, Boutique.
+# The suffix can be omitted when we have a known pluralised noun for the
+# synonym, so "Dave's Devices" is a possible name.
+# There are a few more major forms the names can take, some specific to certain
+# shop types, the main forms are:
+# "<keeper_name>'s <shop_prefix> <noun_synonym> <shop_suffix>"
+# This is notably used for Antique shops (of all types) where the prefix will
+# specifically be an Antique synonym (Second-hand, Recycled, Bargain, etc.)
+# but other shop types all have their own prefixes available, as well as
+# "general" prefixes that work for all shop types.
+# We have a final case where the keeper's name is *not* included (although one
+# is still generated, but will only be seen if Gozag welcomes you to the shop).
+# "<intro> <shop_prefix?> <noun_synonym> <shop_suffix>"
+# This can generate things like "Ye Olde Gadget Shoppe" that just don't work
+# with a person's name in the title.
+# We have plain/fancy variations of some things like prefixes and suffixes,
+# however these are not controlled by the entry point or shop value directly:
+# Instead the total length of shop name is limited in shopping.cc increasing
+# with general fancyness, meaning we are *likely* to generate more elaborate
+# names and words with fancier shops.
+###############################################################################
+%%%%
+# XX: Not much need to have it on its own unless we expand
+# this or use it in another context but it doesn't work on its own
+# Would be nice to have the reduced form "Simply Weapons (by Foo)"
+simply only
+
+[Simply|Only|Purely|Just]
+%%%%
+the best
+
+The [Best|Greatest|Most|Finest]
+%%%%
+###############################################################################
+# "Other intros" can function instead of a proper name, if we want things
+# like "Ye Olde Gadget Shoppe"
+###############################################################################
+other intro
+
+[The|THE][ Last| Only| Real| One True| One & Only|]
+
+[Ye|The] Old[e|est|]
+
+[|Yet ]Another
+
+@the best@
+
+@simply only@ @the best@
+%%%%
+###############################################################################
+# General vocabulary that can be used by a variety of shop types
+###############################################################################
+plain shop prefix
+
+Basic
+
+Boring
+
+Common
+
+Down To Earth
+
+Garden
+
+Homely
+
+Humdrum
+
+Ordinary
+
+Plain
+
+Simple
+
+Vanilla
+%%%%
+fancy shop prefix
+
+Artisan
+
+Assorted
+
+Boutique
+
+# Maybe just for armour store?
+Bouchy
+
+Craft
+
+Classy
+
+Fancy
+
+Firsthand
+
+High [Class|Grade|Spec|Life|Born|Flying]
+
+Original
+
+Makers'
+
+Miscellaneous
+%%%%
+any shop prefix
+
+@plain shop prefix@
+
+w:5
+@fancy shop prefix@
+%%%%
+antique prefix
+
+Antique
+
+Ancient
+
+Asterisked
+
+Bargain
+
+"Brand New"
+
+Classic[al|]
+
+Discount
+
+[|Double-]Blind
+
+Historical
+
+Knockoff
+
+Markdown
+
+Old[school|]
+
+Patina'd
+
+[Plu|Minu]ssed
+
+[Pre|Post|Suf]fixed
+
+Pre-[Owned|Loved|Used|Worn]
+
+Thrift[y|ed|]
+
+Timeless
+
+Trade[-only|]
+
+Tried & [True|Tested]
+
+[Value Added|Added Value]
+
+Vintage
+
+[Up|Re][furbished|conditioned|cycled|hashed]
+
+[Barely |Slightly |Once |][Damaged|Used|Worn]
+
+[Second|Third-|Fourth-|Fifth-|Sixth-|Seventh-|Eighth-|Ninth-|Tenth-]hand
+%%%%
+# These are useful for scroll/potion/gadget/book shops (that don't have
+# antique variants and are never really boring)
+magic noun
+
+Abracadabra
+
+Magic
+
+Mojo
+
+Sorcery
+
+Thaumat[urgy|ology]
+
+Tricks
+
+Zen
+%%%%
+magical adjective
+
+Active
+
+Arcane
+
+Buzzing
+
+Fizzing
+
+Humming
+
+Magic[al|]
+
+Mystic[al|]
+
+[Self|Auto]-[Working|Operating|Aware|Enabled]
+
+Sorcerous
+
+Spellbound
+
+# Thaumatology is also a word
+Thaum[aturgical|ic]
+
+Trick[y|sy]
+
+Witchy
+
+Wizardly
+%%%%
+good adjective
+
+Glorious
+
+Elaborate
+%%%%
+random adverb
+
+Elaborately
+
+Faintly
+
+Gloriously
+
+Over[t|]ly
+
+Really
+
+Slightly
+
+Very
+%%%%
+# Combat-related prefixes for either weapons or armour
+combat adjective
+
+Blood[y|stained|soaked]
+
+Combative
+
+[Crimson|Red]
+
+Sanguin[ary|eous|e]
+
+Incarnadine
+
+Military
+%%%%
+damage synonym
+
+[Damage|Harm|Hurt|Pain|Death]
+%%%%
+plain shop suffix
+
+Den
+
+Goods
+
+House
+
+Kiosk
+
+Market
+
+Mart
+
+Place
+
+Shop
+
+Shoppe
+
+Stall
+
+Store
+%%%%
+fancy shop suffix
+
+Basement
+
+Bazaar
+
+Boutique
+
+Emporium
+
+Gallery
+
+Museum
+
+Parlour
+
+Supermarket
+
+Warehouse
+
+[Inc|LTD|PLC]
+###############################################################################
+# Specific suffixes only really work as "Weapons Stall" etc 
+%%%%
+vague shop suffix
+
+w:50
+[&|'n'|and] [Things|Stuff|More|Bits|Such|So On]
+
+[&|and] [Other|Misc|Related|Similar|That Kind Of|That Sort Of] @no shop type suffix@
+
+Et [al|cetera]
+
+Etc[etera|]
+
+For [Sale|Hire|Rent]
+
+To [Buy|Hire|Purchase|Own]
+###############################################################################
+# These suffixes work when we omit the *noun*, or when the synonym is an
+# adjective as in the case of "General Shop"
+# XX: This makes sense for a really tiny number of cases and maybe should
+#     be General synonyms plural form? OR this like "adjective shop suffix"
+# So writing out some examples that DO work
+# Tinkerer's Stuff
+# Bloody Things
+# Magical Wares
+# Calligraphic Things
+# Exciting Things
+# Dangerous Things
+# Protective Stuff
+# (most of these can also have a regular shop suffix also added)
+%%%%
+# XX: More of "just general shop suffix"?
+no shop type suffix
+
+Stuff
+
+Things
+
+Wares
+
+Goods
+
+Home [Goods|Wares]
+%%%%
+shop suffix singular
+
+@plain shop suffix@
+
+w:3
+@fancy shop suffix@
+%%%%
+shop suffix plural
+
+@vague shop suffix@
+%%%%
+intro name
+
+@The_shopkeeper@'s
+
+w:1
+@other intro@
+###############################################################################
+# Now we have defined some general vocabulary, beyond this point we are piecing
+# terms together to make full shop names
+###############################################################################
+%%%%
+###############################################################################
+# Shop: General Store
+###############################################################################
+%%%%
+general noun
+
+Essential
+
+Knick-knack
+
+Thing
+
+Thingama[bob|jig|doo]
+
+W[ha|o]tsit
+%%%%
+general noun no plural
+
+Convenience
+
+Junk
+
+Garbage
+
+Home [Goods|Ware]
+
+Stuff
+
+Tat
+
+%%%%
+general noun singular
+
+w:100
+@general noun@
+
+w:50
+@general noun no plural@
+
+Doohickey
+%%%%
+general noun plural
+
+w:100
+@general noun@s
+
+w:50
+@general noun no plural@
+
+Bits
+
+Bits & [Bobs|Pieces]
+
+Doohickies
+
+Homewares
+
+Odds & Sods
+%%%%
+# XX: Still not happy about this: some of these *could* be used
+# standalone (Corner, One Stop) without even a noun, but we're not
+# using them yet. Maybe some nouns need to move here even,
+# and some of these move to nouns....?
+general shop suffix prefix
+
+Corner
+
+General
+
+One Stop
+
+Side Street
+
+Back Alley
+
+Local
+%%%%
+general shop suffix
+
+@plain shop suffix@
+
+@general shop suffix prefix@ @plain shop suffix@
+
+w:3
+@general shop suffix prefix@
+%%%%
+any general shop suffix
+
+@general shop suffix@
+
+w:3
+@shop suffix singular@
+%%%%
+general synonym standalone
+
+@general noun plural@
+
+@general noun plural@ @general shop suffix@
+%%%%
+general synonym suffixable
+
+@general noun plural@
+
+@general noun singular@
+
+@plain shop prefix@
+%%%%
+of connector
+
+O'
+
+Of
+
+For
+%%%%
+general store shop name
+
+@The_shopkeeper@'s @general synonym standalone@
+
+@The_shopkeeper@'s @plain shop prefix@ @general synonym standalone@
+
+@intro name@ @general synonym suffixable@ @any general shop suffix@
+
+@intro name@ @plain shop prefix@ @general synonym suffixable@ @any general shop suffix@
+
+@intro name@ @plain shop prefix@ @no shop type suffix@
+
+@intro name@ @general shop suffix@ @of connector@ @general noun plural@
+
+# Shelved for now
+# @general shop@ @shop suffix singular@ [by|with|o'|of] @The_shopkeeper@
+%%%%
+###############################################################################
+# Shop: Antique General Store (or General Antique Store?)
+###############################################################################
+antique noun
+
+Antique
+%%%%
+antique noun singular
+
+@antique noun@
+
+Antiquity
+
+Curiosity
+%%%%
+antique noun plural
+
+@antique noun@s
+
+Antiquities
+
+Curiosities
+%%%%
+antique shop prefix
+
+@antique prefix@
+
+@fancy shop prefix@
+
+w:2
+@plain shop prefix@ @antique prefix@
+
+w:2
+@fancy shop prefix@ @antique prefix@
+
+w:2
+@antique prefix@ @plain shop prefix@
+
+w:2
+@antique prefix@ @fancy shop prefix@
+%%%%
+###############################################################################
+# Entrypoint: Antique General Store
+###############################################################################
+assorted antiques shop name
+
+@The_shopkeeper@'s @antique shop prefix@ @general synonym standalone@
+
+@intro name@ @general synonym suffixable@ @fancy shop suffix@
+
+@intro name@ @antique prefix@ @general synonym suffixable@ @fancy shop suffix@
+
+@intro name@ @antique prefix@ @shop suffix singular@
+%%%%
+###############################################################################
+# Shop: Weapon Shop
+###############################################################################
+# XX: Maybe could get a list from randname here? (and for armour)
+weapon adjective
+
+Absolute
+
+Cool
+
+Damaging
+
+Dangerous
+
+Dull
+
+Evil
+
+Harmful
+
+Hurtful
+
+Murderous
+
+Killer
+
+Piercing
+
+Sharp
+
+Sharpened
+
+Weighty
+%%%%
+weapon subtype
+
+Axe
+
+Blade
+
+Bow
+
+Club
+
+Cudgel
+
+Dagger
+
+Hammer
+
+Mace
+
+Mallet
+
+Sword
+
+Tong[|ue]
+%%%%
+weapon subtype singular
+
+w:100
+@weapon subtype@
+
+Knife
+
+Staff
+%%%%
+weapon subtype plural
+
+w:100
+@weapon subtype@s
+
+Knives
+
+Staves
+%%%%
+weapon noun
+
+Weapon
+
+Arm[|ament]
+
+Accoutrement
+
+Munition
+
+@damage synonym@ [Dealer|Causer|Inflicter]
+%%%%
+weapon noun singular
+
+w:50
+@weapon noun@
+
+w:50
+@weapon noun@s
+
+Aegis
+
+Ordnance
+
+[Organ|Tool|Trapping|Trapment] Of [War|Battle|The Trade]
+
+# Original list:
+# [Knife|Sword|Mace|Hammer|Mallet|Bow] & [Dagger|Blade|Club|Cudgel]
+@weapon subtype singular@ & @weapon subtype singular@
+
+# Might move to synonym where we can optionally prefix each element?
+w:2
+@weapon subtype singular@, @weapon subtype singular@ And @weapon subtype singular@
+
+@damage synonym@ [Causer|Dealer|Inflicter]
+%%%%
+weapon noun plural
+
+w:100
+@weapon noun@s
+
+Ordnance
+
+[Organ|Tool|Trapping|Trapment]s Of [War|Battle|The Trade]
+
+Weaponry
+
+@weapon subtype plural@ & @weapon subtype plural@
+
+# Might move to synonym where we can optionally prefix each element?
+w:2
+@weapon subtype plural@, @weapon subtype plural@ And[ More|] @weapon subtype plural@
+
+@damage synonym@ [Causation|Dealing|Infliction]
+%%%%
+weapon shop suffix
+
+Armoury
+
+Cabinet
+
+Castle
+
+Club
+
+Display
+
+Dungeon
+
+Fort[|ress]
+
+Pit
+
+Rack
+
+Range
+%%%%
+any weapon prefix
+
+@weapon adjective@
+
+@combat adjective@
+
+w:5
+@any shop prefix@
+%%%%
+qualified weapon prefix
+
+@any weapon prefix@
+
+w:5
+@random adverb@ @any weapon prefix@
+%%%%
+weapon synonym singular
+
+@weapon noun singular@
+
+@qualified weapon prefix@ @weapon noun singular@
+%%%%
+weapon synonym plural
+
+@weapon noun plural@
+
+@qualified weapon prefix@ @weapon noun plural@
+%%%%
+weapon or shop suffix
+
+w:5
+@weapon shop suffix@
+
+@shop suffix singular@
+%%%%
+weapon shop name
+
+@intro name@ @weapon shop suffix@
+
+@intro name@ @weapon synonym singular@ @weapon or shop suffix@
+
+@The_shopkeeper@'s @weapon synonym plural@
+
+@The_shopkeeper@'s @weapon synonym plural@ @shop suffix plural@
+
+@intro name@ @weapon or shop suffix@ @of connector@ @weapon synonym plural@
+%%%%
+any antique weapon prefix
+
+@antique shop prefix@ @weapon adjective@
+
+@antique shop prefix@ @combat adjective@
+
+@antique shop prefix@
+%%%%
+antique weapon synonym singular
+
+@any antique weapon prefix@ @weapon noun singular@
+%%%%
+antique weapon synonym plural
+
+@any antique weapon prefix@ @weapon noun plural@
+%%%%
+antique weapon shop name
+
+@intro name@ @antique prefix@ @weapon shop suffix@
+
+@intro name@ @antique weapon synonym singular@ @weapon or shop suffix@
+
+@The_shopkeeper@'s @antique weapon synonym plural@
+
+@The_shopkeeper@'s @antique weapon synonym plural@ @shop suffix plural@
+
+@intro name@ @weapon or shop suffix@ @of connector@ @antique weapon synonym plural@
+%%%%
+###############################################################################
+# Shop: Armour Shop
+###############################################################################
+armour subtype
+
+Boot
+
+Chain
+
+Gauntlet
+
+Glove
+
+Hat
+
+Helm[et|]
+
+Hide
+
+Leather
+
+Mail
+
+Plate
+
+Robe
+
+Scale
+
+[Skin|Skein]
+%%%%
+armour noun
+
+w:50
+@armour subtype@
+
+Armour
+
+[Casual|Night] [G|W]ear
+
+Costume
+
+Suit
+
+Thread
+
+Wearable
+%%%%
+armour noun singular
+
+w:100
+@armour noun@
+
+Cloth
+
+Dress 
+
+Finery
+
+@damage synonym@ [Reducer|Avoider|Preventer]
+%%%%
+armour noun plural
+
+w:100
+@armour noun@s
+
+Clothes
+
+Clothing
+
+Dresses
+
+Fineries
+
+@damage synonym@ [Reduction|Avoidance|Prevention]
+%%%%
+armour adjective
+
+Comfortable
+
+[Good|Great|Fantastic] Looking
+
+Eyecatching
+
+Fashionable
+
+On Trend
+
+Streetwise
+
+Trendy
+%%%%
+armour shop suffix
+
+Catwalk
+
+Gear
+
+Rack
+
+Show
+
+Stand
+
+Tannery
+
+Tailor[s|]
+
+Wear
+
+Workshop
+%%%%
+any plain armour prefix
+
+@armour adjective@
+
+@combat adjective@
+
+@plain shop prefix@
+%%%%
+armour synonym singular
+
+@armour noun singular@
+
+w:5
+@any plain armour prefix@ @armour noun singular@
+%%%%
+armour synonym plural
+
+@armour noun plural@
+
+w:5
+@any plain armour prefix@ @armour noun plural@
+%%%%
+armour or shop suffix
+
+w:5
+@armour shop suffix@
+
+@shop suffix singular@
+%%%%
+armour shop name
+
+@intro name@ @armour shop suffix@
+
+@intro name@ @armour synonym singular@ @armour or shop suffix@
+
+@The_shopkeeper@'s @armour synonym plural@
+
+@The_shopkeeper@'s @armour synonym plural@ @shop suffix plural@
+
+@intro name@ @armour or shop suffix@ @of connector@ @armour synonym plural@
+%%%%
+any antique armour prefix
+
+@antique shop prefix@ @armour adjective@
+
+@antique shop prefix@ @combat adjective@
+
+@antique shop prefix@
+%%%%
+antique armour synonym singular
+
+@any antique armour prefix@ @armour noun singular@
+%%%%
+antique armour synonym plural
+
+@any antique armour prefix@ @armour noun plural@
+%%%%
+antique armour shop name
+
+@intro name@ @antique prefix@ @armour shop suffix@
+
+@intro name@ @antique armour synonym singular@ @armour or shop suffix@
+
+@The_shopkeeper@'s @antique armour synonym plural@
+
+@The_shopkeeper@'s @antique armour synonym plural@ @shop suffix plural@
+
+@intro name@ @armour or shop suffix@ @of connector@ @antique armour synonym plural@
+%%%%
+###############################################################################
+# Shop: Jewellery Shop
+###############################################################################
+jewellery prefix
+
+[Star|Jewel|Gem]-[Spangled|Covered|Crusted|Crossed]
+
+Spangl[ed|y]
+%%%%
+jewellery noun
+
+[B|Sp]angle
+
+Bauble
+
+Bracelet
+
+Jewel
+
+Locket
+
+Necklace
+
+[Ruby |Engagement |Diamond ][Ring|Band|Circlet]
+
+Trinket
+
+Wedding [Gift|Present]
+%%%%
+jewellery noun singular
+
+w:50
+@jewellery noun@
+
+Accessory
+
+Bling
+
+Jewellery
+%%%%
+jewellery noun plural
+
+w:50
+@jewellery noun@s
+
+Accessories
+
+Bling
+
+Jeweller[s|ies]
+%%%%
+jewellery shop suffix
+
+Box
+%%%%
+jewellery synonym singular
+
+w:3
+@magical adjective@ @jewellery noun singular@
+
+@jewellery noun singular@
+%%%%
+jewellery synonym plural
+
+w:3
+@magical adjective@ @jewellery noun plural@
+
+@jewellery noun plural@
+%%%%
+jewellery or shop suffix
+
+w:5
+@jewellery shop suffix@
+
+@shop suffix singular@
+%%%%
+jewellery shop name
+
+@intro name@ @jewellery shop suffix@
+
+@intro name@ @jewellery synonym singular@ @jewellery or shop suffix@
+
+@The_shopkeeper@'s @jewellery synonym plural@
+
+@The_shopkeeper@'s @jewellery synonym plural@ @shop suffix plural@
+
+@intro name@ @jewellery or shop suffix@ @of connector@ @jewellery synonym plural@
+%%%%
+###############################################################################
+# Shop: Potion Shop
+###############################################################################
+potion noun
+
+Beverage
+
+Brew
+
+Bottle
+
+Cure
+
+Drink
+
+Flask
+
+Healer
+
+Juice
+
+Liquid
+
+Medicine
+
+Milk
+
+[Pick|Wake|Get|Lift]-[Me|You]-Up
+
+Potion
+
+Quaff[|able]
+
+Tea
+
+Uplifter
+
+Water
+%%%%
+potion noun singular
+
+w:100
+@potion noun@
+
+Remedy
+
+Liquid [Bliss|Comfort|Enlightenment|Gold|Silver]
+
+# Bad pun alert
+Quaffy
+%%%%
+potion noun plural
+
+w:100
+@potion noun@s
+
+Curers
+
+Remedies
+
+Quaffies
+%%%%
+potion shop suffix
+
+Bar
+
+Box
+
+Brewery
+
+Crate
+
+Dispensary
+
+Distillery
+
+Inn
+
+Lab[oratory|]
+
+Lounge
+
+Pub[lic House|]
+
+Refine[ment|ry]
+
+[Watering|Healing] [Hole|Station]
+%%%%
+potion synonym singular
+
+w:3
+@magical adjective@ @potion noun singular@
+
+@potion noun singular@
+%%%%
+potion synonym plural
+
+w:3
+@magical adjective@ @potion noun plural@
+
+@potion noun plural@
+%%%%
+potion or shop suffix
+
+w:5
+@potion shop suffix@
+
+@shop suffix singular@
+%%%%
+# XX: We didn't even add basic/fancy prefixes
+distillery shop name
+
+@intro name@ @potion shop suffix@
+
+@intro name@ @potion synonym singular@ @potion or shop suffix@
+
+@The_shopkeeper@'s @potion synonym plural@
+
+@The_shopkeeper@'s @potion synonym plural@ @shop suffix plural@
+
+@intro name@ @potion or shop suffix@ @of connector@ @potion synonym plural@
+%%%%
+###############################################################################
+# Shop: Scroll Shop
+###############################################################################
+scroll noun
+
+Bill
+
+Bulletin
+
+Scroll
+
+Note
+
+Notice
+
+Pamphlet
+
+Paper
+
+Parchment
+
+Paper Consumable
+
+Roll
+
+Ticket
+%%%%
+scroll noun singular
+
+w:100
+@scroll noun@
+
+Papyrus
+
+Station[a|e]ery
+%%%%
+scroll noun plural
+
+w:100
+@scroll noun@s
+
+Papyrusses
+
+Station[a|e]ries
+%%%%
+scroll shop suffix
+
+Board
+
+Calligraphists
+
+Writers
+
+[Printing |Inking |]Press
+
+News[|agent|tand]
+%%%%
+scroll synonym singular
+
+@scroll noun singular@
+
+w:5
+@magical adjective@ @scroll noun singular@
+
+w:3
+@any shop prefix@ @scroll noun singular@
+
+w:1
+@antique prefix@ @scroll noun singular@
+%%%%
+scroll synonym plural
+
+@scroll noun plural@
+
+w:5
+@magical adjective@ @scroll noun plural@
+
+w:3
+@any shop prefix@ @scroll noun plural@
+
+w:1
+@antique prefix@ @scroll noun plural@
+%%%%
+scroll or shop suffix
+
+w:5
+@scroll shop suffix@
+
+@shop suffix singular@
+%%%%
+magic scroll shop name
+
+@intro name@ @scroll shop suffix@
+
+@intro name@ @scroll synonym singular@ @scroll or shop suffix@
+
+@The_shopkeeper@'s @scroll synonym plural@
+
+@The_shopkeeper@'s @scroll synonym plural@ @shop suffix plural@
+
+@intro name@ @scroll or shop suffix@ @of connector@ @scroll synonym plural@
+%%%%
+###############################################################################
+# Shop: Book Shop
+###############################################################################
+# TODO: Borrow loads more from randbook.txt
+book noun
+
+Bible
+
+Book
+
+Catalogue
+
+Classic
+
+Digest
+
+Learning
+
+Print
+
+Read
+
+Reference
+
+Tome
+
+Volume
+
+Writings
+
+Yarn
+%%%%
+book noun singular
+
+w:100
+@book noun@
+%%%%
+book noun plural
+
+w:100
+@book noun@s
+%%%%
+good book adjective
+
+Excellent
+
+Exemplary
+
+Fantastic
+
+Good
+
+Interesting
+
+Long
+
+Ripping
+
+Satisying
+
+Studious
+
+Thoughtful
+%%%%
+book shop suffix
+
+Library
+
+# Maybe potions
+Lounge
+
+Bibliotheque
+
+Bookshelf
+
+Shelf
+
+Encyclopedia
+
+[De|Re]pository
+
+Index
+%%%%
+book synonym singular
+
+@book noun singular@
+
+w:5
+@magical adjective@ @book noun singular@
+
+w:5
+@good book adjective@ @book noun singular@
+
+w:2
+@any shop prefix@ @book noun singular@
+
+w:1
+@antique prefix@ @book noun singular@
+%%%%
+book synonym plural
+
+@book noun plural@
+
+w:5
+@magical adjective@ @book noun plural@
+
+w:5
+@good book adjective@ @book noun plural@
+
+w:2
+@any shop prefix@ @book noun plural@
+
+w:1
+@antique prefix@ @book noun plural@
+%%%%
+book or shop suffix
+
+w:5
+@book shop suffix@
+
+@shop suffix singular@
+%%%%
+book shop name
+
+@intro name@ @book shop suffix@
+
+@intro name@ @book synonym singular@ @book or shop suffix@
+
+@The_shopkeeper@'s @book synonym plural@
+
+@The_shopkeeper@'s @book synonym plural@ @shop suffix plural@
+
+@intro name@ @book or shop suffix@ @of connector@ @book synonym plural@
+%%%%
+###############################################################################
+# Shop: Gadget Shop
+###############################################################################
+gadget noun
+
+Automation
+
+Contraption
+
+Gadget
+
+Device
+
+Doodad
+
+Evokable
+
+Toy
+
+Machine
+
+Wand
+
+Whizzbang
+%%%%
+gadget noun singular
+
+@gadget noun@
+
+Automaton
+
+Curio[|sity]
+%%%%
+gadget noun plural
+
+@gadget noun@s
+
+Artifice[ry|]
+
+Automata
+
+Curios[|ities]
+
+Machinery
+%%%%
+gadget shop suffix
+
+Cave
+
+Factory
+
+Garage
+
+Grotto
+
+Nest
+
+Lab[oratory]
+
+Workshop
+%%%%
+gadget synonym singular
+
+@gadget noun singular@
+
+w:5
+@magical adjective@ @gadget noun singular@
+
+w:3
+@any shop prefix@ @gadget noun singular@
+
+w:1
+@antique prefix@ @gadget noun singular@
+%%%%
+gadget synonym plural
+
+@gadget noun plural@
+
+w:5
+@magical adjective@ @gadget noun plural@
+
+w:3
+@any shop prefix@ @gadget noun plural@
+
+w:1
+@antique prefix@ @gadget noun plural@
+%%%%
+gadget or shop suffix
+
+@gadget shop suffix@
+
+@shop suffix singular@
+%%%%
+gadget shop name
+
+@intro name@ @gadget shop suffix@
+
+@intro name@ @gadget synonym singular@ @gadget or shop suffix@
+
+@The_shopkeeper@'s @gadget synonym plural@
+
+@The_shopkeeper@'s @gadget synonym plural@ @shop suffix plural@
+
+@intro name@ @gadget or shop suffix@ @of connector@ @gadget synonym plural@
