@@ -2277,6 +2277,13 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    {  MST_RINGMASTER,
+      {
+        // XXX: Balloon animals should be possible silenced, not bears...
+       { SPELL_SUMMON_CIRCUS_ANIMALS, 20, MON_SPELL_MAGICAL },
+      }
+    },
+
     {  MST_ASMODEUS,
       {
        { SPELL_BOLT_OF_FIRE, 22, MON_SPELL_MAGICAL },

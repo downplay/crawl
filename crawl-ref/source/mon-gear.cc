@@ -611,6 +611,11 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
                 { WPN_DEMON_TRIDENT,    1 },
                 { WPN_GLAIVE,           1 },
         }, {}, {}, 1 } },
+        { MONS_RINGMASTER,
+            { { { WPN_BARDICHE,         1 },
+                { WPN_DEMON_TRIDENT,    1 },
+                { WPN_GLAIVE,           1 },
+        }, {}, {}, 1 } },
         { MONS_RUPERT,
             // Rupert favours big two-handers with visceral up-close
             // effects, i.e. no polearms.

@@ -3874,6 +3874,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_SUMMON_CIRCUS_ANIMALS, "Summon Circus Animals",
+    spschool::summoning,
+    spflag::mons_abjure | spflag::monster | spflag::chaotic,
+    7,
+    200,
+    -1, -1,
+    0,
+    TILEG_SUMMON_SCORPIONS, // XXX: Placeholder tile
+},
+
+{
     SPELL_NO_SPELL, "nonexistent spell",
     spschool::none,
     spflag::testing,

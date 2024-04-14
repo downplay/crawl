@@ -1943,6 +1943,7 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_FUNERAL_DIRGE:
     case SPELL_MANIFOLD_ASSAULT:
     case SPELL_REGENERATE_OTHER:
+    case SPELL_SUMMON_CIRCUS_ANIMALS:
         pbolt.range = 0;
         pbolt.glyph = 0;
         return true;
@@ -6946,7 +6947,29 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         _cast_regenerate_other(mons);
         return;
 
+    case SPELL_SUMMON_CIRCUS_ANIMALS:
+    {
+        const int num_animals = 1 + random2(mons->spell_hd(spell_cast) / 5 + 1);
+        // XXX: Will become MONS_BALLOON_YAK, MONS_DANCING_BEAR
+        const monster_type animal_type = coinflip() ? MONS_YAK : MONS_BLACK_BEAR;
+        switch (animal_type)
+        {
+        case MONS_YAK: // XXX:
+            simple_monster_message(*mons, " deftly ties knots in balloons!");
+            break;
+        case MONS_BLACK_BEAR: // XXX:
+            simple_monster_message(*mons, " blows a whistle and hatches open in the ceiling!");
+            // XXX: Need to blink close or will it handle automatically?
+            break;
+        }
+        for (int i = 0; i < num_animals; ++i)
+            _summon(*mons, animal_type, 8, slot);
+        return;
     }
+
+    }
+
+
 
     if (spell_is_direct_explosion(spell_cast))
         _fire_direct_explosion(*mons, slot, pbolt);

@@ -16,6 +16,7 @@ lom_lobon MONS_LOM_LOBON
 mlioglotl MONS_MLIOGLOTL
 mnoleg MONS_MNOLEG
 antaeus MONS_ANTAEUS
+ringmaster MONS_RINGMASTER
 lernaean_hydra01 MONS_LERNAEAN_HYDRA
 lernaean_hydra02
 lernaean_hydra03

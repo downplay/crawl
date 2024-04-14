@@ -435,6 +435,10 @@ NAME:   uniq_tiamat
 DEPTH:  Zot
 : place_unique(_G, "Tiamat band")
 
+NAME:   uniq_ringmaster
+DEPTH:  Zot:1-4
+: place_unique(_G, "Ringmaster band")
+
 NAME:   uniq_zenata
 DEPTH:  Vaults:1-4, Elf, Crypt
 : place_unique(_G, "Zenata")

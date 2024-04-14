@@ -1904,6 +1904,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_DRACONIAN_SHIFTER, classy_drac_set },
     // yup, scary
     { MONS_TIAMAT,          { {}, {{ BAND_DRACONIAN, {8, 15}, true }}}},
+    { MONS_RINGMASTER,      { {}, {{ BAND_RINGMASTER, {5, 10}, true }}}},
     { MONS_ILSUIW,          { {}, {{ BAND_ILSUIW, {3, 6}, true }}}},
     { MONS_AZRAEL,          { {}, {{ BAND_AZRAEL, {4, 9}, true }}}},
     { MONS_DUVESSA,         { {}, {{ BAND_DUVESSA, {1, 2} }}}},
@@ -2529,6 +2530,11 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
     { BAND_DOOM_HOUNDS,         {{{MONS_DOOM_HOUND, 1}}}},
     // for Norris
     { BAND_SKYSHARKS,           {{{MONS_SKYSHARK, 1}}}},
+    // for Ringmaster
+    { BAND_RINGMASTER,          {{{MONS_KILLER_KLOWN, 1},
+                                  {MONS_ORB_OF_FIRE, 1}, // XXX: Theme somehow as circus ring of fire
+                                  // XXX: change to MONS_ANACHROBAT
+                                  {MONS_ELECTRIC_GOLEM, 1}}}},
 };
 
 /**
