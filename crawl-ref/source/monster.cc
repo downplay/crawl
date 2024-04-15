@@ -3555,7 +3555,7 @@ int monster::known_chaos(bool check_spells_god) const
         chaotic++;
     }
 
-    if (has_attack_flavour(AF_CHAOTIC))
+    if (has_attack_flavour(AF_CHAOS))
         chaotic++;
 
     if (is_chaotic_god(god))
@@ -6394,6 +6394,7 @@ bool monster::is_jumpy() const
 {
     return type == MONS_JUMPING_SPIDER
         || type == MONS_BOULDER_BEETLE
+        || type == MONS_ANACHROBAT
         || mons_species() == MONS_BARACHI;
 }
 

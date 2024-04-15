@@ -560,6 +560,9 @@ enum monster_type                      // env.mons[].type
     MONS_METEORAN,
 #endif
     MONS_KILLER_KLOWN,
+#if TAG_MAJOR_VERSION > 34
+    MONS_ANACHROBAT,
+#endif
     MONS_SHAPESHIFTER,
     MONS_GLOWING_SHAPESHIFTER,
 
@@ -1249,6 +1252,7 @@ enum monster_type                      // env.mons[].type
     MONS_PILLAR_OF_RIME,
     MONS_SEISMIC_CANNON,
     MONS_ELECTROFERRIC_VORTEX,
+    MONS_ANACHROBAT,
 #endif
 
     NUM_MONSTERS,               // used for polymorph
