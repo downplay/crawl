@@ -44,7 +44,7 @@ KFEAT:  ^ = pressure plate trap
  local trigger_data
  if you.in_branch("Zot") then
    trigger_data={triggered=false,
-                 mons="generate_awake killer klown",
+                 mons="generate_awake killer klown / generate_awake anachrobat w:5",
                  msg="With a honk a tiny klown kar falls from above, and Killer Klowns tumble out!",
                  max=crawl.random_range(3, 8)}
  elseif you.in_branch("Snake") then
