@@ -104,7 +104,9 @@ static bool _feat_compatible(dungeon_feature_type wanted_feat,
 {
     return wanted_feat == actual_feat
            || wanted_feat == DNGN_DEEP_WATER && feat_is_water(actual_feat)
-           || wanted_feat == DNGN_FLOOR && feat_has_solid_floor(actual_feat);
+           || wanted_feat == DNGN_FLOOR && feat_has_solid_floor(actual_feat)
+           || wanted_feat == DNGN_ROCK_WALL && feat_is_solid(actual_feat)
+                          && !get_feature_def(actual_feat).is_notable();
 }
 
 static bool _hab_requires_mon_flight(dungeon_feature_type g)
@@ -149,7 +151,7 @@ bool monster_habitable_grid(monster_type mt,
                             dungeon_feature_type actual_grid,
                             dungeon_feature_type wanted_grid)
 {
-    // No monster may be placed in walls etc.
+    // Normal monsters can't traverse solid features
     if (!mons_class_can_pass(mt, actual_grid))
         return false;
 
@@ -167,11 +169,6 @@ bool monster_habitable_grid(monster_type mt,
         return false;
     }
 
-    const dungeon_feature_type feat_preferred =
-        habitat2grid(mons_class_primary_habitat(mt));
-    const dungeon_feature_type feat_nonpreferred =
-        habitat2grid(mons_class_secondary_habitat(mt));
-
     // If the caller insists on a specific feature type, try to honour
     // the request. This allows the builder to place amphibious
     // creatures only on land, or flying creatures only on lava, etc.
@@ -180,6 +177,11 @@ bool monster_habitable_grid(monster_type mt,
     {
         return _feat_compatible(wanted_grid, actual_grid);
     }
+
+    const dungeon_feature_type feat_preferred =
+        habitat2grid(mons_class_primary_habitat(mt));
+    const dungeon_feature_type feat_nonpreferred =
+        habitat2grid(mons_class_secondary_habitat(mt));
 
     if (actual_grid == DNGN_MALIGN_GATEWAY)
     {
@@ -2010,6 +2012,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_WEEPING_SKULL, { {}, {{ BAND_WEEPING_SKULLS, {0, 1} }}}},
     { MONS_PROTEAN_PROGENITOR, { {}, {{ BAND_PROTEAN_PROGENITORS, {0, 1} }}}},
     { MONS_THERMIC_DYNAMO, { {}, {{ BAND_THERMIC_DYNAMOS, {0, 1} }}}},
+    { MONS_SENTIENT_LICHEN, { {}, {{ BAND_SENTIENT_LICHENS, {0, 1} }}}},
 };
 
 static band_type _choose_band(monster_type mon_type, int *band_size_p,
@@ -2150,12 +2153,19 @@ static band_type _choose_band(monster_type mon_type, int *band_size_p,
             band_size = 1;
         break;
 
+    case MONS_SENTIENT_LICHEN:
+        band_size = random_range(2 + you.depth / 5, 5 + you.depth);
+        break;
+
     default: ;
     }
 
     if (band != BAND_NO_BAND && band_size == 0)
         band = BAND_NO_BAND;
 
+    // TODO: Allow bigger lichen bands? But it would fail right now because they get
+    // put in an array that is only BIG_BAND size
+    //  && mon_type != MONS_SENTIENT_LICHEN)
     if (band_size >= BIG_BAND)
         band_size = BIG_BAND - 1;
 
@@ -2251,6 +2261,7 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
     { BAND_BLASTMINER,          {{{MONS_KOBOLD_BLASTMINER, 1}}}},
     { BAND_THERMIC_DYNAMOS,     {{{MONS_THERMIC_DYNAMO, 1}}}},
     { BAND_PROTEAN_PROGENITORS, {{{MONS_PROTEAN_PROGENITOR, 1}}}},
+    { BAND_SENTIENT_LICHENS,    {{{MONS_SENTIENT_LICHEN, 1}}}},
     { BAND_DEEP_ELF_KNIGHT,     {{{MONS_DEEP_ELF_AIR_MAGE, 46},
                                   {MONS_DEEP_ELF_FIRE_MAGE, 46},
                                   {MONS_DEEP_ELF_KNIGHT, 24},

@@ -378,7 +378,7 @@ void debug_mons_scan()
             }
         } // if (env.mgrid(m->pos()) != i)
 
-        if (feat_is_wall(env.grid(pos)))
+        if (feat_is_wall(env.grid(pos)) && m->type != MONS_SENTIENT_LICHEN)
         {
 #if defined(DEBUG_FATAL)
             // if we're going to dump, point out the culprit

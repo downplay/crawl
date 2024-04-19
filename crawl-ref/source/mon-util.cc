@@ -148,6 +148,8 @@ dungeon_feature_type habitat2grid(habitat_type ht)
         return DNGN_DEEP_WATER;
     case HT_LAVA:
         return DNGN_LAVA;
+    case HT_SWARM:
+        return DNGN_ROCK_WALL;
     case HT_LAND:
     case HT_AMPHIBIOUS:
     case HT_AMPHIBIOUS_LAVA:
@@ -3388,7 +3390,7 @@ habitat_type mons_habitat(const monster& mon, bool real_amphibious)
 habitat_type mons_class_primary_habitat(monster_type mc)
 {
     habitat_type ht = _mons_class_habitat(mc);
-    if (ht == HT_AMPHIBIOUS || ht == HT_AMPHIBIOUS_LAVA)
+    if (ht == HT_AMPHIBIOUS || ht == HT_AMPHIBIOUS_LAVA || ht == HT_SWARM)
         ht = HT_LAND;
     return ht;
 }
@@ -4056,10 +4058,22 @@ bool monster_senior(const monster& m1, const monster& m2, bool fleeing)
 
 bool mons_class_can_pass(monster_type mc, const dungeon_feature_type grid)
 {
+    // Malign portal *only* passable by eldritch horrors
     if (grid == DNGN_MALIGN_GATEWAY)
     {
         return mc == MONS_ELDRITCH_TENTACLE
                || mc == MONS_ELDRITCH_TENTACLE_SEGMENT;
+    }
+
+    if (mc == MONS_SENTIENT_LICHEN && feat_is_solid(grid))
+    {
+        // Lichen can move on most solid features, although only one tile deep
+        // (which must be checked elsewhere, but they *can* pass the terrain
+        // nevertheless)
+        // The only thing we really need to prevent is escape from ghost vaults
+        // (TODO: maybe permarock should block to prevent portal vault escape?)
+        auto def = get_feature_def(grid);
+        return !def.is_notable();
     }
 
     return !feat_is_solid(grid);

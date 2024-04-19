@@ -2734,6 +2734,10 @@ bool bolt::can_affect_wall(const coord_def& p, bool map_knowledge) const
         return true;
     }
 
+    const monster *mon = monster_at(p);
+    if (feat_is_solid(wall) && mon)
+        return true;
+
     // Temporary trees and slime walls can't be burned/dug.
     if ((feat_is_tree(wall) || wall == DNGN_SLIMY_WALL) && is_temp_terrain(p))
         return false;

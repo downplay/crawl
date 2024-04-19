@@ -48,6 +48,13 @@ enum dungeon_feature_type
 
     DNGN_GRATE,
 
+#if TAG_MAJOR_VERSION > 34
+    // Temporary fake walls while a swarm is on top - they lose the SOLID flag
+    // but still affect LOS the same as the original
+    DNGN_FAKE_OPAQUE_WALL,
+    DNGN_FAKE_CLEAR_WALL,
+#endif
+
     // Misc solid features
     DNGN_OPEN_SEA,                     // Shoals equivalent for permarock
     DNGN_LAVA_SEA,                     // Gehenna equivalent for permarock
@@ -361,6 +368,8 @@ enum dungeon_feature_type
     DNGN_METAL_STATUE,
     DNGN_CACHE_OF_FRUIT,
     DNGN_CACHE_OF_MEAT,
+    DNGN_FAKE_OPAQUE_WALL,
+    DNGN_FAKE_CLEAR_WALL,
 #endif
 
     NUM_FEATURES

@@ -1301,8 +1301,8 @@ static void _shunt_monsters_out_of_walls()
                 if (!actor_at(*di) && !cell_is_solid(*di))
                 {
 #if TAG_MAJOR_VERSION == 34
-                    // Could have been a rock worm or a dryad.
-                    if (m.type != MONS_GHOST)
+                    // Could have been a rock worm or a dryad; swarms allowed
+                    if (m.type != MONS_GHOST && m.type != MONS_SENTIENT_LICHEN)
 #endif
                     mprf(MSGCH_ERROR, "Error: monster %s in %s at (%d,%d)",
                          m.name(DESC_PLAIN, true).c_str(),

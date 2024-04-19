@@ -86,10 +86,12 @@ struct cellray;
 static FixedArray<vector<cellray>, LOS_MAX_RANGE+1, LOS_MAX_RANGE+1> min_cellrays;
 
 // Temporary arrays used in losight() to track which rays
-// are blocked or have seen a smoke cloud.
+// are blocked or have seen a smoke cloud, or a wall swarm (since wall
+// swarms mess with LOS to allow being targetted).
 // Allocated when doing the precomputations.
 static bit_vector *dead_rays     = nullptr;
 static bit_vector *smoke_rays    = nullptr;
+static bit_vector *swarm_rays    = nullptr;
 
 class quadrant_iterator : public rectangle_iterator
 {
@@ -105,6 +107,7 @@ void clear_rays_on_exit()
 {
     delete dead_rays;
     delete smoke_rays;
+    delete swarm_rays;
     for (quadrant_iterator qi; qi; ++qi)
         delete blockrays(*qi);
 }
@@ -431,6 +434,7 @@ static void _create_blockrays()
 
     dead_rays  = new bit_vector(n_min_rays);
     smoke_rays = new bit_vector(n_min_rays);
+    swarm_rays = new bit_vector(n_min_rays);
 
     dprf("Cellrays: %d Fullrays: %u Minimal cellrays: %u",
           n_cellrays, (unsigned int)fullrays.size(), n_min_rays);
@@ -739,6 +743,7 @@ static void _losight_quadrant(los_grid& sh, const los_param& dat, int sx, int sy
 
     dead_rays->reset();
     smoke_rays->reset();
+    swarm_rays->reset();
 
     for (quadrant_iterator qi; qi; ++qi)
     {
@@ -748,14 +753,23 @@ static void _losight_quadrant(los_grid& sh, const los_param& dat, int sx, int sy
 
         switch (dat.opacity(p))
         {
+        case OPC_CLEAR:
+            // Block rays which have seen a swarm
+            *dead_rays |= (*swarm_rays & *blockrays(*qi));
+            break;
         case OPC_OPAQUE:
             // Block the appropriate rays.
             *dead_rays |= *blockrays(*qi);
             break;
         case OPC_HALF:
-            // Block rays which have already seen a cloud.
+            // Block rays which have already seen a cloud
+            // (or swarm, in case a bush is behind a swarm)
             *dead_rays  |= (*smoke_rays & *blockrays(*qi));
+            *dead_rays  |= (*swarm_rays & *blockrays(*qi));
             *smoke_rays |= *blockrays(*qi);
+            break;
+        case OPC_SWARM:
+            *swarm_rays |= *blockrays(*qi);
             break;
         default:
             break;

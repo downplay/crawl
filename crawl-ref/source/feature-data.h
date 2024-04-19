@@ -175,6 +175,20 @@ static feature_def feat_defs[] =
 },
 
 {
+    DNGN_FAKE_OPAQUE_WALL, "fake opaque wall", "fake_opaque_wall",
+    DCHAR_WALL, DCHAR_WALL_MAGIC,
+    COLOUR_IS(ETC_ROCK),
+    FFT_OPAQUE | FFT_WALL, MF_WALL,
+},
+
+{
+    DNGN_FAKE_CLEAR_WALL, "fake clear wall", "fake_clear_wall",
+    DCHAR_WALL, DCHAR_WALL_MAGIC,
+    COLOUR_IS(LIGHTCYAN),
+    FFT_WALL, MF_WALL,
+},
+
+{
     DNGN_GRATE, "iron grate", "iron_grate",
     DCHAR_GRATE, DCHAR_WALL_MAGIC,
     COLOUR_IS(LIGHTBLUE),

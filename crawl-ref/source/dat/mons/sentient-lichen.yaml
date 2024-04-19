@@ -1,0 +1,21 @@
+name: "sentient lichen"
+glyph: {char: "f", colour: lightgreen}
+flags: [unblindable, web_immune, no_skeleton, herd]
+resists: {poison: 1}
+species: wandering_mushroom
+genus: fungus
+holiness: [plant]
+will: invuln
+attacks:
+ - {type: spore, damage: 10}
+ - {type: spore, damage: 10}
+hd: 10
+hp_10x: 200
+ac: 0
+ev: 6
+intelligence: brainless
+habitat: swarm
+speed: 10
+size: tiny
+shape: fungus
+tile_variance: random

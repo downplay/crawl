@@ -12,6 +12,9 @@ enum opacity_type
     OPC_CLEAR  = 0,
     OPC_HALF   = 1,    // for opaque clouds; two or more block
     OPC_OPAQUE = 2,
+    OPC_SWARM  = 3,    // for a wall tile *occupied* by a swarm
+                       // letting us know we can target into it
+                       // (but still not beyond)
 
     NUM_OPACITIES
 };
@@ -63,6 +66,15 @@ public:
 };
 extern const opacity_no_trans opc_no_trans;
 
+class opacity_swarm : public opacity_no_trans
+{
+public:
+    CLONE(opacity_swarm)
+
+    opacity_type operator()(const coord_def& p) const override;
+};
+extern const opacity_swarm opc_swarm;
+
 // Like opacity_no_trans, but only fully opaque (e.g. non-cloud) features
 // block.
 class opacity_fully_no_trans : public opacity_func
@@ -95,6 +107,20 @@ public:
     opacity_func* clone() const override
     {
         return new opacity_mons_immob(mon);
+    }
+
+    opacity_type operator()(const coord_def& p) const override;
+private:
+    const monster* mon;
+};
+
+class opacity_mons_swarm : public opacity_mons_immob
+{
+public:
+    opacity_mons_swarm(const monster* mons) : opacity_mons_immob(mons), mon(mons) {}
+    opacity_func* clone() const override
+    {
+        return new opacity_mons_swarm(mon);
     }
 
     opacity_type operator()(const coord_def& p) const override;

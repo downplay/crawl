@@ -22,6 +22,7 @@ const opacity_solid opc_solid = opacity_solid();
 const opacity_solid_see opc_solid_see = opacity_solid_see();
 const opacity_no_actor opc_no_actor = opacity_no_actor();
 const opacity_excl opc_excl = opacity_excl();
+const opacity_swarm opc_swarm = opacity_swarm();
 
 opacity_type opacity_default::operator()(const coord_def& p) const
 {
@@ -45,14 +46,32 @@ opacity_type opacity_fullyopaque::operator()(const coord_def& p) const
 
 opacity_type opacity_no_trans::operator()(const coord_def& p) const
 {
+    const monster *mon = monster_at(p);
     dungeon_feature_type f = env.grid(p);
     if (feat_is_opaque(f) || feat_is_wall(f) || feat_is_closed_door(f))
-        return OPC_OPAQUE;
+    {
+        return mon && mon->type == MONS_SENTIENT_LICHEN
+               ? OPC_SWARM : OPC_OPAQUE;
+    }
     else if (is_opaque_cloud(cloud_type_at(p)))
         return OPC_HALF;
-    else if (const monster *mon = monster_at(p))
+    else if (mon)
         return mons_opacity(mon, LOS_NO_TRANS);
     return OPC_CLEAR;
+}
+
+opacity_type opacity_swarm::operator()(const coord_def& p) const
+{
+    // CLEAR and HALF are fine
+    auto no_trans = opacity_no_trans::operator()(p);
+    if (no_trans != OPC_OPAQUE)
+        return no_trans;
+
+    // Avoid notable features
+    // TODO: Here we could also check coords around and block double walls
+    dungeon_feature_type f = env.grid(p);
+    auto def = get_feature_def(f);
+    return def.is_notable() ? OPC_OPAQUE : OPC_CLEAR;
 }
 
 opacity_type opacity_fully_no_trans::operator()(const coord_def& p) const
@@ -76,6 +95,15 @@ opacity_type opacity_mons_immob::operator()(const coord_def& p) const
                             && other_mons->is_stationary()
                             && mons_aligned(mon, other_mons);
     return impassable ? OPC_OPAQUE : opc_no_trans(p);
+}
+
+opacity_type opacity_mons_swarm::operator()(const coord_def& p) const
+{
+    const monster* other_mons = monster_at(p);
+    const bool impassable = other_mons
+                            && other_mons->is_stationary()
+                            && mons_aligned(mon, other_mons);
+    return impassable ? OPC_OPAQUE : opc_swarm(p);
 }
 
 opacity_type opacity_solid::operator()(const coord_def& p) const
