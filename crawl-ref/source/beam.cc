@@ -2734,8 +2734,9 @@ bool bolt::can_affect_wall(const coord_def& p, bool map_knowledge) const
         return true;
     }
 
+    // Solid feature but there's a monster (a swarm) inside it
     const monster *mon = monster_at(p);
-    if (feat_is_solid(wall) && mon)
+    if (mon && feat_is_solid(wall))
         return true;
 
     // Temporary trees and slime walls can't be burned/dug.

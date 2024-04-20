@@ -306,7 +306,6 @@ aff_type targeter_beam::is_affected(coord_def loc)
                     return current;
                 else
                     return AFF_NO;
-
             }
             else
                 continue;

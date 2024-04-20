@@ -209,6 +209,19 @@ bool monster_habitable_grid(monster_type mt,
     return false;
 }
 
+void monster_has_moved(monster& mons, const coord_def& from, const coord_def& to)
+{
+    // Wall-inhabiting creatures need LOS updates as they move since we can now target
+    // the wall (ot not target if they moved away)
+    if (mons.type == MONS_SENTIENT_LICHEN)
+    {
+        if (feat_is_solid(env.grid(from)))
+            los_terrain_changed(from);
+        if (feat_is_solid(env.grid(to)))
+            los_terrain_changed(to);
+    }
+}
+
 static int _ood_fuzzspan(level_id &place)
 {
     if (place.branch != BRANCH_DUNGEON || place.depth >= 5)

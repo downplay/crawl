@@ -5450,8 +5450,12 @@ bool monster::move_to_pos(const coord_def &newpos, bool clear_net, bool force)
     if (in_bounds(pos()) && env.mgrid(pos()) == index)
         env.mgrid(pos()) = NON_MONSTER;
 
+    const coord_def oldpos = pos();
+
     // Set monster x,y to new value.
     moveto(newpos, clear_net);
+
+    monster_has_moved(*this, oldpos, newpos);
 
     // Set new monster grid pointer to this monster.
     env.mgrid(newpos) = index;
@@ -5505,6 +5509,12 @@ bool monster::swap_with(monster* other)
 
     clear_far_engulf();
     other->clear_far_engulf();
+
+    // Note: Currently this would probably never be relevant. We'd need two
+    // different kinds of swarm monster to be allied and swapping in and out of
+    // walls in a way that actually required a LOS update
+    monster_has_moved(*other, new_pos, old_pos);
+    monster_has_moved(*this, old_pos, new_pos);
 
     return true;
 }
