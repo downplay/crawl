@@ -278,6 +278,12 @@ int attack::post_roll_to_hit_modifiers(int mhit, bool /*random*/)
             modifiers += BACKLIGHT_TO_HIT_BONUS;
         if (!attacker->nightvision() && defender->umbra())
             modifiers += UMBRA_TO_HIT_MALUS;
+
+        if (defender->is_monster() && attacker->is_player())
+        {
+            modifiers += blind_player_to_hit_modifier(mhit,
+                                                      blind_player_factor(defender->as_monster()));
+        }
     }
 
     return modifiers;

@@ -4921,6 +4921,55 @@ void barb_player(int turns, int pow)
     }
 }
 
+/**
+ * Increase the player's blindness duration.
+ *
+ * @param amount   The number of turns to increase blindness duration by.
+ */
+void blind_player(int amount, colour_t flavour_colour)
+{
+    ASSERT(!crawl_state.game_is_arena());
+
+    if (amount <= 0)
+        return;
+
+    const int current = you.duration[DUR_BLIND];
+    you.increase_duration(DUR_BLIND, amount, 50);
+    you.props[BLIND_COLOUR_KEY] = flavour_colour;
+    you.check_awaken(500);
+    if (current > 0)
+        mpr("You are blinded for an even longer time.");
+    else
+        mpr("You are blinded!");
+    learned_something_new(HINT_YOU_ENCHANTED);
+    xom_is_stimulated((you.duration[DUR_BLIND] - current) / BASELINE_DELAY);
+}
+
+int blind_player_distance_to(coord_def pos)
+{
+    coord_def player_pos = you.pos();
+    return max(abs(pos.x - player_pos.x), abs(pos.y - player_pos.y));
+}
+
+int blind_player_factor(const monster* mons)
+{
+    if (you.duration[DUR_BLIND])
+    {
+        // Reduce to_hit by 10% for every unit distance, starting at 10% on
+        // own tile. At full LOS range only 10% of hit chance remains for
+        // Barachie or 20% for a normal race.
+        return 1 + blind_player_distance_to(mons->pos());
+    }
+    return 0;
+}
+
+int blind_player_to_hit_modifier(int to_hit, int factor)
+{
+    // Lose a 10th of to_hit per tile distance, starting at 1 from own square.
+    // At 8 distance 90% of to_hit is gone.
+    return factor ? -div_round_up(to_hit * factor, 10) : 0;
+}
+
 void dec_berserk_recovery_player(int delay)
 {
     if (!you.duration[DUR_BERSERK_COOLDOWN])

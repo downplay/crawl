@@ -113,7 +113,7 @@ static double _to_hit_hit_chance(const monster_info& mi, attack &atk, bool melee
 
         // But the above will bail out because there's no defender in the attack object,
         // so we reproduce any possibly relevant effects here:
-        adjusted_mhit += mi.lighting_modifiers();
+        adjusted_mhit += mi.lighting_modifiers(rolled_mhit);
 
         // And this duplicates ranged_attack::post_roll_to_hit_modifiers().
         if (!melee)

@@ -555,6 +555,7 @@ monster_info::monster_info(const monster* m, int milev)
     sleepwalking = m->sleepwalking();
     backlit = m->backlit(false);
     umbraed = m->umbra();
+    blindness = blind_player_factor(m);
     shield_bonus = m->shield_bonus();
 
     // Not an MB_ because it's rare.
@@ -864,15 +865,15 @@ int monster_info::regen_rate(int scale) const
 /**
  * Calculate some defender-specific effects on an attacker's to-hit.
  */
-int monster_info::lighting_modifiers() const
+int monster_info::lighting_modifiers(int to_hit) const
 {
+    int mod = blind_player_to_hit_modifier(to_hit, blindness);
     if (backlit)
-        return BACKLIGHT_TO_HIT_BONUS;
-    if (umbraed && !you.nightvision())
-        return UMBRA_TO_HIT_MALUS;
-    return 0;
+        mod += BACKLIGHT_TO_HIT_BONUS;
+    else if (umbraed && !you.nightvision())
+        mod += UMBRA_TO_HIT_MALUS;
+    return mod;
 }
-
 
 /**
  * Name the given mutant beast tier.

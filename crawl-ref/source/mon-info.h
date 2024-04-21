@@ -279,6 +279,7 @@ struct monster_info_base
     bool sleepwalking;
     bool backlit;
     bool umbraed;
+    int blindness;
     int shield_bonus;
 
     uint32_t client_id;
@@ -397,7 +398,7 @@ struct monster_info : public monster_info_base
     bool can_see_invisible() const;
     bool nightvision() const;
     int willpower() const;
-    int lighting_modifiers() const;
+    int lighting_modifiers(int to_hit) const;
 
     int base_speed() const
     {

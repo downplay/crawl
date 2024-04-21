@@ -5297,6 +5297,14 @@ void describe_to_hit(const monster_info& mi, ostringstream &result,
         else
             result << weapon->name(DESC_YOUR, false, false, false);
     }
+
+    if (mi.blindness > 1)
+    {
+        if (verbose)
+            result << " (at this distance whilst blinded)";
+        else
+            result << " blind";
+    }
 }
 
 static bool _visible_to(const monster_info& mi)

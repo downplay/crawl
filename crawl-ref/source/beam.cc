@@ -3288,6 +3288,14 @@ int bolt::apply_lighting(int base_hit, const actor &targ) const
     if (!nightvision && targ.umbra())
         base_hit += UMBRA_TO_HIT_MALUS * 2;
 
+    // Blindness modifier does *not* need to be x2 because it applies a % to the
+    // passed in hit value so it will already affect the roll correctly
+    if (targ.is_monster())
+    {
+        base_hit += blind_player_to_hit_modifier(base_hit,
+                                                 blind_player_factor(targ.as_monster()));
+    }
+
     return base_hit;
 }
 
@@ -4172,8 +4180,8 @@ void bolt::affect_player()
 
     }
 
-    if (flavour == BEAM_LIGHT && one_chance_in(3))
-        confuse_player(random_range(2, 3));
+    if (flavour == BEAM_LIGHT)
+        blind_player(random_range(5, 15), WHITE);
 
     if (flavour == BEAM_MIASMA && final_dam > 0)
         was_affected = miasma_player(agent(), name);
@@ -4215,7 +4223,6 @@ void bolt::affect_player()
     // Right now just ignore the physical component.
     // what about acid?
     you.expose_to_element(flavour, 2, false);
-
 
     // Manticore spikes
     if (origin_spell == SPELL_THROW_BARBS && final_dam > 0)
