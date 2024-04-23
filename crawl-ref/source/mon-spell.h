@@ -980,6 +980,13 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    {  MST_DEAFENING_MAW,
+      {
+      //  { SPELL_MAGIC_DAMPENING, 42, MON_SPELL_NATURAL },
+       { SPELL_SHATTER, 14, MON_SPELL_NATURAL },
+      }
+    },
+
     // ('H') Animal hybrids.
     {  MST_MANTICORE,
       {

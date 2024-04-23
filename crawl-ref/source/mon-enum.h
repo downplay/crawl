@@ -338,5 +338,6 @@ enum mon_body_shape
     MON_SHAPE_FUNGUS,
     MON_SHAPE_ORB,
     MON_SHAPE_BLOB,
+    MON_SHAPE_MOUTH,
     MON_SHAPE_MISC,
 };

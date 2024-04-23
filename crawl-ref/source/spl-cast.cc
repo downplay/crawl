@@ -3032,16 +3032,6 @@ string spell_power_string(spell_type spell)
         return make_stringf("%d%%", percent);
 }
 
-int calc_spell_range(spell_type spell, int power, bool allow_bonus,
-                     bool ignore_shadows)
-{
-    if (power == 0)
-        power = calc_spell_power(spell);
-    const int range = spell_range(spell, power, allow_bonus, ignore_shadows);
-
-    return range;
-}
-
 /**
  * Give a string visually describing a given spell's range, as cast by the
  * player.
@@ -3054,9 +3044,8 @@ string spell_range_string(spell_type spell)
     if (spell == SPELL_HAILSTORM)
         return "@.->"; // Special case: hailstorm is a ring
 
-    const int cap      = spell_power_cap(spell);
-    const int range    = calc_spell_range(spell, 0);
-    const int maxrange = calc_spell_range(spell, cap, true, true);
+    const int range    = you.spell_range(spell, spell_range_type::actual);
+    const int maxrange = you.spell_range(spell, spell_range_type::max);
 
     return range_string(range, maxrange, '@');
 }

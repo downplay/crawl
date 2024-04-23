@@ -5818,6 +5818,11 @@ bool player::has_spell(spell_type spell) const
     return find(begin(spells), end(spells), spell) != end(spells);
 }
 
+int player::actual_spell_range(spell_type spell, int pow)
+{
+    return spell_range(spell, pow, this, spell_range_type::actual);
+}
+
 bool player::cannot_speak() const
 {
     if (silenced(pos()))

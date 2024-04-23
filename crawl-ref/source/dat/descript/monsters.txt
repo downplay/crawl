@@ -989,6 +989,12 @@ A noxious and deadly fungus suffused with negative energy. While parasitic in
 life, undeath has granted it the ability to absorb its nutrients directly from
 the life force of others.
 %%%%
+deafening maw
+
+A mouth-like tear in reality leading to a dimension of constant cacophonic
+horror, spewing sonic punishment into this world. The terrible noise drowns
+out the noise of anything around it.
+%%%%
 death cob
 
 A dreadful undead cob of maize. Look, this one was probably a mistake. We're

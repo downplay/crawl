@@ -211,6 +211,11 @@ static void _THROATCUTTER_melee_effects(item_def* /*weapon*/, actor* attacker,
                      mons->name(DESC_THE).c_str(),
                      mons->pronoun(PRONOUN_POSSESSIVE).c_str());
                 break;
+            case MON_SHAPE_MOUTH:
+                mprf("%s shut%s up the %s!",
+                     attacker->name(DESC_THE).c_str(),
+                     plural ? "s" : "",
+                     mons->name(DESC_THE).c_str());
             default: // yes, even fungi have heads :)
                 mprf("%s behead%s %s%s!",
                      attacker->name(DESC_THE).c_str(),

@@ -4726,7 +4726,7 @@ string get_mon_shape_str(const mon_body_shape shape)
         "quadruped", "tailless quadruped", "winged quadruped",
         "bat", "bird", "snake", "fish",  "insect", "winged insect",
         "arachnid", "centipede", "snail", "plant", "fungus", "orb",
-        "blob", "misc"
+        "blob", "mouth", "misc"
     };
 
     COMPILE_CHECK(ARRAYSZ(shape_names) == MON_SHAPE_MISC + 1);

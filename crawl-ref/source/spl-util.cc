@@ -969,10 +969,8 @@ bool is_valid_spell(spell_type spell)
 
 static bool _spell_range_varies(spell_type spell)
 {
-    int minrange = _seekspell(spell)->min_range;
-    int maxrange = _seekspell(spell)->max_range;
-
-    return minrange < maxrange;
+    auto desc = _seekspell(spell);
+    return desc->min_range < desc->max_range;
 }
 
 int spell_power_cap(spell_type spell)
@@ -995,14 +993,14 @@ int spell_power_cap(spell_type spell)
     }
 }
 
-int spell_range(spell_type spell, int pow,
-                bool allow_bonus, bool ignore_shadows)
+/**
+ * Base spell range according to spell power, no modifiers or limits applied
+ */
+static int _spell_range_base(spell_type spell, int pow)
 {
-    int minrange = _seekspell(spell)->min_range;
-    int maxrange = _seekspell(spell)->max_range;
-
-    const int range_cap = ignore_shadows ? you.normal_vision
-                                         : you.current_vision;
+    auto desc = _seekspell(spell);
+    int minrange = desc->min_range;
+    int maxrange = desc->max_range;
 
     ASSERT(maxrange >= minrange);
 
@@ -1010,28 +1008,60 @@ int spell_range(spell_type spell, int pow,
     if (maxrange < 0)
         return maxrange;
 
-    if (allow_bonus
-        && vehumet_supports_spell(spell)
-        && have_passive(passive_t::spells_range)
-        && maxrange > 1
-        && spell != SPELL_HAILSTORM // uses a special system
-        && spell != SPELL_THUNDERBOLT) // lightning rod only
-    {
-        maxrange++;
-        minrange++;
-    }
-
     if (minrange == maxrange)
-        return min(minrange, range_cap);
+        return minrange;
 
     const int powercap = spell_power_cap(spell);
 
     if (powercap <= pow)
-        return min(maxrange, range_cap);
+        return maxrange;
 
     // Round appropriately.
-    return min(range_cap,
-           (pow * (maxrange - minrange) + powercap / 2) / powercap + minrange);
+    return (pow * (maxrange - minrange) + powercap / 2) / powercap + minrange;
+}
+
+int spell_range(spell_type spell, int pow, const actor *agent, spell_range_type type)
+{
+    ASSERT(pow > 0);
+    auto desc = _seekspell(spell);
+
+    int range = 0;
+    switch (type)
+    {
+        case spell_range_type::max:
+            range = desc->max_range;
+            break;
+        case spell_range_type::actual:
+        case spell_range_type::uncapped:
+            range = _spell_range_base(spell, pow);
+            break;
+    }
+
+    // Dampen before we add Vehumet bonus so followers always get the +1
+    if (agent && range > 1 && agent->is_dampened()
+        && (type == spell_range_type::actual || type == spell_range_type::uncapped))
+    {
+        range = div_round_up(range, 2);
+    }
+
+    if (agent->is_player()
+        && vehumet_supports_spell(spell)
+        && have_passive(passive_t::spells_range)
+        && desc->max_range > 1
+        && spell != SPELL_HAILSTORM // uses a special system
+        && spell != SPELL_THUNDERBOLT) // lightning rod only
+    {
+        range++;
+    }
+
+    switch (type)
+    {
+        case spell_range_type::actual:
+            return min(range, (int)you.current_vision);
+        case spell_range_type::uncapped:
+        case spell_range_type::max:
+            return min(range, (int)you.normal_vision);
+    }
 }
 
 /**
@@ -1514,7 +1544,7 @@ bool spell_no_hostile_in_range(spell_type spell)
     if (!in_bounds(you.pos()) || !you.on_current_level)
         return true;
 
-    const int range = calc_spell_range(spell, 0);
+    const int range = you.spell_range(spell);
     const int minRange = get_dist_to_nearest_monster();
     const int pow = calc_spell_power(spell);
 

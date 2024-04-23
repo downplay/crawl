@@ -2357,6 +2357,11 @@ string monster::hand_name(bool plural, bool *can_plural) const
         }
         break;
 
+    case MON_SHAPE_MOUTH:
+        str = "tongue";
+        *can_plural = false;
+        break;
+
     case MON_SHAPE_BUGGY:
         str = "handbug";
         break;
@@ -2480,6 +2485,7 @@ string monster::foot_name(bool plural, bool *can_plural) const
     case MON_SHAPE_SNAIL:
     case MON_SHAPE_NAGA:
     case MON_SHAPE_ORB:
+    case MON_SHAPE_MOUTH:
         str         = "underside";
         *can_plural = false;
         break;
@@ -2791,6 +2797,14 @@ bool monster::has_spells() const
 bool monster::has_spell(spell_type spell) const
 {
     return search_spells([=] (spell_type sp) { return sp == spell; } );
+}
+
+int monster::spell_range(spell_type spell, int pow) const
+{
+    if (pow < 0)
+    {
+
+    }
 }
 
 mon_spell_slot_flags monster::spell_slot_flags(spell_type spell) const

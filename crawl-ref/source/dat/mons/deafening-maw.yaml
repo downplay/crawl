@@ -1,0 +1,16 @@
+name: "deafening maw"
+glyph: {char: "G", colour: blue}
+flags: [flies, see_invis, no_skeleton]
+xp_mult: 15
+will: 120
+attacks:
+ - {type: bite, flavour: distortion, damage: 15}
+hd: 12
+hp_10x: 750
+ac: 8
+ev: 5
+spells: deafening_maw
+intelligence: human
+uses: open_doors
+size: medium
+shape: mouth

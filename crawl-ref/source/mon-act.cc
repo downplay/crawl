@@ -2239,6 +2239,9 @@ static void _post_monster_move(monster* mons)
     if (mons->type == MONS_TORPOR_SNAIL)
         _torpor_snail_slow(mons);
 
+    if (mons->type == MONS_DEAFENING_MAW)
+        _maw_dampen_magic(mons);
+
     // Check golem distance again at the END of its move (so that it won't go
     // dormant if it is following a player who was adjacent to it at the start
     // of the player's own move)

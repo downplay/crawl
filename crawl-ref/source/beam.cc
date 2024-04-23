@@ -910,7 +910,8 @@ void bolt::bounce()
     // shadows, Robe of Night)
     if (bounces == 1)
     {
-        extra_range_used -= spell_range(origin_spell, ench_power, true, true)
+        extra_range_used -= spell_range(origin_spell, ench_power,
+                                      spell_range_type::uncapped, agent(true));
                             - range;
     }
 
@@ -1250,7 +1251,6 @@ void bolt::do_fire()
             // of the player manually targeting something whose line of fire
             // is blocked, even though its line of sight isn't blocked. Give
             // a warning about this fact.
-            string prompt = "Your line of fire to ";
             const monster* mon = monster_at(target);
 
             string blockee;

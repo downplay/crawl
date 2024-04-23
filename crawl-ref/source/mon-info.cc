@@ -45,6 +45,7 @@
 #include "tilepick.h"
 #endif
 #include "traps.h"
+#include "mon-cast.h"
 
 #define SPELL_HD_KEY "spell_hd"
 #define NIGHTVISION_KEY "nightvision"
@@ -1702,6 +1703,12 @@ int monster_info::spell_hd(spell_type spell) const
     if (!props.exists(SPELL_HD_KEY))
         return hd;
     return props[SPELL_HD_KEY].get_int();
+}
+
+int monster_info::actual_spell_range(spell_type spell) const
+{
+    int pow = mons_power_for_hd(spell, spell_hd(spell));
+    const range = spell_range(spell, pow);
 }
 
 unsigned monster_info::colour(bool base_colour) const

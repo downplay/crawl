@@ -71,6 +71,13 @@ enum class spret
     none,                 // spell was not handled
 };
 
+enum class spell_range_type
+{
+    actual = 0,
+    uncapped,
+    max
+};
+
 #define IOOD_X "iood_x"
 #define IOOD_Y "iood_y"
 #define IOOD_VX "iood_vx"
@@ -139,6 +146,7 @@ string spell_damage_string(spell_type spell, bool evoked = false, int pow = -1,
                            bool terse = false);
 string spell_max_damage_string(spell_type spell);
 int spell_acc(spell_type spell);
+
 string spell_range_string(spell_type spell);
 string range_string(int range, int maxrange, char32_t caster_char);
 string spell_schools_string(spell_type spell);

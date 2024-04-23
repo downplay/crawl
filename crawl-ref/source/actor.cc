@@ -962,6 +962,11 @@ bool actor::torpor_slowed() const
     return false;
 }
 
+bool actor::is_dampened() const
+{
+    return props.exists(MAW_DAMPENED_KEY) && !is_sanctuary(pos());
+}
+
 string actor::resist_margin_phrase(int margin) const
 {
     if (willpower() == WILL_INVULN)

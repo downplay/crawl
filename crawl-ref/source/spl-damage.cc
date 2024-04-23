@@ -1088,7 +1088,7 @@ set<coord_def> permafrost_targets(const actor &caster, int pow, bool actual)
 {
     set<coord_def> targets;
 
-    const int range = spell_range(SPELL_PERMAFROST_ERUPTION, pow);
+    const int range = caster.actual_spell_range(SPELL_PERMAFROST_ERUPTION, pow);
     vector<coord_def> all_hostiles = find_near_hostiles(range, actual, caster);
     if (all_hostiles.empty())
         return targets;
@@ -1855,7 +1855,7 @@ spret cast_scorch(const actor& agent, int pow, bool fail)
 {
     fail_check();
 
-    const int range = spell_range(SPELL_SCORCH, pow);
+    const int range = agent.actual_spell_range(SPELL_SCORCH, pow);
     auto targeter = make_unique<targeter_scorch>(agent, range, true);
     actor *targ = nullptr;
     int seen = 0;
@@ -2928,7 +2928,7 @@ vector<coord_def> plasma_beam_paths(coord_def source, const vector<coord_def> &t
 
 vector<coord_def> plasma_beam_targets(const actor &agent, int pow, bool actual)
 {
-    const int range = spell_range(SPELL_PLASMA_BEAM, pow);
+    const int range = agent.actual_spell_range(SPELL_PLASMA_BEAM, pow);
     int maxdist = 0;
     vector<actor*> target_actors;
     vector <coord_def> targets;
@@ -3112,7 +3112,7 @@ spret cast_thunderbolt(actor *caster, int pow, coord_def aim, bool fail)
     if (!in_bounds(prev))
         charges = 0;
 
-    targeter_thunderbolt hitfunc(caster, spell_range(SPELL_THUNDERBOLT, pow),
+    targeter_thunderbolt hitfunc(caster, caster->actual_spell_range(SPELL_THUNDERBOLT, pow),
                                  prev);
     hitfunc.set_aim(aim);
 
@@ -3323,7 +3323,7 @@ bool dazzle_monster(monster * mons, int pow)
 
 spret cast_dazzling_flash(int pow, bool fail, bool tracer)
 {
-    int range = spell_range(SPELL_DAZZLING_FLASH, pow);
+    int range = you.actual_spell_range(SPELL_DAZZLING_FLASH, pow);
     auto hitfunc = find_spell_targeter(SPELL_DAZZLING_FLASH, pow, range);
     bool (*vulnerable) (const actor *) = [](const actor * act) -> bool
     {
@@ -4309,7 +4309,7 @@ static void _hailstorm_cell(coord_def where, int pow, actor *agent)
 
 spret cast_hailstorm(int pow, bool fail, bool tracer)
 {
-    const int range = calc_spell_range(SPELL_HAILSTORM, pow);
+    const int range = you.actual_spell_range(SPELL_HAILSTORM, pow);
     // used only for vulnerability check, not for the actual targeting
     auto hitfunc = find_spell_targeter(SPELL_HAILSTORM, pow, range);
     bool (*vulnerable) (const actor *) = [](const actor * act) -> bool
