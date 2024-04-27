@@ -1275,10 +1275,6 @@ bool vehumet_boosts_spell_range(spell_type spell)
 {
     return vehumet_supports_spell(spell)
         && spell_range_max(spell) > 1
-        // Spells that are very specific about their ranges
-        && spell != SPELL_FROZEN_RAMPARTS
-        && spell != SPELL_NOXIOUS_BOG
-        && spell != SPELL_HAILSTORM // uses a special system
         && spell != SPELL_THUNDERBOLT; // lightning rod only
 }
 
