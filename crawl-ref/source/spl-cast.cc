@@ -902,7 +902,7 @@ spret cast_a_spell(bool check_range, spell_type spell, dist *_target,
 
         if ((Options.use_animations & UA_RANGE) && Options.darken_beyond_range)
         {
-            targeter_smite range(&you, calc_spell_range(spell), 0, 0, true);
+            targeter_smite range(&you, you.spell_range(spell), 0, 0, true);
             range_view_annotator show_range(&range);
             delay(50);
         }
@@ -1891,7 +1891,7 @@ desc_filter targeter_addl_desc(spell_type spell, int powc, spell_flags flags,
 string target_spell_desc(const monster_info& mi, spell_type spell)
 {
     int powc = calc_spell_power(spell);
-    const int range = calc_spell_range(spell, powc, false);
+    const int range = you.spell_range(spell, powc);
 
     unique_ptr<targeter> hitfunc = find_spell_targeter(spell, powc, range);
     if (!hitfunc)
@@ -1961,7 +1961,8 @@ spret your_spells(spell_type spell, int powc, bool actual_spell,
     if (!powc)
         powc = calc_spell_power(spell);
 
-    const int range = calc_spell_range(spell, powc, actual_spell);
+    const int range = actual_spell ? you.spell_range(spell, powc)
+                                   : spell_range_misc(spell, powc);
     beam.range = range;
 
     unique_ptr<targeter> hitfunc = find_spell_targeter(spell, powc, range);
@@ -3032,16 +3033,6 @@ string spell_power_string(spell_type spell)
         return make_stringf("%d%%", percent);
 }
 
-int calc_spell_range(spell_type spell, int power, bool allow_bonus,
-                     bool ignore_shadows)
-{
-    if (power == 0)
-        power = calc_spell_power(spell);
-    const int range = spell_range(spell, power, allow_bonus, ignore_shadows);
-
-    return range;
-}
-
 /**
  * Give a string visually describing a given spell's range, as cast by the
  * player.
@@ -3054,9 +3045,8 @@ string spell_range_string(spell_type spell)
     if (spell == SPELL_HAILSTORM)
         return "@.->"; // Special case: hailstorm is a ring
 
-    const int cap      = spell_power_cap(spell);
-    const int range    = calc_spell_range(spell, 0);
-    const int maxrange = calc_spell_range(spell, cap, true, true);
+    const int range    = you.spell_range(spell);
+    const int maxrange = you.spell_range(spell, spell_power_cap(spell));
 
     return range_string(range, maxrange, '@');
 }

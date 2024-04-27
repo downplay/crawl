@@ -916,8 +916,16 @@ void bolt::bounce()
     // shadows, Robe of Night)
     if (bounces == 1)
     {
-        extra_range_used -= spell_range(origin_spell, ench_power, true, true)
-                            - range;
+        // XX: This probably still shouldn't be done here as we don't know
+        // the context of how the spell was cast and therefore it might
+        // be incorrect to add a Vehumet bonus (lightning rod is special cased
+        // in vehumet_boosts_spell_range but there could be other exceptions
+        // we don't know about or easily introduced). The extra range is
+        // fairly marginal. Maybe we should supply some extra_range value
+        // for bouncy beams on creation, since we now have an additional check
+        // to stop the beam exiting the original range radius anyway?
+        extra_range_used -= agent(true)->spell_range(origin_spell, ench_power,
+                                you.normal_vision) - range;
     }
 
     ASSERT(!cell_is_solid(ray.pos()));
@@ -1033,6 +1041,11 @@ int bolt::range_used(bool leg_only) const
 {
     const int leg_length = pos().distance_from(leg_source());
     return leg_only ? leg_length : leg_length + extra_range_used;
+}
+
+int bolt::distance_from_source() const
+{
+    return source.distance_from(pos());
 }
 
 void bolt::finish_beam()
@@ -1222,7 +1235,7 @@ void bolt::do_fire()
     // Note: nothing but this loop should be changing the ray.
     while (map_bounds(pos()))
     {
-        if (range_used() > range)
+        if (range_used() > range || distance_from_source() > range)
         {
             ray.regress();
             extra_range_used++;
@@ -1256,7 +1269,6 @@ void bolt::do_fire()
             // of the player manually targeting something whose line of fire
             // is blocked, even though its line of sight isn't blocked. Give
             // a warning about this fact.
-            string prompt = "Your line of fire to ";
             const monster* mon = monster_at(target);
 
             string blockee;
@@ -1332,7 +1344,9 @@ void bolt::do_fire()
         else if (!affects_nothing)
             affect_cell();
 
-        if (range_used() > range)
+        // Checking distance from source prevents bouncing bolts from
+        // ever going beyond original range
+        if (range_used() > range || distance_from_source() > range)
             break;
 
         if (beam_cancelled)

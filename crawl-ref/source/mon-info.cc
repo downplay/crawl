@@ -30,6 +30,7 @@
 #include "message.h"
 #include "mon-behv.h"
 #include "mon-book.h"
+#include "mon-cast.h"
 #include "mon-death.h" // ELVEN_IS_ENERGIZED_KEY
 #include "mon-info-flag-name.h"
 #include "mon-tentacle.h"
@@ -1723,6 +1724,22 @@ int monster_info::spell_hd(spell_type spell) const
     if (!props.exists(SPELL_HD_KEY))
         return hd;
     return props[SPELL_HD_KEY].get_int();
+}
+
+/**
+ * How much range does the monster have with the given spell?
+ *
+ * @param spell     The spell in question.
+ * @param pow       Optional spellpower, if not supplied we
+ *                  will check monster's current spellpower
+ * @return          -1 if the spell has an undefined range; else its range.
+ */
+int monster_info::spell_range(spell_type spell, int pow) const
+{
+    if (pow < 0)
+        pow = mons_power_for_hd(spell, spell_hd(spell));
+    int range = spell_range_base(spell, pow);
+    return spell_range_limit(range);
 }
 
 unsigned monster_info::colour(bool base_colour) const

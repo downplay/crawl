@@ -279,6 +279,7 @@ private:
     void affect_place_clouds();
     void affect_place_explosion_clouds();
     int range_used(bool leg_only = false) const;
+    int distance_from_source() const;
     void finish_beam();
     void drop_object();
 

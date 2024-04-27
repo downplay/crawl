@@ -1321,7 +1321,7 @@ string target_evoke_desc(const monster_info& mi, const item_def& item)
     {
         spell = spell_in_wand(static_cast<wand_type>(item.sub_type));
         power = wand_power(spell);
-        range = spell_range(spell, power, false);
+        range = spell_range_misc(spell, power);
     }
     else if (item.base_type == OBJ_MISCELLANY
             && item.sub_type == MISC_PHIAL_OF_FLOODS)
