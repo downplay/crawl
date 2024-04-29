@@ -262,8 +262,35 @@ mon_attitude_type monster::temp_attitude() const
 
 bool monster::swimming() const
 {
-    const dungeon_feature_type grid = env.grid(pos());
-    return feat_is_water(grid) && mons_primary_habitat(*this) == HT_WATER;
+    return swimming(false);
+}
+
+/**
+ * Is this monster considered swimming right now?
+ * 
+ * energy_cost boolean If this is an energy cost check, we
+ *                     still consider them swimming, even if
+ *                     they're not doing it well
+ *                     default = false
+*/
+bool monster::swimming(bool energy_cost) const
+{
+    if (!ground_level()) {
+        return false;
+    }
+
+    const dungeon_feature_type feat = env.grid(pos());
+    auto primary = mons_primary_habitat(*this);
+    auto secondary = mons_secondary_habitat(*this);
+
+    bool water = feat_is_water(feat) && (energy_cost || primary == HT_WATER);
+    if (water)
+        return true;
+    bool lava = feat_is_lava(feat) && (energy_cost
+                    || primary == HT_LAVA || secondary == HT_LAVA);
+    if (lava)
+        return true;
+    return feat_is_wall(feat) && (energy_cost || primary == HT_WALLS);
 }
 
 bool monster::extra_balanced_at(const coord_def p) const
@@ -301,6 +328,8 @@ bool monster::floundering_at(const coord_def p) const
                 // deep water, who flounder despite being treated as amphibious.
                 && mons_habitat(*this, true) != HT_AMPHIBIOUS
                 && !extra_balanced_at(p)))
+            || (feat_has_solid_floor(grid)
+                && mons_primary_habitat(*this) == HT_WALLS)
            && ground_level();
 }
 
@@ -5790,6 +5819,11 @@ void monster::react_to_damage(const actor *oppressor, int damage,
     // The (real) royal jelly objects to taking damage and will SULK. :-)
     if (type == MONS_ROYAL_JELLY && !is_summoned())
         trj_spawn_fineff::schedule(oppressor, this, pos(), damage);
+
+    // Rockfish schools disperse into individual fishies (if they're
+    // still alive at all after everything else processes)
+    if (type == MONS_SCHOOL_OF_ROCKFISH)
+        rockfish_disperse_fineff::schedule(oppressor, this, pos());
 
     // Damage sharing from the spectral weapon to its owner
     // The damage shared should not be directly lethal, though like the

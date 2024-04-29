@@ -1,0 +1,19 @@
+name: "school of rockfish"
+glyph: {char: "F", colour: brown}
+flags: [no_skeleton]
+resists: {elec: 1, petrify: 1}
+xp_mult: 6
+genus: rockfish
+holiness: [nonliving]
+will: 0
+attacks:
+ - {type: bite, damage: 7}
+hd: 5
+hp_10x: 300
+ac: 8
+ev: 6
+intelligence: animal
+habitat: walls
+speed: 12
+size: tiny
+shape: fish

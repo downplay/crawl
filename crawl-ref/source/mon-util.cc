@@ -3459,12 +3459,15 @@ habitat_type mons_class_primary_habitat(monster_type mc)
     return ht;
 }
 
+static monster_type _habitat_real_base_type(const monster& mon)
+{
+    return mons_is_draconian_job(mon.type)
+        ? draconian_subspecies(mon) : mons_base_type(mon);
+}
+
 habitat_type mons_primary_habitat(const monster& mon)
 {
-    const monster_type type = mons_is_draconian_job(mon.type)
-        ? draconian_subspecies(mon) : mons_base_type(mon);
-
-    return mons_class_primary_habitat(type);
+    return mons_class_primary_habitat(_habitat_real_base_type(mon));
 }
 
 habitat_type mons_class_secondary_habitat(monster_type mc)
@@ -4163,6 +4166,12 @@ bool mons_class_can_pass(monster_type mc, const dungeon_feature_type grid)
             // Prevent escape from ghost vaults and so on
             if (is_notable_terrain(grid))
                 return false;
+            // Rockfish don't like trees (lichen are fine of course)
+            if ((mc == MONS_ROCKFISH || mc == MONS_SCHOOL_OF_ROCKFISH)
+                && feat_is_tree(grid))
+            {
+                return false;
+            }
             // All other solids are fine
             return true;
         }

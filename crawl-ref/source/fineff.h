@@ -488,6 +488,26 @@ protected:
     }
 };
 
+class rockfish_disperse_fineff : public final_effect
+{
+public:
+    bool mergeable(const final_effect &fe) const override;
+    void merge(const final_effect &) override;
+    void fire() override;
+
+    static void schedule(const actor *attack, const actor *defend,
+                         const coord_def &pos)
+    {
+        final_effect::schedule(new rockfish_disperse_fineff(attack, defend, pos));
+    }
+protected:
+    rockfish_disperse_fineff(const actor *attack, const actor *defend,
+                     const coord_def &pos)
+        : final_effect(attack, defend, pos)
+    {
+    }
+};
+
 class spectral_weapon_fineff : public final_effect
 {
 public:
