@@ -134,6 +134,9 @@ static habitat_type _grid2habitat(dungeon_feature_type grid)
     if (feat_is_water(grid))
         return HT_WATER;
 
+    if (feat_is_solid(grid))
+        return HT_WALLS;
+
     switch (grid)
     {
     case DNGN_LAVA:
@@ -152,6 +155,8 @@ dungeon_feature_type habitat2grid(habitat_type ht)
         return DNGN_DEEP_WATER;
     case HT_LAVA:
         return DNGN_LAVA;
+    case HT_WALLS:
+        return DNGN_ROCK_WALL;
     case HT_LAND:
     case HT_AMPHIBIOUS:
     case HT_AMPHIBIOUS_LAVA:
@@ -3469,7 +3474,19 @@ habitat_type mons_class_secondary_habitat(monster_type mc)
         ht = HT_WATER;
     if (ht == HT_AMPHIBIOUS_LAVA)
         ht = HT_LAVA;
+    if (ht == HT_WALLS)
+        ht = HT_LAND;
     return ht;
+}
+
+habitat_type mons_secondary_habitat(const monster& mon)
+{
+    return mons_class_secondary_habitat(_habitat_real_base_type(mon));
+}
+
+bool mons_preferred_habitat(const monster& mon, dungeon_feature_type feat)
+{
+    return _grid2habitat(feat) == mons_primary_habitat(mon);
 }
 
 int mons_power(monster_type mc)
@@ -4119,10 +4136,36 @@ bool monster_senior(const monster& m1, const monster& m2, bool fleeing)
 
 bool mons_class_can_pass(monster_type mc, const dungeon_feature_type grid)
 {
+    // Malign portal *only* passable by eldritch horrors
     if (grid == DNGN_MALIGN_GATEWAY)
     {
         return mc == MONS_ELDRITCH_TENTACLE
                || mc == MONS_ELDRITCH_TENTACLE_SEGMENT;
+    }
+
+    // Wall monsters can move on most solid features; ideally we'd prevent them going
+    // more than one tile deep but this test is telling us if they *can* exist on the
+    // terrain
+    // XX: Also maybe lookup monster flags/habitat here instead if we start getting
+    // a lot more special cases
+    if (_mons_class_habitat(mc) == HT_WALLS)
+    {
+        if (feat_is_permarock(grid))
+            return false;
+
+        // Aversion to even shallow water (but it's ok as they can usually get
+        // around it via walls)
+        if (feat_is_water(grid))
+            return false;
+
+        if (feat_is_solid(grid))
+        {
+            // Prevent escape from ghost vaults and so on
+            if (is_notable_terrain(grid))
+                return false;
+            // All other solids are fine
+            return true;
+        }
     }
 
     return !feat_is_solid(grid);
@@ -4183,7 +4226,8 @@ static bool _mons_can_pass_door(const monster* mon, const coord_def& pos)
     return mon->can_pass_through_feat(DNGN_FLOOR)
            && (mons_can_open_door(*mon, pos)
                || mons_can_eat_door(*mon, pos)
-               || mons_can_destroy_door(*mon, pos));
+               || mons_can_destroy_door(*mon, pos)
+               || mon->can_pass_through_feat(DNGN_CLOSED_DOOR));
 }
 
 bool mons_can_traverse(const monster& mon, const coord_def& p,

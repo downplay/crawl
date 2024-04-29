@@ -86,10 +86,11 @@ struct cellray;
 static FixedArray<vector<cellray>, LOS_MAX_RANGE+1, LOS_MAX_RANGE+1> min_cellrays;
 
 // Temporary arrays used in losight() to track which rays
-// are blocked or have seen a smoke cloud.
+// are blocked or have seen a smoke cloud, or a wall monster.
 // Allocated when doing the precomputations.
 static bit_vector *dead_rays     = nullptr;
 static bit_vector *smoke_rays    = nullptr;
+static bit_vector *occupied_rays = nullptr;
 
 class quadrant_iterator : public rectangle_iterator
 {
@@ -105,6 +106,7 @@ void clear_rays_on_exit()
 {
     delete dead_rays;
     delete smoke_rays;
+    delete occupied_rays;
     for (quadrant_iterator qi; qi; ++qi)
         delete blockrays(*qi);
 }
@@ -430,6 +432,7 @@ static void _create_blockrays()
 
     dead_rays  = new bit_vector(n_min_rays);
     smoke_rays = new bit_vector(n_min_rays);
+    occupied_rays = new bit_vector(n_min_rays);
 
     dprf("Cellrays: %d Fullrays: %u Minimal cellrays: %u",
           n_cellrays, (unsigned int)fullrays.size(), n_min_rays);
@@ -738,23 +741,36 @@ static void _losight_quadrant(los_grid& sh, const los_param& dat, int sx, int sy
 
     dead_rays->reset();
     smoke_rays->reset();
+    occupied_rays->reset();
 
     for (quadrant_iterator qi; qi; ++qi)
     {
         coord_def p = coord_def(sx*(qi->x), sy*(qi->y));
         if (!dat.los_bounds(p))
             continue;
-
+        auto to_block = *blockrays(*qi);
         switch (dat.opacity(p))
         {
+        case OPC_CLEAR:
+            // Only block rays which have just seen a wall monster
+            *dead_rays |= (*occupied_rays & to_block);
+            break;
         case OPC_OPAQUE:
             // Block the appropriate rays.
-            *dead_rays |= *blockrays(*qi);
+            *dead_rays |= to_block;
             break;
         case OPC_HALF:
-            // Block rays which have already seen a cloud.
-            *dead_rays  |= (*smoke_rays & *blockrays(*qi));
-            *smoke_rays |= *blockrays(*qi);
+            // Block rays which have already seen a cloud
+            // (or wall monster, in case a bush is behind the wall)
+            *dead_rays  |= (*smoke_rays & to_block);
+            *dead_rays  |= (*occupied_rays & to_block);
+            *smoke_rays |= to_block;
+            break;
+        case OPC_OPAQUE_OCCUPIED:
+            // Occupied rays will always be blocked next cell
+            *occupied_rays |= to_block;
+            // Set the occupied rays for this wall monster
+            *dead_rays  |= (*occupied_rays & to_block);
             break;
         default:
             break;

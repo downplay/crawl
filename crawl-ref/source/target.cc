@@ -250,8 +250,15 @@ void targeter_beam::set_explosion_target(bolt &tempbeam)
     tempbeam.target = origin;
     for (auto c : path_taken)
     {
-        if (cell_is_solid(c) && !tempbeam.can_affect_wall(c))
+        if (cell_is_solid(c) && !tempbeam.can_affect_wall(c)
+            // If we *can't* affect walls but there's a monster there, let
+            // them be affected - but if we're digging and this is an undiggable
+            // wall type, don't allow the target just because there's a wall monster
+            // (This logic would break down if we ever had targettable tree monsters)
+            && (!anyone_there(c) || can_affect_walls()))
+        {
             break;
+        }
         tempbeam.target = c;
         if (anyone_there(c) && !tempbeam.ignores_monster(monster_at(c)))
             break;
@@ -288,6 +295,7 @@ aff_type targeter_beam::is_affected(coord_def loc)
     {
         if (cell_is_solid(pc)
             && !beam.can_affect_wall(pc)
+            && (can_affect_walls() || !anyone_there(pc))
             && max_expl_rad > 0)
         {
             break;
@@ -302,11 +310,10 @@ aff_type targeter_beam::is_affected(coord_def loc)
             else if (cell_is_solid(pc))
             {
                 bool res = beam.can_affect_wall(pc);
-                if (res)
+                if (res || (!can_affect_walls() && anyone_there(pc)))
                     return current;
                 else
                     return AFF_NO;
-
             }
             else
                 continue;
@@ -325,7 +332,8 @@ aff_type targeter_beam::is_affected(coord_def loc)
     {
         if ((loc - c).rdist() <= 9)
         {
-            bool aff_wall = beam.can_affect_wall(loc);
+            bool aff_wall = beam.can_affect_wall(loc)
+                            || (!can_affect_walls() && anyone_there(loc));
             if (!cell_is_solid(loc) || aff_wall)
             {
                 coord_def centre(9,9);
@@ -415,7 +423,7 @@ bool targeter_smite::valid_aim(coord_def a)
     }
     if ((origin - a).rdist() > range)
         return notify_fail("Out of range.");
-    if (!affects_walls && cell_is_solid(a))
+    if (!affects_walls && cell_is_solid(a, true))
         return notify_fail(_wallmsg(a));
     return true;
 }
@@ -677,7 +685,7 @@ targeter_permafrost::targeter_permafrost(const actor &act, int power) :
     {
         targets.insert(t);
         for (adjacent_iterator ai(t); ai; ++ai)
-            if (!cell_is_solid(*ai))
+            if (!cell_is_solid(*ai, true))
                 targets.insert(*ai);
     }
     single_target = possible_centres.size() <= 1;
@@ -1022,7 +1030,7 @@ static bool _cloudable(coord_def loc, cloud_type ctype)
 {
     const cloud_struct *cloud = cloud_at(loc);
     return in_bounds(loc)
-           && !cell_is_solid(loc)
+           && !cell_is_solid(loc, true)
            && (!cloud || cloud_is_stronger(ctype, *cloud))
            && (!is_sanctuary(loc) || is_harmless_cloud(ctype))
            && cell_see_cell(you.pos(), loc, LOS_NO_TRANS);
@@ -1042,7 +1050,7 @@ bool targeter_cloud::valid_aim(coord_def a)
             return notify_fail("There's something in the way.");
         return notify_fail("You cannot see that place.");
     }
-    if (cell_is_solid(a))
+    if (cell_is_solid(a, true))
         return notify_fail(_wallmsg(a));
     if (agent)
     {
@@ -1124,7 +1132,7 @@ aff_type targeter_splash::is_affected(coord_def loc)
     coord_def c;
     for (auto pc : path_taken)
     {
-        if (cell_is_solid(pc))
+        if (cell_is_solid(pc, true))
             break;
 
         c = pc;
@@ -1690,7 +1698,7 @@ targeter_multiposition::targeter_multiposition(const actor *a,
 
 aff_type targeter_multiposition::is_affected(coord_def loc)
 {
-    if ((cell_is_solid(loc) && !can_affect_walls())
+    if ((cell_is_solid(loc) && !can_affect_walls() && !anyone_there(loc))
         || !cell_see_cell(agent->pos(), loc, LOS_NO_TRANS))
     {
         return AFF_NO;
@@ -1850,7 +1858,11 @@ targeter_multimonster::targeter_multimonster(const actor *a)
 
 aff_type targeter_multimonster::is_affected(coord_def loc)
 {
-    if ((cell_is_solid(loc) && !can_affect_walls())
+    const monster_info *mon = env.map_knowledge(loc).monsterinfo();
+
+    // XX: Surely this and the next case are way simpler .. we only need to know if there's
+    // a monster there and we can see them?
+    if ((!mon && cell_is_solid(loc) && !can_affect_walls())
         || !cell_see_cell(agent->pos(), loc, LOS_NO_TRANS))
     {
         return AFF_NO;
@@ -1860,7 +1872,6 @@ aff_type targeter_multimonster::is_affected(coord_def loc)
     //    return AFF_NO;
 
     // Any special checks from our inheritors
-    const monster_info *mon = env.map_knowledge(loc).monsterinfo();
     if (!mon || !affects_monster(*mon))
         return AFF_NO;
 

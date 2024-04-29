@@ -104,6 +104,12 @@ bool monster_habitable_grid(const monster* mon,
                             dungeon_feature_type actual_grid);
 bool monster_habitable_grid(monster_type mt, dungeon_feature_type actual_grid,
                             dungeon_feature_type wanted_grid = DNGN_UNSEEN);
+bool has_non_solid_adjacent(coord_def pos);
+bool monster_habitable_position(monster_type mt, coord_def pos,
+                                bool preferred = false);
+
+void monster_has_moved(const monster &mon,
+                       const coord_def &from, const coord_def &to);
 coord_def find_newmons_square(monster_type mons_class, const coord_def &p);
 coord_def find_newmons_square_contiguous(monster_type mons_class,
                                          const coord_def &start,

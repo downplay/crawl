@@ -420,7 +420,9 @@ bool monster_pathfind::traversable(const coord_def& p)
             return true;
         }
 
-        return false;
+        // Don't prevent wall monsters pathfinding in walls here
+        if (!mons || mons_habitat(*mons) != HT_WALLS || opc_walls(p) == OPC_OPAQUE)
+            return false;
     }
 
     if (mons)
@@ -485,6 +487,12 @@ int monster_pathfind::mons_travel_cost(coord_def npos)
 
         return 2;
     }
+
+    // Wall monsters prefer to pathfind through walls
+    // XX: Can't position this correctly in the logic. Here we end up with wall
+    // monsters slightly preferring trapped floor to plain floor...
+    if (mons_habitat(*mons) == HT_WALLS && !feat_is_solid(env.grid(npos)))
+        return 3;
 
     return 1;
 }

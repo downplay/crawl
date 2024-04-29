@@ -1470,12 +1470,12 @@ static void _place_player(dungeon_feature_type stair_taken,
         _place_player_on_stair(stair_taken, dest_pos, hatch_name);
 
     // Don't return the player into walls, deep water, or a trap.
-    if (!you.is_habitable_feat(env.grid(you.pos()))
+    if (!you.is_habitable(you.pos())
         || is_feat_dangerous(env.grid(you.pos()), true)
         || feat_is_trap(env.grid(you.pos())))
     {
         for (distance_iterator di(you.pos(), true, false); di; ++di)
-            if (you.is_habitable_feat(env.grid(*di))
+            if (you.is_habitable(*di)
                 && !is_feat_dangerous(env.grid(*di), true)
                 && !feat_is_trap(env.grid(*di))
                 && !(env.pgrid(*di) & FPROP_NO_TELE_INTO))

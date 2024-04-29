@@ -1739,9 +1739,8 @@ bool spell_no_hostile_in_range(spell_type spell)
                 // relies mostly on results from the temp beam firing, but it
                 // may be valid to exclude solid and non-reachable targets for
                 // all spells. -gammafunk
-                if (cell_is_solid(*ri) || !you.see_cell_no_trans(*ri))
+                if (cell_is_solid(*ri, true) || !you.see_cell_no_trans(*ri))
                     continue;
-
                 // XXX Currently Vile Clutch is the only smite-targeted area
                 // spell that isn't LOS-range. Spell explosion radii are not
                 // stored anywhere, defaulting to 1 for non-smite-targeting

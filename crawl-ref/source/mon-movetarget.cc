@@ -1098,6 +1098,8 @@ static bool _can_safely_go_through(const monster * mon, const coord_def p)
 // FIXME: This is used for monster movement. It should instead be
 //        something like exists_ray(p1, p2, opacity_monmove(mons)),
 //        where opacity_monmove() is fixed to include opacity_immob.
+// XX: And I've added to the problem with wall monsters. Probably do
+//     the above FIXME before merging.
 bool can_go_straight(const monster* mon, const coord_def& p1,
                      const coord_def& p2)
 {
@@ -1110,8 +1112,12 @@ bool can_go_straight(const monster* mon, const coord_def& p1,
 
     // XXX: Hack to improve results for now. See FIXME above.
     ray_def ray;
-    if (!find_ray(p1, p2, ray, opacity_mons_immob(mon)))
+    if (!find_ray(p1, p2, ray, mons_habitat(*mon) == HT_WALLS
+                               ? opacity_mons_walls(mon)
+                               : opacity_mons_immob(mon)))
+    {
         return false;
+    }
 
     while (ray.advance() && ray.pos() != p2)
         if (!_can_safely_go_through(mon, ray.pos()))

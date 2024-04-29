@@ -75,6 +75,8 @@ static vector<bool> vault_mon_bands;
 
 #define BIG_BAND        20
 
+static bool _is_random_monster(monster_type mt);
+
 static monster_type _band_member(band_type band, int which,
                                  level_id parent_place, bool allow_ood);
 static band_type _choose_band(monster_type mon_type, int *band_size_p = nullptr,
@@ -104,7 +106,13 @@ static bool _feat_compatible(dungeon_feature_type wanted_feat,
 {
     return wanted_feat == actual_feat
            || wanted_feat == DNGN_DEEP_WATER && feat_is_water(actual_feat)
-           || wanted_feat == DNGN_FLOOR && feat_has_solid_floor(actual_feat);
+           || wanted_feat == DNGN_FLOOR && feat_has_solid_floor(actual_feat)
+           || wanted_feat == DNGN_ROCK_WALL && feat_is_solid(actual_feat)
+                         // This check is duplicated in monster_habitable_grid
+                         // but _feat_compatible gets called from different paths
+                         // so we really want to make sure we don't place wall
+                         // monsters in runed doors, ghost vault walls etc.
+                          && !is_notable_terrain(actual_feat);
 }
 
 static bool _hab_requires_mon_flight(dungeon_feature_type g)
@@ -147,7 +155,7 @@ bool monster_habitable_grid(monster_type mt,
                             dungeon_feature_type actual_grid,
                             dungeon_feature_type wanted_grid)
 {
-    // No monster may be placed in walls etc.
+    // Normal monsters can't traverse solid features
     if (!mons_class_can_pass(mt, actual_grid))
         return false;
 
@@ -165,11 +173,6 @@ bool monster_habitable_grid(monster_type mt,
         return false;
     }
 
-    const dungeon_feature_type feat_preferred =
-        habitat2grid(mons_class_primary_habitat(mt));
-    const dungeon_feature_type feat_nonpreferred =
-        habitat2grid(mons_class_secondary_habitat(mt));
-
     // If the caller insists on a specific feature type, try to honour
     // the request. This allows the builder to place amphibious
     // creatures only on land, or flying creatures only on lava, etc.
@@ -178,6 +181,11 @@ bool monster_habitable_grid(monster_type mt,
     {
         return _feat_compatible(wanted_grid, actual_grid);
     }
+
+    const dungeon_feature_type feat_preferred =
+        habitat2grid(mons_class_primary_habitat(mt));
+    const dungeon_feature_type feat_nonpreferred =
+        habitat2grid(mons_class_secondary_habitat(mt));
 
     if (actual_grid == DNGN_MALIGN_GATEWAY)
     {
@@ -203,6 +211,67 @@ bool monster_habitable_grid(monster_type mt,
         return true;
 
     return false;
+}
+
+/**
+ * Is there at least one non solid tile adjacent?
+ */
+bool has_non_solid_adjacent(coord_def pos)
+{
+    // Solid features only inhabitable one tile deep so monsters don't get
+    // lost inside large areas of wall. Check there is at least one non-solid
+    // adjacent.
+    for (adjacent_iterator ai(pos); ai; ++ai)
+    {
+        if (!in_bounds(*ai))
+            continue;
+        if (!feat_is_solid(env.grid(*ai)))
+            return true;
+    }
+    return false;
+}
+
+static dungeon_feature_type _monster_primary_habitat_feature(monster_type mc)
+{
+    if (_is_random_monster(mc))
+        return DNGN_FLOOR;
+    return habitat2grid(mons_class_primary_habitat(mc));
+}
+
+/**
+ * Is this position an appropriate habitat for the given monster type?
+ *
+ * @param mt the monster class to check against
+ * @param pos the grid position to check
+ * @param preferred if true, only pass the test is this is the monster's primary habitat
+ */
+bool monster_habitable_position(monster_type mt, coord_def pos, bool preferred)
+{
+    dungeon_feature_type actual = env.grid(pos);
+    if (!monster_habitable_grid(mt, actual,
+                                preferred ? _monster_primary_habitat_feature(mt)
+                                          : DNGN_UNSEEN))
+    {
+        return false;
+    }
+    // Non-solid features are always inhabitable
+    if (!feat_is_solid(actual))
+        return true;
+
+    return has_non_solid_adjacent(pos);
+}
+
+void monster_has_moved(const monster& mons, const coord_def& from, const coord_def& to)
+{
+    // Wall-inhabiting creatures cause LOS updates as they move on or off walls as
+    // it affects the opacity of the wall for the purposes of targeting etc.
+    if (mons_habitat(mons) == HT_WALLS)
+    {
+        if (feat_is_solid(env.grid(from)))
+            los_terrain_changed(from);
+        if (feat_is_solid(env.grid(to)))
+            los_terrain_changed(to);
+    }
 }
 
 static int _ood_fuzzspan(level_id &place)
@@ -518,10 +587,7 @@ monster_type fixup_zombie_type(const monster_type cls,
     return base_type;
 }
 
-// Checks if the monster is ok to place at mg_pos. If force_location
-// is true, then we'll be less rigorous in our checks, in particular
-// allowing land monsters to be placed in shallow water and water
-// creatures in fountains.
+// Checks if the monster is ok to place at mg_pos.
 static bool _valid_monster_generation_location(const mgen_data &mg,
                                                 const coord_def &mg_pos)
 {
@@ -537,7 +603,9 @@ static bool _valid_monster_generation_location(const mgen_data &mg,
     }
 
     const monster_type montype = fixup_zombie_type(mg.cls, mg.base_type);
-    if (!monster_habitable_grid(montype, env.grid(mg_pos), mg.preferred_grid_feature)
+    if (!monster_habitable_position(montype, mg_pos)
+        || (mg.preferred_grid_feature != DNGN_UNSEEN
+            && !monster_habitable_grid(montype, env.grid(mg_pos), mg.preferred_grid_feature))
         || (mg.behaviour != BEH_FRIENDLY
             && is_sanctuary(mg_pos)
             && !mons_is_tentacle_segment(montype)))
@@ -2725,20 +2793,6 @@ monster* mons_place(mgen_data mg)
     return creation;
 }
 
-static dungeon_feature_type _monster_primary_habitat_feature(monster_type mc)
-{
-    if (_is_random_monster(mc))
-        return DNGN_FLOOR;
-    return habitat2grid(mons_class_primary_habitat(mc));
-}
-
-static dungeon_feature_type _monster_secondary_habitat_feature(monster_type mc)
-{
-    if (_is_random_monster(mc))
-        return DNGN_FLOOR;
-    return habitat2grid(mons_class_secondary_habitat(mc));
-}
-
 static bool _valid_spot(coord_def pos, bool check_mask=true)
 {
     if (actor_at(pos))
@@ -2751,22 +2805,22 @@ static bool _valid_spot(coord_def pos, bool check_mask=true)
 class newmons_square_find : public travel_pathfind
 {
 private:
-    dungeon_feature_type feat_wanted;
+    monster_type mons_class;
     int maxdistance;
 
     int best_distance;
     int nfound;
+public:
     bool levelgen;
+    bool preferred;
 public:
-    // Terrain that we can't spawn on, but that we can skip through.
-    set<dungeon_feature_type> passable;
-public:
-    newmons_square_find(dungeon_feature_type grdw,
+    newmons_square_find(monster_type _mons_class,
                         const coord_def &pos,
                         int maxdist = 0,
-                        bool _levelgen=true)
-        :  feat_wanted(grdw), maxdistance(maxdist),
-           best_distance(0), nfound(0), levelgen(_levelgen)
+                        bool _levelgen=true, bool _preferred=true)
+        :  mons_class(_mons_class), maxdistance(maxdist),
+           best_distance(0), nfound(0), levelgen(_levelgen),
+           preferred(_preferred)
     {
         start = pos;
     }
@@ -2781,16 +2835,16 @@ public:
     bool path_flood(const coord_def &/*c*/, const coord_def &dc) override
     {
         if (best_distance && traveled_distance > best_distance)
-            return true;
+            return false;
 
         if (!in_bounds(dc)
             || (maxdistance > 0 && traveled_distance > maxdistance))
         {
             return false;
         }
-        if (!_feat_compatible(feat_wanted, env.grid(dc)))
+        if (!monster_habitable_position(mons_class, dc, preferred))
         {
-            if (passable.count(env.grid(dc)))
+            if (monster_habitable_position(mons_class, dc))
                 good_square(dc);
             return false;
         }
@@ -2813,23 +2867,12 @@ coord_def find_newmons_square_contiguous(monster_type mons_class,
                                          int distance,
                                          bool levelgen)
 {
-    coord_def p;
-
-    const dungeon_feature_type feat_preferred =
-        _monster_primary_habitat_feature(mons_class);
-    const dungeon_feature_type feat_nonpreferred =
-        _monster_secondary_habitat_feature(mons_class);
-
-    newmons_square_find nmpfind(feat_preferred, start, distance, levelgen);
-    const coord_def pp = nmpfind.pathfind();
-    p = pp;
-
-    if (feat_nonpreferred != feat_preferred && !in_bounds(pp))
-    {
-        newmons_square_find nmsfind(feat_nonpreferred, start, distance);
-        const coord_def ps = nmsfind.pathfind();
-        p = ps;
-    }
+    newmons_square_find nmpfind(mons_class, start, distance, levelgen, true);
+    coord_def p = nmpfind.pathfind();
+    if (in_bounds(p))
+        return p;
+    nmpfind.preferred = false;
+    p = nmpfind.pathfind();
 
     return in_bounds(p) ? p : coord_def(-1, -1);
 }
@@ -2971,7 +3014,7 @@ bool find_habitable_spot_near(const coord_def& where, monster_type mon_type,
         if (!cell_see_cell(where, *ri, LOS_NO_TRANS))
             continue;
 
-        if (!monster_habitable_grid(mon_type, env.grid(*ri)))
+        if (!monster_habitable_position(mon_type, *ri))
             continue;
 
         if (in_player_sight && !you.see_cell_no_trans(*ri))

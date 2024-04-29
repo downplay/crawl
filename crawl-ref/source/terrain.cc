@@ -395,9 +395,9 @@ bool feat_can_wall_jump_against(dungeon_feature_type feat)
 
 /** Can you move into this cell in normal play?
  */
-bool cell_is_solid(const coord_def &c)
+bool cell_is_solid(const coord_def &c, bool targetting)
 {
-    return feat_is_solid(env.grid(c));
+    return feat_is_solid(env.grid(c)) && !(targetting && actor_at(c));
 }
 
 /** Can a human stand on this feature without flying?

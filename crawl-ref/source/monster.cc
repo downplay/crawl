@@ -319,6 +319,11 @@ bool monster::is_habitable_feat(dungeon_feature_type actual_grid) const
     return monster_habitable_grid(this, actual_grid);
 }
 
+bool monster::is_habitable(const coord_def &_pos) const
+{
+    return monster_habitable_position(type, _pos);
+}
+
 bool monster::can_drown() const
 {
     // Presumably a electric eel in lava or a lavafish in deep water could
@@ -2643,10 +2648,13 @@ bool monster::fumbles_attack()
                  ? "becomes momentarily stuck in the liquid earth."
                  : env.grid(pos()) == DNGN_TOXIC_BOG
                  ? "becomes momentarily stuck in the toxic bog."
+                 : feat_has_dry_floor(env.grid(pos()))
+                 ? "flops around on the ground."
                  : "splashes around in the water.");
         }
         else if (player_can_hear(pos(), LOS_RADIUS))
-            mprf(MSGCH_SOUND, "You hear a splashing noise.");
+            mprf(MSGCH_SOUND, feat_has_dry_floor(env.grid(pos()))
+                 ? "You hear a flopping noise." : "You hear a splashing noise.");
 
         return true;
     }
@@ -5493,8 +5501,12 @@ bool monster::move_to_pos(const coord_def &newpos, bool clear_net, bool force)
     if (in_bounds(pos()) && env.mgrid(pos()) == index)
         env.mgrid(pos()) = NON_MONSTER;
 
+    const coord_def oldpos = pos();
+
     // Set monster x,y to new value.
     moveto(newpos, clear_net);
+
+    monster_has_moved(*this, oldpos, newpos);
 
     // Set new monster grid pointer to this monster.
     env.mgrid(newpos) = index;
@@ -5548,6 +5560,14 @@ bool monster::swap_with(monster* other)
 
     clear_far_engulf();
     other->clear_far_engulf();
+
+    // Here currently for wall monsters to trigger LOS updates
+    // Note: Probably a very rare event now as the only two wall
+    // monsters are at different depths. Also we don't technically need
+    // to do anything if the monsters were *both* in walls as LOS
+    // won't be changed but this is safer.
+    monster_has_moved(*other, new_pos, old_pos);
+    monster_has_moved(*this, old_pos, new_pos);
 
     return true;
 }
