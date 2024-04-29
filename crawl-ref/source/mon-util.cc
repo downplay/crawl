@@ -149,6 +149,8 @@ dungeon_feature_type habitat2grid(habitat_type ht)
         return DNGN_DEEP_WATER;
     case HT_LAVA:
         return DNGN_LAVA;
+    case HT_WALLS:
+        return DNGN_ROCK_WALL;
     case HT_LAND:
     case HT_AMPHIBIOUS:
     case HT_AMPHIBIOUS_LAVA:
@@ -3420,6 +3422,8 @@ habitat_type mons_class_secondary_habitat(monster_type mc)
         ht = HT_WATER;
     if (ht == HT_AMPHIBIOUS_LAVA)
         ht = HT_LAVA;
+    if (ht == HT_WALLS)
+        ht = HT_LAND;
     return ht;
 }
 
@@ -4070,10 +4074,33 @@ bool monster_senior(const monster& m1, const monster& m2, bool fleeing)
 
 bool mons_class_can_pass(monster_type mc, const dungeon_feature_type grid)
 {
+    // Malign portal *only* passable by eldritch horrors
     if (grid == DNGN_MALIGN_GATEWAY)
     {
         return mc == MONS_ELDRITCH_TENTACLE
                || mc == MONS_ELDRITCH_TENTACLE_SEGMENT;
+    }
+
+    // Wall monsters can move on most solid features; ideally we'd prevent them going
+    // more than one tile deep but this test is telling us if they *can* exist on the
+    // terrain
+    // XX: Also maybe lookup monster flags/habitat here instead if we start getting
+    // a lot more special cases
+    if (_mons_class_habitat(mc) == HT_WALLS)
+    {
+        // Aversion to even shallow water (but it's ok as they can usually get
+        // around it via walls)
+        if (feat_is_water(grid))
+            return false;
+        if (feat_is_solid(grid)) {
+            // Prevent escape from ghost vaults and so on
+            // (TODO: maybe permarock should block to prevent portal vault escape?)
+            auto def = get_feature_def(grid);
+            if (def.is_notable())
+                return false;
+            // All other solids are fine
+            return true;
+        }
     }
 
     return !feat_is_solid(grid);

@@ -104,7 +104,13 @@ static bool _feat_compatible(dungeon_feature_type wanted_feat,
 {
     return wanted_feat == actual_feat
            || wanted_feat == DNGN_DEEP_WATER && feat_is_water(actual_feat)
-           || wanted_feat == DNGN_FLOOR && feat_has_solid_floor(actual_feat);
+           || wanted_feat == DNGN_FLOOR && feat_has_solid_floor(actual_feat)
+           || wanted_feat == DNGN_ROCK_WALL && feat_is_solid(actual_feat)
+                         // This check is duplicated in monster_habitable_grid
+                         // but _feat_compatible gets called from different paths
+                         // so we really want to make sure we don't place wall
+                         // monsters in runed doors, ghost vault walls etc.
+                          && !get_feature_def(actual_feat).is_notable();
 }
 
 static bool _hab_requires_mon_flight(dungeon_feature_type g)
@@ -149,7 +155,7 @@ bool monster_habitable_grid(monster_type mt,
                             dungeon_feature_type actual_grid,
                             dungeon_feature_type wanted_grid)
 {
-    // No monster may be placed in walls etc.
+    // Normal monsters can't traverse solid features
     if (!mons_class_can_pass(mt, actual_grid))
         return false;
 
@@ -167,11 +173,6 @@ bool monster_habitable_grid(monster_type mt,
         return false;
     }
 
-    const dungeon_feature_type feat_preferred =
-        habitat2grid(mons_class_primary_habitat(mt));
-    const dungeon_feature_type feat_nonpreferred =
-        habitat2grid(mons_class_secondary_habitat(mt));
-
     // If the caller insists on a specific feature type, try to honour
     // the request. This allows the builder to place amphibious
     // creatures only on land, or flying creatures only on lava, etc.
@@ -180,6 +181,11 @@ bool monster_habitable_grid(monster_type mt,
     {
         return _feat_compatible(wanted_grid, actual_grid);
     }
+
+    const dungeon_feature_type feat_preferred =
+        habitat2grid(mons_class_primary_habitat(mt));
+    const dungeon_feature_type feat_nonpreferred =
+        habitat2grid(mons_class_secondary_habitat(mt));
 
     if (actual_grid == DNGN_MALIGN_GATEWAY)
     {
@@ -205,6 +211,19 @@ bool monster_habitable_grid(monster_type mt,
         return true;
 
     return false;
+}
+
+void monster_has_moved(const monster& mons, const coord_def& from, const coord_def& to)
+{
+    // Wall-inhabiting creatures cause LOS updates as they move on or off walls as
+    // it affects the opacity of the wall for the purposes of targeting etc.
+    if (mons_habitat(mons) == HT_WALLS)
+    {
+        if (feat_is_solid(env.grid(from)))
+            los_terrain_changed(from);
+        if (feat_is_solid(env.grid(to)))
+            los_terrain_changed(to);
+    }
 }
 
 static int _ood_fuzzspan(level_id &place)

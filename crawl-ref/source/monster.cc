@@ -5451,8 +5451,12 @@ bool monster::move_to_pos(const coord_def &newpos, bool clear_net, bool force)
     if (in_bounds(pos()) && env.mgrid(pos()) == index)
         env.mgrid(pos()) = NON_MONSTER;
 
+    const coord_def oldpos = pos();
+
     // Set monster x,y to new value.
     moveto(newpos, clear_net);
+
+    monster_has_moved(*this, oldpos, newpos);
 
     // Set new monster grid pointer to this monster.
     env.mgrid(newpos) = index;
@@ -5506,6 +5510,14 @@ bool monster::swap_with(monster* other)
 
     clear_far_engulf();
     other->clear_far_engulf();
+
+    // Here currently for wall monsters to trigger LOS updates
+    // Note: Probably a very rare event now as the only two wall
+    // monsters are at different depths. Also we don't technically need
+    // to do anything if the monsters were *both* in walls as LOS
+    // won't be changed but this is safer.
+    monster_has_moved(*other, new_pos, old_pos);
+    monster_has_moved(*this, old_pos, new_pos);
 
     return true;
 }

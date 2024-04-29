@@ -290,8 +290,6 @@ static bool _swap_monsters(monster& mover, monster& moved)
     return true;
 }
 
-
-
 static energy_use_type _get_swim_or_move(monster& mon)
 {
     const dungeon_feature_type feat = env.grid(mon.pos());
