@@ -2656,10 +2656,13 @@ bool monster::fumbles_attack()
                  ? "becomes momentarily stuck in the liquid earth."
                  : env.grid(pos()) == DNGN_TOXIC_BOG
                  ? "becomes momentarily stuck in the toxic bog."
+                 : feat_has_dry_floor(env.grid(pos()))
+                 ? "flops around on the ground."
                  : "splashes around in the water.");
         }
         else if (player_can_hear(pos(), LOS_RADIUS))
-            mprf(MSGCH_SOUND, "You hear a splashing noise.");
+            mprf(MSGCH_SOUND, feat_has_dry_floor(env.grid(pos()))
+                 ? "You hear a flopping noise." : "You hear a splashing noise.");
 
         return true;
     }
