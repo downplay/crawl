@@ -3059,6 +3059,11 @@ wolf
 
 A strong wild canine, with sharp teeth and a healthy appetite.
 %%%%
+wolf lichen
+
+A carpet of colourful but toxic moss-like fungus often found in woodlands. But
+why does it seem to be flowing toward you, and are those eyes that are blinking?
+%%%%
 wolf spider
 
 A hairy fast-moving hunting spider with vicious mandibles, the size of a wolf.
