@@ -94,7 +94,7 @@ static const vector<pop_entry> population[] =
   {  4,  8,  500, PEAK, MONS_JELLY },
   {  4,  8,  350, PEAK, MONS_SLEEPCAP },
   {  4,  8,  350, PEAK, MONS_BLACK_BEAR },
-
+  {  6, 20,  200, PEAK, MONS_WOLF_LICHEN },
   {  4, 10,  200, PEAK, MONS_GNOLL_BOUDA },
   {  4, 12,  150, PEAK, MONS_ORC_PRIEST },
   {  4, 14,  500, PEAK, MONS_ORC_WIZARD },
@@ -136,7 +136,6 @@ static const vector<pop_entry> population[] =
   { 11, 21,  192, PEAK, MONS_SKELETAL_WARRIOR },
   { 11, 23,  540, SEMI, MONS_BOULDER_BEETLE},
   { 12, 19,  475, SEMI, MONS_DEEP_ELF_FIRE_MAGE },
-  { 12, 22,  440, FALL, MONS_SLIME_CREATURE },
   { 13, 20,  150, SEMI, MONS_MELIAI },
   { 13, 21,  192, PEAK, MONS_DEATH_KNIGHT },
   { 13, 21,   89, PEAK, MONS_RAKSHASA },

@@ -2028,6 +2028,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_WEEPING_SKULL, { {}, {{ BAND_WEEPING_SKULLS, {0, 1} }}}},
     { MONS_PROTEAN_PROGENITOR, { {}, {{ BAND_PROTEAN_PROGENITORS, {0, 1} }}}},
     { MONS_THERMIC_DYNAMO, { {}, {{ BAND_THERMIC_DYNAMOS, {0, 1} }}}},
+    { MONS_WOLF_LICHEN, { {}, {{ BAND_WOLF_LICHENS, {0, 1} }}}},
 };
 
 static band_type _choose_band(monster_type mon_type, int *band_size_p,
@@ -2168,12 +2169,19 @@ static band_type _choose_band(monster_type mon_type, int *band_size_p,
             band_size = 1;
         break;
 
+    case MONS_WOLF_LICHEN:
+        band_size = random_range(2 + you.depth / 5, 5 + you.depth);
+        break;
+
     default: ;
     }
 
     if (band != BAND_NO_BAND && band_size == 0)
         band = BAND_NO_BAND;
 
+    // TODO: Allow bigger lichen bands? But it would fail right now because they get
+    // put in an array that is only BIG_BAND size
+    //  && mon_type != MONS_WOLF_LICHEN)
     if (band_size >= BIG_BAND)
         band_size = BIG_BAND - 1;
 
@@ -2271,6 +2279,7 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
     { BAND_BLASTMINER,          {{{MONS_KOBOLD_BLASTMINER, 1}}}},
     { BAND_THERMIC_DYNAMOS,     {{{MONS_THERMIC_DYNAMO, 1}}}},
     { BAND_PROTEAN_PROGENITORS, {{{MONS_PROTEAN_PROGENITOR, 1}}}},
+    { BAND_WOLF_LICHENS,    {{{MONS_WOLF_LICHEN, 1}}}},
     { BAND_DEEP_ELF_KNIGHT,     {{{MONS_DEEP_ELF_AIR_MAGE, 46},
                                   {MONS_DEEP_ELF_FIRE_MAGE, 46},
                                   {MONS_DEEP_ELF_KNIGHT, 24},

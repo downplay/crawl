@@ -4158,7 +4158,7 @@ bool mons_class_can_pass(monster_type mc, const dungeon_feature_type grid)
 
         // Aversion to even shallow water (but it's ok as they can usually get
         // around it via walls)
-        if (feat_is_water(grid))
+        if (feat_is_water(grid) && !feat_is_tree(grid)) // Mangroves
             return false;
 
         if (feat_is_solid(grid))
