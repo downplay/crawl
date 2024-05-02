@@ -338,7 +338,7 @@ jobs:
         run: |
           brew install pkg-config libpng
       - name: Install pyyaml
-        run: pip3 install pyyaml
+        run: pip3 install pyyaml --break-system-packages
       - name: diagnostic
         run: |
           echo $PATH
