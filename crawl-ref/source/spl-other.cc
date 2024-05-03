@@ -487,14 +487,14 @@ spret cast_intoxicate(int pow, bool fail, bool tracer)
     return spret::success;
 }
 
-vector<coord_def> find_sigil_locations(bool tracer)
+vector<coord_def> find_sigil_locations(const actor &caster, coord_def where, bool tracer)
 {
     vector<coord_def> positions;
-    for (radius_iterator ri(you.pos(), 2, C_SQUARE); ri; ++ri)
+    for (radius_iterator ri(where, 2, C_SQUARE); ri; ++ri)
     {
-        if (you.see_cell(*ri) && env.grid(*ri) == DNGN_FLOOR
+        if (caster.see_cell(*ri) && env.grid(*ri) == DNGN_FLOOR
             && (!actor_at(*ri) || (actor_at(*ri) && tracer
-                                   && !you.can_see(*actor_at(*ri)))))
+                                   && !caster.can_see(*actor_at(*ri)))))
         {
             positions.push_back(*ri);
         }
@@ -503,16 +503,30 @@ vector<coord_def> find_sigil_locations(bool tracer)
     return positions;
 }
 
-spret cast_sigil_of_binding(int pow, bool fail, bool tracer)
+const coord_def sigil_target_location(const actor &caster)
 {
+    if (caster.is_player())
+        return you.pos();
+    auto foe = caster.as_monster()->get_foe();
+    // Monster version casts sigils *around* their foe instead
+    return foe ? foe->pos() : coord_def(0, 0);
+}
+
+spret cast_sigil_of_binding(const actor &caster, int pow, bool fail, bool tracer)
+{
+    coord_def where = sigil_target_location(caster);
+    if (!in_bounds(where))
+        return spret::abort;
+    actor *who = actor_at(where);
+
     // Fill list of viable locations to create the sigil (keeping separate lists
     // for distance 1 and 2)
-    vector<coord_def> positions = find_sigil_locations(tracer);
+    vector<coord_def> positions = find_sigil_locations(caster, where, tracer);
     vector<coord_def> sigil_pos_d1;
     vector<coord_def> sigil_pos_d2;
     for (auto p : positions)
     {
-        if (grid_distance(you.pos(), p) == 1)
+        if (grid_distance(where, p) == 1)
             sigil_pos_d1.push_back(p);
         else
             sigil_pos_d2.push_back(p);
@@ -528,12 +542,19 @@ spret cast_sigil_of_binding(int pow, bool fail, bool tracer)
     fail_check();
     if (!success)
     {
-        mpr("There was nowhere nearby to inscribe sigils!");
+        if (caster.is_player())
+            mpr("There was nowhere nearby to inscribe sigils!");
+        else if (you.see_cell(where))
+        {
+            mprf("Glowing lines form in the air around %s then dissipate.",
+                 who->name(mons_aligned(&you, who) ? DESC_YOUR : DESC_THE).c_str());
+        }
         return spret::success;
     }
 
-    // Remove any old sigil that may still be active.
-    timeout_binding_sigils();
+    // Remove any old sigils that may still be active.
+    if (caster.is_player())
+        timeout_binding_sigils();
 
     int dur = BASELINE_DELAY * random_range(5 + div_rand_round(pow, 4),
                                             8 + div_rand_round(pow, 2));
@@ -543,10 +564,13 @@ spret cast_sigil_of_binding(int pow, bool fail, bool tracer)
     shuffle_array(sigil_pos_d1);
     shuffle_array(sigil_pos_d2);
 
+    int seen = 0;
     if (!sigil_pos_d1.empty())
     {
         temp_change_terrain(sigil_pos_d1[0], DNGN_BINDING_SIGIL, dur,
-                            TERRAIN_CHANGE_BINDING_SIGIL, you.mid);
+                            TERRAIN_CHANGE_BINDING_SIGIL, caster.mid);
+        if (you.see_cell(sigil_pos_d1[0]))
+            seen++;
     }
 
     if (!sigil_pos_d2.empty())
@@ -563,8 +587,10 @@ spret cast_sigil_of_binding(int pow, bool fail, bool tracer)
                     continue;
 
                 temp_change_terrain(sigil_pos_d2[i], DNGN_BINDING_SIGIL, dur,
-                                    TERRAIN_CHANGE_BINDING_SIGIL, you.mid);
+                                    TERRAIN_CHANGE_BINDING_SIGIL, caster.mid);
                 non_adj = true;
+                if (you.see_cell(sigil_pos_d2[i]))
+                    seen++;
                 break;
             }
         }
@@ -574,24 +600,53 @@ spret cast_sigil_of_binding(int pow, bool fail, bool tracer)
         if (!non_adj)
         {
             temp_change_terrain(sigil_pos_d2[0], DNGN_BINDING_SIGIL, dur,
-                                TERRAIN_CHANGE_BINDING_SIGIL, you.mid);
+                                TERRAIN_CHANGE_BINDING_SIGIL, caster.mid);
+            if (you.see_cell(sigil_pos_d2[0]))
+                seen++;
         }
     }
 
-    if (!sigil_pos_d1.empty() && !sigil_pos_d2.empty())
-        mpr("You inscribe a pair of binding sigils.");
+    if (seen > 0)
+    {
+        mprf("%s %s a %sbinding sigil%s.", caster.name(DESC_THE).c_str(),
+              caster.conj_verb("inscribe").c_str(),
+              seen == 2 ? "pair of " : "", seen == 2 ? "s" : "");
+    }
     else
-        mpr("You inscribe a binding sigil.");
-
+        mpr("You hear the faint scratching of a quill on parchment.");
     return spret::success;
 }
 
 void trigger_binding_sigil(actor& actor)
 {
+    if (!actor.is_player())
+    {
+        for (map_marker *mark : env.markers.get_markers_at(actor.pos()))
+        {
+            if (mark->get_type() != MAT_TERRAIN_CHANGE)
+                continue;
+            map_terrain_change_marker *marker =
+                    dynamic_cast<map_terrain_change_marker*>(mark);
+            if (marker->mon_num == (int)actor.mid)
+            {
+                if (you.see_cell(actor.pos()))
+                {
+                    mprf("%s deftly avoids being bound by %s own sigil!",
+                         actor.name(DESC_THE).c_str(),
+                         actor.pronoun(PRONOUN_POSSESSIVE).c_str());
+                }
+                return;
+            }
+        }
+    }
+
     if (actor.is_binding_sigil_immune())
     {
-        mprf("%s cannot be bound by the sigil due to %s high momentum!",
-             actor.name(DESC_THE).c_str(), actor.pronoun(PRONOUN_POSSESSIVE).c_str());
+        if (you.see_cell(actor.pos()))
+        {
+            mprf("%s cannot be bound by the sigil due to %s high momentum!",
+                actor.name(DESC_THE).c_str(), actor.pronoun(PRONOUN_POSSESSIVE).c_str());
+        }
         return;
     }
 
@@ -599,11 +654,12 @@ void trigger_binding_sigil(actor& actor)
     {
         mprf(MSGCH_WARN, "You move over the binding sigil and are bound in place!");
         you.increase_duration(DUR_NO_MOMENTUM, random_range(3, 6));
-        revert_terrain_change(you.pos(), TERRAIN_CHANGE_BINDING_SIGIL);
+        revert_terrain_change(actor.pos(), TERRAIN_CHANGE_BINDING_SIGIL);
         return;
     }
 
     monster* m = actor.as_monster();
+    // XX: Store spell power on marker now
     const int pow = calc_spell_power(SPELL_SIGIL_OF_BINDING);
     const int dur = max(2, random_range(4 + div_rand_round(pow, 12),
                                         7 + div_rand_round(pow, 8))

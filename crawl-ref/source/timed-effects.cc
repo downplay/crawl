@@ -945,12 +945,14 @@ void timeout_tombs(int duration)
 
 void timeout_binding_sigils()
 {
+    // Only to be called for player sigils
     int num_seen = 0;
     for (map_marker *mark : env.markers.get_all(MAT_TERRAIN_CHANGE))
     {
         map_terrain_change_marker *marker =
                 dynamic_cast<map_terrain_change_marker*>(mark);
-        if (marker->change_type == TERRAIN_CHANGE_BINDING_SIGIL)
+        if (marker->change_type == TERRAIN_CHANGE_BINDING_SIGIL
+            && marker->mon_num == (int)you.mid)
         {
             if (you.see_cell(marker->pos))
                 num_seen++;
