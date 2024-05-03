@@ -135,6 +135,7 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_MAGNETISED,      MB_MAGNETISED },
     { ENCH_RIMEBLIGHT,      MB_RIMEBLIGHT },
     { ENCH_ARMED,           MB_ARMED },
+    { ENCH_DAMPENED,        MB_DAMPENED },
 };
 
 static monster_info_flags ench_to_mb(const monster& mons, enchant_type ench)
@@ -1739,6 +1740,10 @@ int monster_info::spell_range(spell_type spell, int pow) const
     if (pow < 0)
         pow = mons_power_for_hd(spell, spell_hd(spell));
     int range = spell_range_base(spell, pow);
+
+    if (has_trivial_ench(ENCH_DAMPENED))
+        range = div_round_up(range, 2);
+
     return spell_range_limit(range);
 }
 

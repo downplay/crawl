@@ -1046,6 +1046,11 @@ int player::spell_range(spell_type spell, int pow, int limit) const
 
     int range = spell_range_base(spell, pow);
 
+    // Half rounded up for range dampening
+    if (duration[DUR_DAMPENED])
+        range = div_round_up(range, 2);
+
+    // Vehumet bonus applied after the halving so followers still always get +1
     if (have_passive(passive_t::spells_range) && vehumet_boosts_spell_range(spell))
         range++;
 

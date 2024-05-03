@@ -1426,6 +1426,9 @@ int monster::spell_range(spell_type spell, int pow, int limit) const
 
     int range = spell_range_base(spell, pow);
 
+    if (has_ench(ENCH_DAMPENED))
+        range = div_round_up(range, 2);
+
     if (god == GOD_VEHUMET && vehumet_boosts_spell_range(spell))
         range++;
 

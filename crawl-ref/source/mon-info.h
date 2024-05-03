@@ -232,6 +232,7 @@ enum monster_info_flags
     MB_MAGNETISED,
     MB_RIMEBLIGHT,
     MB_ARMED,
+    MB_DAMPENED,
     NUM_MB_FLAGS
 };
 
