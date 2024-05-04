@@ -32,6 +32,9 @@ struct mon_aura_data
                   {}
 };
 
+static const vector<string> _dampen_nouns = { "treacle", "sludge", "pea soup",
+                                              "syrup", "gravy", "tar" };
+
 static const vector<mon_aura_data> aura_map =
 {
     {MONS_TORPOR_SNAIL,
@@ -55,6 +58,17 @@ static const vector<mon_aura_data> aura_map =
 
     {MONS_POLTERGUARDIAN,
         ENCH_REPEL_MISSILES, 1, false},
+
+    {MONS_HALFMOON_MOTH,
+        ENCH_DAMPENED, 1, true, DUR_DAMPENED, HALFMOON_DAMPEN_KEY,
+         nullptr,
+         [](const monster& source)
+            {  mprf("As %s beats %s wings, the atmosphere feels a bit like %s.",
+                    source.name(DESC_THE).c_str(),
+                    source.pronoun(PRONOUN_POSSESSIVE).c_str(),
+                    random_choose("treacle", "sludge", "pea soup", "syrup",
+                                  "gravy", "tar", "molasses", "cotton wool"));
+            }},
 };
 
 static mon_aura_data _get_aura_for(const monster& mon)

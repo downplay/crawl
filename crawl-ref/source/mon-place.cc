@@ -1981,7 +1981,11 @@ static const map<monster_type, band_set> bands_by_leader = {
         return you.where_are_you == BRANCH_DEPTHS;
     }},                           {{ BAND_SPARK_WASPS, {1, 4} }}}},
     { MONS_HOWLER_MONKEY,   { {2, 6}, {{ BAND_HOWLER_MONKEY, {1, 3} }}}},
-    { MONS_GLASS_EYE,   { {0, 0, []() {
+    { MONS_GLASS_EYE,       { {0, 0, []() {
+        return branch_has_monsters(you.where_are_you)
+            || !vault_mon_types.empty();
+    }},                           {{ BAND_RANDOM_SINGLE, {1, 2} }}}},
+    { MONS_HALFMOON_MOTH,   { {0, 0, []() {
         return branch_has_monsters(you.where_are_you)
             || !vault_mon_types.empty();
     }},                           {{ BAND_RANDOM_SINGLE, {1, 2} }}}},
@@ -2212,8 +2216,10 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
     { BAND_BOGGARTS,            {{{MONS_BOGGART, 1}}}},
     { BAND_CENTAURS,            {{{MONS_CENTAUR, 1}}}},
     { BAND_YAKTAURS,            {{{MONS_YAKTAUR_GLYPHCASTER, 1},
-                                  {MONS_POLTERGUARDIAN, 1},
                                   {MONS_YAKTAUR, 1}},
+                                 {{MONS_POLTERGUARDIAN, 2},
+                                  {MONS_HALFMOON_MOTH, 2},
+                                  {MONS_YAKTAUR, 8}},
                                  {{MONS_YAKTAUR, 1}}}},
     { BAND_MERFOLK_IMPALER,     {{{MONS_MERFOLK, 1}}}},
     { BAND_MERFOLK_JAVELINEER,  {{{MONS_MERFOLK, 1}}}},

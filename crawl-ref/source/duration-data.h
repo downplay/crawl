@@ -641,7 +641,7 @@ static const duration_def duration_data[] =
       "You may recruit a defeated apostle into your service", D_EXPIRES,
        {{ "", end_beogh_recruit_window}}},
     { DUR_DAMPENED, RED, "-Range", "magic range is reduced", "reduced range",
-      "Your magical abilities have reduced range.", D_DISPELLABLE,
+      "Your magical abilities have reduced range.", D_NO_FLAGS,
       {{ "Your magical range is fully restored." }}},
 
     // The following are visible in wizmode only, or are handled

@@ -132,6 +132,7 @@ enum band_type
     BAND_WEEPING_SKULLS,
     BAND_THERMIC_DYNAMOS,
     BAND_ORB_SPIDERS,
+    BAND_HALFMOON_MOTH,
     NUM_BANDS                   // always last
 };
 

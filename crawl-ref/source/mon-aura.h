@@ -10,6 +10,7 @@
 
 #define TORPOR_SLOWED_KEY "torpor_slowed"
 #define OPHAN_MARK_KEY "ophan_mark"
+#define HALFMOON_DAMPEN_KEY "halfmoon_dampen"
 
 class mon_enchant;
 
