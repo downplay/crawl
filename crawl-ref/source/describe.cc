@@ -6167,6 +6167,8 @@ static string _monster_stat_description(const monster_info& mi, bool mark_spells
             else
                 result << " (at present)";
         }
+        if (mi.floundering())
+            result << " (floundering)";
         result << ".\n";
     }
     result << _monster_attacks_description(mi);
