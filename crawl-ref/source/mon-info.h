@@ -233,6 +233,7 @@ enum monster_info_flags
     MB_MAGNETISED,
     MB_RIMEBLIGHT,
     MB_ARMED,
+    MB_FLOUNDERING,
     NUM_MB_FLAGS
 };
 
@@ -423,6 +424,7 @@ struct monster_info : public monster_info_base
     bool cannot_move() const;
     bool airborne() const;
     bool ground_level() const;
+    bool floundering() const;
 
     bool is_named() const
     {
