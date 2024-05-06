@@ -323,7 +323,7 @@ bool monster::floundering_at(const coord_def p) const
                 // deep water, who flounder despite being treated as amphibious.
                 && mons_habitat(*this, true) != HT_AMPHIBIOUS
                 && !extra_balanced_at(p)))
-            || (feat_has_solid_floor(grid)
+            || (!feat_is_solid(grid) && feat_has_solid_floor(grid)
                 && mons_primary_habitat(*this) == HT_WALLS)
            && ground_level();
 }

@@ -102,7 +102,7 @@ opacity_type opacity_mons_walls::operator()(const coord_def& p) const
     const bool impassable = other_mons
                             && other_mons->is_stationary()
                             && mons_aligned(mon, other_mons);
-    return impassable ? OPC_OPAQUE : opc_walls(p);
+    return (impassable || opc_walls(p) == OPC_OPAQUE) ? OPC_OPAQUE : OPC_CLEAR;
 }
 
 opacity_type opacity_solid::operator()(const coord_def& p) const
