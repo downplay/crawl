@@ -1729,6 +1729,12 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    {  MST_YAKTAUR_TOTEMBEARER,
+      {
+       { SPELL_MARTYRS_KNELL, 10, MON_SPELL_PRIEST },
+      }
+    },
+
     // ('d') Draconians.
     { MST_BAI_SUZHEN,
       {

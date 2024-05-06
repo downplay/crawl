@@ -1,0 +1,20 @@
+name: "yaktaur totembearer"
+glyph: {char: "c", colour: lightblue}
+flags: [speaks, warm_blood]
+xp_mult: 10
+species: yaktaur
+will: 90
+attacks:
+ - {type: hit, damage: 25}
+ - {type: bash, damage: 10}
+hd: 11
+hp_10x: 720
+ac: 6
+ev: 4
+has_corpse: true
+shout: shout
+spells: yaktaur_totembearer
+intelligence: human
+uses: weapons_armour
+size: large
+shape: centaur

@@ -171,7 +171,10 @@ static void _give_wand(monster* mon, int level)
 
     item_def& wand = env.item[idx];
     // Ugly hack: monsters can't use digging wands, so swap em out.
-    while (wand.sub_type == WAND_DIGGING)
+    // All this wand generation is rather inscrutable, we probably just
+    // want a custom method for yaktaurs (item spec would be eaisest tbh)
+    while (wand.sub_type == WAND_DIGGING || mon->type == MONS_YAKTAUR_WRANGLER
+           && !is_high_tier_wand(wand.sub_type))
     {
         dprf("rerolling");
         generate_wand_item(wand, OBJ_RANDOM, level);
@@ -714,6 +717,9 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         { MONS_YAKTAUR_CAPTAIN, { {
             { WPN_ARBALEST,      19 },
             { WPN_HAND_CANNON, 1  },
+        } } },
+        { MONS_YAKTAUR_WRANGLER, { {
+            { WPN_HAND_CANNON,      1 },
         } } },
         { MONS_EFREET,                  EFREET_WSPEC },
         { MONS_ERICA,                   EFREET_WSPEC },
