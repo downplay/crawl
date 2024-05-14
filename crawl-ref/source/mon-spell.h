@@ -1817,6 +1817,18 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    {  MST_YAKTAUR_SCRIBE,
+      {
+       { SPELL_SIGIL_OF_BINDING, 32, MON_SPELL_WIZARD },
+       // The other spells are approximations to other scroll effects
+       // (and the scribe has custom cast messages in monspell.txt)
+       // These are rare for a bit of flavour but also generally useful
+       { SPELL_CAUSE_FEAR, 4, MON_SPELL_WIZARD },
+       { SPELL_STRIP_WILLPOWER, 4, MON_SPELL_WIZARD },
+       { SPELL_BLINK_RANGE, 4, MON_SPELL_WIZARD },
+      }
+    },
+
     // ('d') Draconians.
     { MST_BAI_SUZHEN,
       {

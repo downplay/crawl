@@ -7972,6 +7972,10 @@ spell_type living_spell_type_for(monster_type mtyp)
         return SPELL_SMITING;
     case MONS_FROSTBOUND_TOME:
         return SPELL_ICEBLAST;
+    case MONS_YAKTAUR_SCRIBE:
+        // XX: Thematically maybe we should make an Ink Blast.
+        //     For now this gives a blinding effect at least.
+        return SPELL_BOLT_OF_LIGHT;
     default:
         return SPELL_NO_SPELL;
     }

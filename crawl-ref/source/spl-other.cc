@@ -602,7 +602,7 @@ spret cast_sigil_of_binding(const actor& caster, int pow, bool fail, bool tracer
     }
     else
     {
-        int total_sigils = min((int)positions.size(), random_range(2, 2 + div_rand_round(pow, 30)));
+        int total_sigils = min((int)positions.size(), random_range(2, 2 + div_rand_round(pow, 80)));
         d1_sigils = min((int)sigil_pos_d1.size(), total_sigils);
         d2_sigils = min((int)sigil_pos_d2.size(), total_sigils - d1_sigils);
 
