@@ -419,7 +419,12 @@ bool monster_pathfind::traversable(const coord_def& p)
             return true;
         }
 
-        return false;
+        // Don't prevent wall monsters pathfinding in walls here
+        // TODO: But do prevent them going deep in walls. And maybe sort
+        // out this opc_immob/opc_walls business, along with the FIXME
+        // in can_go_straight
+        if (!mons || mons_habitat(*mons) != HT_WALLS || opc_walls(p) == OPC_OPAQUE)
+            return false;
     }
 
     if (mons)
@@ -432,6 +437,10 @@ bool monster_pathfind::traversable(const coord_def& p)
 // its preferred habit and capability of flight or opening doors.
 bool monster_pathfind::mons_traversable(const coord_def& p)
 {
+    // XX: Both these checks are repeated in mons_can_traverse, except is_habitable
+    // is out of sequence and we could instead get a true if there's a traversable
+    // closed door but is_habitable is false, which seems buggy anyway? Need to
+    // look closer and poss just remove the checks here
     if (cell_is_runed(p))
         return false;
     if (!mons->is_habitable(p))
@@ -483,6 +492,12 @@ int monster_pathfind::mons_travel_cost(coord_def npos)
 
         return 2;
     }
+
+    // Wall monsters prefer to pathfind through walls
+    // XX: Can't position this correctly in the logic. Here we end up with wall
+    // monsters slightly preferring trapped floor to plain floor...
+    if (mons_habitat(*mons) == HT_WALLS && !feat_is_solid(env.grid(npos)))
+        return 2;
 
     return 1;
 }
