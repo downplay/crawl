@@ -594,6 +594,10 @@ VISUAL:@The_monster@ slams @possessive@ weapon against the ground.
 
 @The_monster@ roars @at@ @foe@, "Let me show ye whit a REAL cannon looks like!"
 %%%%
+Silver Charge cast
+
+VISUAL:@The_monster@ curls into a silver star and shoots @at@ @foe@.
+%%%%
 ########################################################################
 # Individual monsters
 ########################################################################

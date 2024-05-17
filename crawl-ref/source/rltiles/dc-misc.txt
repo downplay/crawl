@@ -181,6 +181,8 @@ blood_arrow5
 blood_arrow6
 blood_arrow7
 
+silver_star BOLT_SILVER
+
 ###### Priority indicators (for Fedhas' growth)
 indicator_1 INDICATOR
 indicator_2

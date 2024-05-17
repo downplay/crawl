@@ -561,8 +561,8 @@ bool valid_electric_charge_target(const actor& agent, coord_def target, string* 
 // Gets the tile the agent would land on if they tried to charge towards target.
 // Returns (0, 0) if this charge is invalid for any reason.
 // (fail_reason will get set to an appropriate error message)
-coord_def get_electric_charge_landing_spot(const actor& agent, coord_def target,
-                                           string* fail_reason)
+static coord_def _charge_landing_spot(const actor& agent, coord_def target,
+                                      string* fail_reason, int offset_dist = -1)
 {
     // Double-check that this is a valid thing to try to charge at at all
     if (!valid_electric_charge_target(agent, target, fail_reason))
@@ -580,12 +580,12 @@ coord_def get_electric_charge_landing_spot(const actor& agent, coord_def target,
     const int dist_to_targ = grid_distance(agent.pos(), target);
     while (ray.advance())
     {
-         // We've reached the spot immediately before our target, which should
+        // We've reached the offset relative to our target, which should
         // be our landing spot (if it's valid)
-        if (grid_distance(ray.pos(), agent.pos()) == dist_to_targ -1)
+        if (grid_distance(ray.pos(), agent.pos()) == dist_to_targ + offset_dist)
         {
             if (agent.is_player() ? is_feat_dangerous(env.grid(ray.pos()))
-                                  : !monster_habitable_grid(agent.as_monster(), env.grid(ray.pos())))
+                                  : !agent.as_monster()->is_habitable(ray.pos()))
             {
                 if (fail_reason)
                 {
@@ -617,6 +617,20 @@ coord_def get_electric_charge_landing_spot(const actor& agent, coord_def target,
 
     // Should be unreachable, but return a negative result anyway.
     return coord_def(0, 0);
+}
+
+coord_def get_electric_charge_landing_spot(const actor& agent, coord_def target,
+                                           string* fail_reason)
+{
+    return _charge_landing_spot(agent, target, fail_reason);
+}
+
+coord_def get_silver_charge_landing_spot(const actor& agent, coord_def target,
+                                         string* fail_reason)
+{
+    // Gets position *behind* target instead of in front (thus guaranteeing the
+    // zap will pass through them)
+    return _charge_landing_spot(agent, target, fail_reason, 1);
 }
 
 // Tries to push any creature out of the way of an electric charge landing spot,

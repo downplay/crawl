@@ -4104,6 +4104,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_SILVER_CHARGE, "Silver Charge",
+    spschool::earth | spschool::translocation,
+    spflag::dir_or_target | spflag::monster,
+    4,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    0,
+    TILEG_QUICKSILVER_BOLT,
+},
+
+{
     SPELL_NO_SPELL, "nonexistent spell",
     spschool::none,
     spflag::testing,

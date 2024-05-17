@@ -270,6 +270,8 @@ skyshark MONS_SKYSHARK
 %sdir mon/aquatic
 rockfish MONS_ROCKFISH
 school_of_rockfish MONS_SCHOOL_OF_ROCKFISH
+%sdir mon/holy
+silverfish MONS_SILVERFISH
 %sdir mon/undead
 marrowcuda MONS_MARROWCUDA
 

@@ -3547,6 +3547,11 @@ tileidx_t tileidx_bolt(const bolt &bolt)
             return TILE_BOLT_IRRADIATE;
         }
         break;
+
+    case ETC_SILVER:
+        // if (bolt.name == "flash of silver")
+            return TILE_BOLT_SILVER;
+        break;
     }
 
     return tileidx_zap(col);
