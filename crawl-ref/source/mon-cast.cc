@@ -1372,7 +1372,7 @@ static int _mons_power_hd_factor(spell_type spell)
  * Does this spell use spell_hd or just hit_dice for damage and accuracy?
  *
  * @param spell The spell in question.
- * @return True iff the spell should use spell_hd.
+ * @return True if the spell should use spell_hd.
  */
 bool mons_spell_is_spell(spell_type spell)
 {
@@ -1388,6 +1388,7 @@ bool mons_spell_is_spell(spell_type spell)
         case SPELL_SEARING_BREATH:
         case SPELL_ELECTRICAL_BOLT:
         case SPELL_FLAMING_CLOUD:
+        case SPELL_SPIT_SILVER:
             return false;
         default:
             return true;
@@ -1619,6 +1620,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_BORGNJORS_VILE_CLUTCH:
     case SPELL_CRYSTALLIZING_SHOT:
     case SPELL_HELLFIRE_MORTAR:
+    case SPELL_SPIT_SILVER:
         zappy(spell_to_zap(real_spell), power, true, beam);
         break;
 

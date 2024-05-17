@@ -143,6 +143,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_GALVANIC_BREATH, ZAP_GALVANIC_BREATH },
     { SPELL_MAGNAVOLT, ZAP_MAGNAVOLT },
     { SPELL_FLASHING_BALESTRA, ZAP_FLASHING_BALESTRA },
+    { SPELL_SPIT_SILVER, ZAP_SPIT_SILVER },
 
     // This is just to satisfy monster spell setup code
     { SPELL_HELLFIRE_MORTAR, ZAP_HELLFIRE_MORTAR_DIG },

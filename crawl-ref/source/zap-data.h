@@ -2178,4 +2178,20 @@ _mon_hex_zap(ZAP_VITRIFY, BEAM_VITRIFY),
     false,
 },
 
+{
+    ZAP_SPIT_SILVER,
+    "globule of silver",
+    200,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<2, 5, 1, 12>,
+    new tohit_calculator<10, 1, 25>,
+    ETC_SILVER,
+    false,
+    BEAM_SILVER,
+    DCHAR_FIRED_MISSILE,
+    false,
+    false,
+},
+
 };

@@ -7390,6 +7390,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_WARPING:               return "spatial disruption";
     case BEAM_QAZLAL:                return "upheaval targetter";
     case BEAM_RIMEBLIGHT:            return "rimeblight";
+    case BEAM_SILVER:                return "silver";
 
     case NUM_BEAMS:                  die("invalid beam type");
     }
