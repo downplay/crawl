@@ -14,7 +14,6 @@ ev: 10
 intelligence: animal
 habitat: walls
 speed: 12
-energy: {swim: 6}
 # Should be even smaller?
 size: tiny
 shape: fish

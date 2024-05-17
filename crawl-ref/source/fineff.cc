@@ -1033,9 +1033,9 @@ void rockfish_disperse_fineff::fire()
     if (!spawned)
         return;
 
-    monster_die(*defend->as_monster(), KILL_RESET, NON_MONSTER, true);
+    mprf("%s disperses!", defend->name(DESC_THE).c_str());
 
-    mprf("%s disperses into individual fishes!", defend->name(DESC_THE).c_str());
+    monster_die(*defend->as_monster(), KILL_RESET, NON_MONSTER, true);
 
     if (!you.see_cell(posn))
         return;

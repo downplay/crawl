@@ -267,8 +267,9 @@ blinking_frog MONS_BLINK_FROG_BLINKING
 cane_toad MONS_CANE_TOAD
 goliath_frog MONS_GOLIATH_FROG
 skyshark MONS_SKYSHARK
+%sdir mon/aquatic
 rockfish MONS_ROCKFISH
-rockfish_school MONS_SCHOOL_OF_ROCKFISH
+school_of_rockfish MONS_SCHOOL_OF_ROCKFISH
 %sdir mon/undead
 marrowcuda MONS_MARROWCUDA
 

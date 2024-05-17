@@ -106,9 +106,9 @@ static const vector<pop_entry> population[] =
   {  5, 13,  600, PEAK, MONS_CENTAUR },
   {  5, 13,  200, PEAK, MONS_GNOLL_SERGEANT },
   {  5,  9,  100, PEAK, MONS_MARROWCUDA },
-
   {  6,  8,  500, PEAK, MONS_SKY_BEAST },
   {  6,  9, 1000, PEAK, MONS_BULLFROG },
+  {  7, 10,  100, PEAK, MONS_SCHOOL_OF_ROCKFISH },
   {  6, 10,  500, PEAK, MONS_WIGHT },
   {  6, 10,  350, PEAK, MONS_STEAM_DRAGON },
   {  6, 11,  500, PEAK, MONS_KOBOLD_BRIGAND },
@@ -127,7 +127,6 @@ static const vector<pop_entry> population[] =
   { 10, 13,  350, PEAK, MONS_UNSEEN_HORROR },
   { 10, 13,  200, PEAK, MONS_KOMODO_DRAGON },
   { 10, 14,  350, PEAK, MONS_GARGOYLE },
-  { 10, 15,  400, PEAK, MONS_SCHOOL_OF_ROCKFISH },
   { 10, 15,  500, PEAK, MONS_VAMPIRE_MOSQUITO },
   { 11, 18,  800, PEAK, MONS_UGLY_THING },
   { 11, 21,  520, SEMI, MONS_MANTICORE },
