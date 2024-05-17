@@ -437,22 +437,18 @@ bool monster_pathfind::traversable(const coord_def& p)
 // its preferred habit and capability of flight or opening doors.
 bool monster_pathfind::mons_traversable(const coord_def& p)
 {
-    // XX: Both these checks are repeated in mons_can_traverse, except is_habitable
-    // is out of sequence and we could instead get a true if there's a traversable
-    // closed door but is_habitable is false, which seems buggy anyway? Need to
-    // look closer and poss just remove the checks here
-    if (cell_is_runed(p))
-        return false;
-    if (!mons->is_habitable(p))
-        return false;
-
     return mons_can_traverse(*mons, p, traverse_in_sight);
 }
 
 int monster_pathfind::travel_cost(coord_def npos)
 {
     if (mons)
+    {
+        int cost = mons_travel_cost(npos);
+        if (in_bounds(npos))
+            mprf("Travel cost: %i (%s - %s)", cost, dungeon_feature_name(env.grid(npos)), mons_class_name(mons->type));
         return mons_travel_cost(npos);
+    }
 
     return 1;
 }
@@ -497,7 +493,7 @@ int monster_pathfind::mons_travel_cost(coord_def npos)
     // XX: Can't position this correctly in the logic. Here we end up with wall
     // monsters slightly preferring trapped floor to plain floor...
     if (mons_habitat(*mons) == HT_WALLS && !feat_is_solid(env.grid(npos)))
-        return 2;
+        return 3;
 
     return 1;
 }

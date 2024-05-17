@@ -4100,7 +4100,8 @@ bool mons_class_can_pass(monster_type mc, const dungeon_feature_type grid)
         // around it via walls)
         if (feat_is_water(grid) && !feat_is_tree(grid)) // Mangroves
             return false;
-        if (feat_is_solid(grid)) {
+        if (feat_is_solid(grid))
+        {
             // Prevent escape from ghost vaults and so on
             // (TODO: maybe permarock should block to prevent portal vault escape?)
             auto def = get_feature_def(grid);
@@ -4168,7 +4169,8 @@ static bool _mons_can_pass_door(const monster* mon, const coord_def& pos)
     return mon->can_pass_through_feat(DNGN_FLOOR)
            && (mons_can_open_door(*mon, pos)
                || mons_can_eat_door(*mon, pos)
-               || mons_can_destroy_door(*mon, pos));
+               || mons_can_destroy_door(*mon, pos)
+               || mon->can_pass_through_feat(DNGN_CLOSED_DOOR));
 }
 
 bool mons_can_traverse(const monster& mon, const coord_def& p,
