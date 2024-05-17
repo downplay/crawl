@@ -3355,9 +3355,6 @@ tileidx_t tileidx_bolt(const bolt &bolt)
     case LIGHTGREY:
         if (bolt.name == "stone arrow" || bolt.name == "stone bullet")
             return TILE_BOLT_STONE_ARROW + dir;
-        // XX: Probably use old silver star tile
-        if (bolt.name == "globule of silver")
-            return TILE_MI_SLING_BULLET_SILVER0;
         break;
 
     case DARKGREY:
@@ -3381,6 +3378,12 @@ tileidx_t tileidx_bolt(const bolt &bolt)
         {
             return TILE_BOLT_IRRADIATE;
         }
+        break;
+
+    case ETC_SILVER:
+        // XX: Probably use old silver star tile
+        if (bolt.name == "globule of silver")
+            return TILE_BOLT_SILVER;
         break;
     }
 

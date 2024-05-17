@@ -1,5 +1,5 @@
 name: "silverfish"
-glyph: {char: "F", colour: cyan}
+glyph: {char: "F", colour: etc_silver}
 flags: [no_skeleton]
 resists: {elec: 3, fire: 1, petrify: 1}
 xp_mult: 6
