@@ -4108,7 +4108,7 @@ bool mons_class_can_pass(monster_type mc, const dungeon_feature_type grid)
             if (def.is_notable())
                 return false;
             // Rockfish don't like trees (lichen are fine of course)
-            if (mc == MONS_ROCKFISH || mc == MONS_SCHOOL_OF_ROCKFISH
+            if ((mc == MONS_ROCKFISH || mc == MONS_SCHOOL_OF_ROCKFISH)
                 && feat_is_tree(grid))
             {
                 return false;
