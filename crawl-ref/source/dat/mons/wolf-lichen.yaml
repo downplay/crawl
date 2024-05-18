@@ -7,10 +7,9 @@ genus: fungus
 holiness: [plant]
 will: invuln
 attacks:
- - {type: bite, flavour: flank, damage: 10}
- - {type: spore, flavour: sleep, damage: 10}
-hd: 10
-hp_10x: 200
+ - {type: spore, flavour: flank, damage: 10}
+hd: 6
+hp_10x: 100
 ac: 0
 ev: 6
 intelligence: brainless

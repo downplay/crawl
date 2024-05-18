@@ -1,0 +1,20 @@
+name: "wolf lichen eyestalk"
+glyph: {char: "f", colour: lightblue}
+flags: [web_immune, no_skeleton, herd]
+resists: {poison: 1, fire: -1}
+species: wandering_mushroom
+genus: fungus
+holiness: [plant]
+will: invuln
+attacks: # Give it a slighty different attack?
+ - {type: spore, flavour: flank, damage: 20}
+hd: 12
+hp_10x: 250
+ac: 0
+ev: 9
+intelligence: brainless
+habitat: walls
+speed: 10
+size: little
+shape: fungus
+tile_variance: random
