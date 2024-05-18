@@ -3061,8 +3061,14 @@ A strong wild canine, with sharp teeth and a healthy appetite.
 %%%%
 wolf lichen
 
-A carpet of colourful but toxic moss-like fungus often found in woodlands. But
-why does it seem to be flowing toward you, and are those eyes that are blinking?
+%%%%
+wolf lichen jaws
+
+A carpet of colourful but toxic moss-like fungus found often in woodlands. But
+is that a maw opening, and are those teeth?
+
+It is able to compost the flesh of its victims to provide healing nutrients to
+other lichen in its mycelial network.
 %%%%
 wolf spider
 
