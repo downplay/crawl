@@ -67,7 +67,7 @@ static const vector<mon_aura_data> aura_map =
         [](const actor& targ) {
             // Affects other lichens through the mycelial network
             return targ.is_monster()
-                && mons_species(targ.as_monster()->type) == MONS_WOLF_LICHEN;
+                && mons_species(targ.type) == MONS_WOLF_LICHEN;
         }},
 };
 

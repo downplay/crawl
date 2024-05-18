@@ -974,6 +974,11 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
         }
         break;
 
+    case ENCH_BYPASS_ARMOUR:
+        if (!quiet)
+            simple_monster_message(*this, " is no longer able to find chinks in armour.");
+        break;
+
     default:
         break;
     }
@@ -1380,6 +1385,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_CURSE_OF_AGONY:
     case ENCH_MAGNETISED:
     case ENCH_REPEL_MISSILES:
+    case ENCH_BYPASS_ARMOUR:
         decay_enchantment(en);
         break;
 
