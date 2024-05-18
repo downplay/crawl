@@ -5,7 +5,7 @@ resists: {poison: 1, fire: -1}
 species: wolf_lichen
 genus: fungus
 holiness: [plant]
-will: invuln
+will: 100
 attacks: # Give it a slighty different attack?
  - {type: spore, flavour: flank, damage: 20}
 hd: 12
@@ -13,9 +13,9 @@ hp_10x: 250
 ac: 0
 ev: 9
 has_corpse: true
-intelligence: brainless
+intelligence: human
 habitat: walls
 speed: 10
 size: little
-shape: fungus
+shape: orb
 tile_variance: random
