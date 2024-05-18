@@ -3211,6 +3211,100 @@ void melee_attack::mons_apply_attack_flavour()
         }
         break;
 
+    case AF_COMPOST:
+    {
+        // Heal the mycellial network by composting. Shares the healing
+        // with anything in range and of the same species.
+        // XX: Maybe behave a bit differently like create a health pool that others
+        // can draw from when damaged (otherwise the plain lichen are rather easy to just kill all of)
+
+        // Unlike vampirism, could technically heal from undead (they are half
+        // composted already, so it's actually easier.) However this function makes
+        // a few other checks which are useful so will leave this for now.
+        if (!actor_is_susceptible_to_vampirism(*defender))
+            break;
+
+        auto mons = attacker->as_monster();
+        // XX: Would prefer either "get current band" or actually tracking
+        // which monsters are connected through adjacent tiles (possibly for
+        // eyestalk's aura as well, but may need to check that aura updates
+        // process often enough)
+        vector<monster*> heal_targets;
+        for (radius_iterator ri(you.pos(), LOS_DEFAULT); ri; ++ri)
+        {
+            auto target = monster_at(*ri);
+            if (target && target != mons && mons_species(target->type) == mons_species(attacker->type)
+                && mons_aligned(target, attacker) && target->stat_hp() < target->stat_maxhp()
+                && mons->see_cell_no_trans(target->pos()) && coinflip())
+            {
+                heal_targets.push_back(target);
+            }
+        }
+        // Maybe heal self (or definitely if we didn't find anyone else to heal)
+        if (mons->stat_hp() < mons->stat_maxhp()
+            && (heal_targets.empty() || one_chance_in(3)))
+        {
+            heal_targets.push_back(mons);
+        }
+
+        // Still nothing found, we can't do anything
+        if (heal_targets.empty())
+            break;
+
+        // XX: This is a lot better than vampirism (which just uses random2). Maybe
+        // we should choose the min based on the num targets, so only if there are 
+        // a lot of targets to spread around use the higher min to make sure the effect
+        // is noticable. We can justify it that parallel processing of compost is more
+        // efficient. 
+        uint min_healing = damage_done / 2;
+        uint total_healing = random_range(min_healing, damage_done);
+
+        // Assign all the healing points one at a time in a random round robin
+        // fashion; it's easier than trying to distribute more deterministically.
+        vector<uint> healing;
+        vector<pair<int, int>> weights;
+        // Use the target's missing hp as the weight so more likely to heal more
+        // damaged targets (and won't heal fully healed ones).
+        for (uint n=0; n<heal_targets.size(); n++)
+        {
+            healing.push_back(0);
+            weights.push_back(make_pair(n, heal_targets[n]->stat_maxhp() - heal_targets[n]->stat_hp()));
+        }
+        for (uint n=0; n<total_healing; n++)
+        {
+            auto which = random_choose_weighted(weights);
+            // If no valid choices, we must have fully healed everyone
+            if (which == nullptr)
+                break;
+
+            // Add a point of healing and reduce corresponding weight
+            healing[*which]++;
+            weights[*which].second--;
+        }
+
+        // Now actually apply the healing, messaging as appropriate
+        if (needs_message)
+        {
+            mprf("%s %s composting pieces of %s!",
+                    atk_name(DESC_THE).c_str(),
+                    attacker->conj_verb("begin").c_str(),
+                    def_name(DESC_THE).c_str());
+        }
+
+        for (uint n=0; n<heal_targets.size(); n++)
+        {
+            heal_targets[n]->heal(healing[n]);
+            if (needs_message)
+            {
+                mprf("%s %s healing nutrients through %s mycelia.",
+                    heal_targets[n]->name(DESC_THE).c_str(),
+                    heal_targets[n]->conj_verb("receive").c_str(),
+                    heal_targets[n]->pronoun(PRONOUN_POSSESSIVE).c_str());
+            }
+        }
+        break;
+    }
+
     case AF_DRAIN_STR:
     case AF_DRAIN_INT:
     case AF_DRAIN_DEX:
@@ -3222,6 +3316,7 @@ void melee_attack::mons_apply_attack_flavour()
             defender->drain_stat(drained_stat, 1);
         }
         break;
+
 
     case AF_BLINK:
         // blinking can kill, delay the call

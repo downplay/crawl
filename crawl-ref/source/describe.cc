@@ -4998,6 +4998,7 @@ static string _flavour_base_desc(attack_flavour flavour)
         { AF_HELL_HUNT,         "summon demonic beasts" },
         { AF_SWARM,             "summon more of itself" },
         { AF_SILVER,            "extra damage to chaotic/mutated" },
+        { AF_COMPOST,           "compost victims and heal allies with mycelia" },
         { AF_PLAIN,             "" },
     };
 

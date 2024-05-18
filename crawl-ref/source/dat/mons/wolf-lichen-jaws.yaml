@@ -1,0 +1,22 @@
+name: "wolf lichen jaw"
+glyph: {char: "f", colour: red}
+flags: [unblindable, web_immune, no_skeleton, herd] # Can we set anything for breathing?
+resists: {poison: 1, fire: 1, cold: -1}
+species: wolf_lichen
+genus: fungus
+holiness: [plant]
+will: 65
+attacks:
+ - {type: bite, flavour: compost, damage: 30}
+hd: 14
+hp_10x: 320
+ac: 8
+ev: 4
+has_corpse: true
+shout: gurgle
+intelligence: animal
+habitat: walls
+speed: 12
+size: little
+shape: fungus
+tile_variance: mod

@@ -134,6 +134,8 @@ enum band_type
     BAND_ORB_SPIDERS,
     BAND_SILVERFISH,
     BAND_WOLF_LICHENS,
+    BAND_WOLF_LICHEN_EYESTALK,
+    BAND_WOLF_LICHEN_JAW,
     NUM_BANDS                   // always last
 };
 

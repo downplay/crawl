@@ -237,6 +237,7 @@ enum monster_info_flags
     MB_PLAYER_SERVITOR,
     MB_FROZEN_IN_TERROR,
     MB_SOUL_SPLINTERED,
+    MB_BYPASS_ARMOUR,
     NUM_MB_FLAGS
 };
 

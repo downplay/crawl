@@ -60,6 +60,15 @@ static const vector<mon_aura_data> aura_map =
         ENCH_EMPOWERED_SPELLS, 1, false,
         NUM_DURATIONS, "",
         [](const actor& targ) { return targ.antimagic_susceptible() ;}},
+
+    {MONS_WOLF_LICHEN_EYESTALK,
+        ENCH_BYPASS_ARMOUR, 1, false,
+        NUM_DURATIONS, "",
+        [](const actor& targ) {
+            // Affects other lichens through the mycelial network
+            return targ.is_monster()
+                && mons_species(targ.type) == MONS_WOLF_LICHEN;
+        }},
 };
 
 static mon_aura_data _get_aura_for(const monster& mon)

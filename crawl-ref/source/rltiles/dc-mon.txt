@@ -1157,6 +1157,32 @@ mold_glowing2
 mold_glowing3
 mold_glowing4
 
+%start
+%compose mold_glowing4
+%compose mold_glowing2
+%compose mon/fungi_plants/wolf_lichen_eyestalk
+%finish MONS_WOLF_LICHEN_EYESTALK
+
+%start
+%compose mold_glowing1
+%compose mold_glowing3
+%compose mon/eyes/glass_eye
+%finish
+
+%sdir UNUSED/monsters/plants
+flytrap_plant_open_morph MONS_WOLF_LICHEN_JAW
+flytrap_plant_open_morph_mellow
+%start
+%compose misc/mold_glowing1
+%compose misc/mold_glowing2
+%compose UNUSED/monsters/ravenous_mimic
+%finish
+%start
+%compose misc/mold_glowing3
+%compose misc/mold_glowing4
+%compose UNUSED/monsters/ravenous_mimic
+%finish
+
 ## Goblins ('g')
 %sdir mon/unique
 ijyb MONS_IJYB

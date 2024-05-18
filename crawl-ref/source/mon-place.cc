@@ -2029,6 +2029,8 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_PROTEAN_PROGENITOR, { {}, {{ BAND_PROTEAN_PROGENITORS, {0, 1} }}}},
     { MONS_THERMIC_DYNAMO, { {}, {{ BAND_THERMIC_DYNAMOS, {0, 1} }}}},
     { MONS_WOLF_LICHEN, { {}, {{ BAND_WOLF_LICHENS, {0, 1} }}}},
+    { MONS_WOLF_LICHEN_JAW, { {}, {{ BAND_WOLF_LICHENS, {0, 1} }}}},
+    { MONS_WOLF_LICHEN_EYESTALK, { {}, {{ BAND_WOLF_LICHENS, {0, 1} }}}},
 };
 
 static band_type _choose_band(monster_type mon_type, int *band_size_p,
@@ -2170,7 +2172,16 @@ static band_type _choose_band(monster_type mon_type, int *band_size_p,
         break;
 
     case MONS_WOLF_LICHEN:
+    case MONS_WOLF_LICHEN_JAW:
+    case MONS_WOLF_LICHEN_EYESTALK:
         band_size = random_range(2 + you.depth / 5, 5 + you.depth);
+        if (mon_type == MONS_WOLF_LICHEN)
+        {
+            if (you.depth > 14 && coinflip())
+                band = BAND_WOLF_LICHEN_EYESTALK;
+            else if (you.depth > 17 && coinflip())
+                band = BAND_WOLF_LICHEN_JAW;
+        }
         break;
 
     default: ;
@@ -2279,7 +2290,18 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
     { BAND_BLASTMINER,          {{{MONS_KOBOLD_BLASTMINER, 1}}}},
     { BAND_THERMIC_DYNAMOS,     {{{MONS_THERMIC_DYNAMO, 1}}}},
     { BAND_PROTEAN_PROGENITORS, {{{MONS_PROTEAN_PROGENITOR, 1}}}},
-    { BAND_WOLF_LICHENS,    {{{MONS_WOLF_LICHEN, 1}}}},
+    { BAND_WOLF_LICHENS,        {{{MONS_WOLF_LICHEN, 1}}}},
+    { BAND_WOLF_LICHEN_EYESTALK,{{{MONS_WOLF_LICHEN_EYESTALK, 1},
+                                  {MONS_WOLF_LICHEN, 2}},
+                                 {{MONS_WOLF_LICHEN, 1}}}},
+    { BAND_WOLF_LICHEN_JAW,     {{{MONS_WOLF_LICHEN_JAW, 1},
+                                  {MONS_WOLF_LICHEN_EYESTALK, 2},
+                                  {MONS_WOLF_LICHEN, 2}},
+                                 {{MONS_WOLF_LICHEN_EYESTALK, 1},
+                                  {MONS_WOLF_LICHEN, 1}},
+                                 {{MONS_WOLF_LICHEN_EYESTALK, 1},
+                                  {MONS_WOLF_LICHEN, 5}},
+                                 {{MONS_WOLF_LICHEN, 1}}}},
     { BAND_DEEP_ELF_KNIGHT,     {{{MONS_DEEP_ELF_AIR_MAGE, 46},
                                   {MONS_DEEP_ELF_FIRE_MAGE, 46},
                                   {MONS_DEEP_ELF_KNIGHT, 24},
