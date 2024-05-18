@@ -3062,6 +3062,14 @@ A strong wild canine, with sharp teeth and a healthy appetite.
 wolf lichen
 
 %%%%
+wolf lichen eyestalk
+
+A carpet of colourful but toxic moss-like fungus found often in woodlands. But
+are those eyes that are blinking?
+
+It is able to communicate via its mycelial network to let nearby lichen know
+of chinks in your armour.
+%%%%
 wolf lichen jaws
 
 A carpet of colourful but toxic moss-like fungus found often in woodlands. But
