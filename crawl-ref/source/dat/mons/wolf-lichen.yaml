@@ -2,7 +2,6 @@ name: "wolf lichen"
 glyph: {char: "f", colour: yellow}
 flags: [unblindable, web_immune, no_skeleton, herd]
 resists: {poison: 1}
-species: wandering_mushroom
 genus: fungus
 holiness: [plant]
 will: invuln
@@ -12,6 +11,7 @@ hd: 6
 hp_10x: 100
 ac: 0
 ev: 6
+has_corpse: true
 intelligence: brainless
 habitat: walls
 speed: 10
