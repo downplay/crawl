@@ -443,12 +443,7 @@ bool monster_pathfind::mons_traversable(const coord_def& p)
 int monster_pathfind::travel_cost(coord_def npos)
 {
     if (mons)
-    {
-        int cost = mons_travel_cost(npos);
-        if (in_bounds(npos))
-            mprf("Travel cost: %i (%s - %s)", cost, dungeon_feature_name(env.grid(npos)), mons_class_name(mons->type));
         return mons_travel_cost(npos);
-    }
 
     return 1;
 }
