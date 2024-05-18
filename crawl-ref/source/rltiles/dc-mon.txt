@@ -1122,7 +1122,7 @@ mold_glowing4
 %compose mold_glowing1
 %compose mold_glowing3
 %compose mon/eyes/glass_eye
-%finish MONS_WOLF_LICHEN_EYESTALK
+%finish
 
 %sdir UNUSED/monsters/plants
 flytrap_plant_open_morph MONS_WOLF_LICHEN_JAWS
