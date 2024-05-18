@@ -234,6 +234,7 @@ enum monster_info_flags
     MB_RIMEBLIGHT,
     MB_ARMED,
     MB_FLOUNDERING,
+    MB_BYPASS_ARMOUR,
     NUM_MB_FLAGS
 };
 

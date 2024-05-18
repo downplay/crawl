@@ -1,6 +1,6 @@
 name: "wolf lichen eyestalk"
 glyph: {char: "f", colour: lightblue}
-flags: [web_immune, no_skeleton, herd]
+flags: [web_immune, no_skeleton, herd, has_aura]
 resists: {poison: 1, fire: -1}
 species: wolf_lichen
 genus: fungus

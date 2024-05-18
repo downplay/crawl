@@ -147,4 +147,5 @@ static const vector<monster_info_flag_name> monster_info_flag_names = {
     { MB_VENGEANCE_TARGET, "target of vengeance", "target of orcish vengeance", "targets of vengeance"},
     { MB_MAGNETISED, "magnetised", "covered in magnetic dust", "magnetised"},
     { MB_RIMEBLIGHT, "rimeblight", "afflicted by rimeblight", "rimeblight"},
+    { MB_BYPASS_ARMOUR, "bypassing armour", "able to bypass armour by finding chinks", "bypassing armour"},
 };

@@ -2151,6 +2151,7 @@ static const char *enchant_names[] =
     "rimeblight",
     "magnetised",
     "armed",
+    "bypass_armour",
     "buggy", // NUM_ENCHANTMENTS
 };
 

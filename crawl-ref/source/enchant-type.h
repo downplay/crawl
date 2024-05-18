@@ -224,6 +224,7 @@ enum enchant_type
     ENCH_RIMEBLIGHT,
     ENCH_MAGNETISED,
     ENCH_ARMED,
+    ENCH_BYPASS_ARMOUR,
     // Update enchant_names[] in mon-ench.cc when adding or removing
     // enchantments.
     NUM_ENCHANTMENTS
