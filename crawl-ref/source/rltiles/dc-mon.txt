@@ -1125,7 +1125,7 @@ mold_glowing4
 %finish
 
 %sdir UNUSED/monsters/plants
-flytrap_plant_open_morph MONS_WOLF_LICHEN_JAWS
+flytrap_plant_open_morph MONS_WOLF_LICHEN_JAW
 flytrap_plant_open_morph_mellow
 %start
 %compose misc/mold_glowing1
