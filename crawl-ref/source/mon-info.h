@@ -252,6 +252,7 @@ enum monster_info_flags
     MB_CHAOS_LACE,
     MB_VEXED,
     MB_CHARMER,
+    MB_AMNESIA,
     NUM_MB_FLAGS
 };
 

@@ -250,6 +250,8 @@ void shuffle_array(T *arr, int n)
     shuffle_array(arr, arr + n);
 }
 
+const string shuffle_chars(const char *text);
+
 /**
  * A defer_rand object represents an infinite tree of random values, allowing
  * for a much more functional approach to randomness. defer_rand values which

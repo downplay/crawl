@@ -15,6 +15,7 @@
 #include "branch-type.h"
 #include "state.h"
 #include "store.h"
+#include "unicode.h"
 #include "options.h"
 
 namespace rng
@@ -454,6 +455,49 @@ int fuzz_value(int val, int lowfuzz, int highfuzz, int naverage)
 bool decimal_chance(double chance)
 {
     return random_real() < chance;
+}
+
+const string shuffle_chars(const char *text)
+{
+    // XX: Old implmentation .. did this actually work?
+    // rng::generator rng(rng::UI);
+    // Failed assert if there's no subgenerator for titles
+    // string copied = string(text);
+    // size_t n = copied.length();
+    // while (n > 1)
+    // {
+    //     const int i = random2(n);
+    //     n--;
+    //     swap(copied[i], copied[n]);
+    // }
+    // return copied;
+
+    // Clone string to unicode vector so we can modify it
+    char32_t wc;
+    vector<char32_t> wchars;
+    while (int l = utf8towc(&wc, text))
+    {
+        text += l;
+        wchars.push_back(wc);
+    }
+
+    size_t n = wchars.size();
+    // Make n-1 swaps to fully shuffle the chars
+    while (n > 1)
+    {
+        const size_t i = random2(n);
+        n--;
+        swap(wchars[i], wchars[n]);
+    }
+    // Write back out to a new char*
+    char *result = new char[strlen(text)];
+    char *pos = result;
+    for (auto wchar : wchars)
+    {
+        wctoutf8(pos, wchar);
+        pos = next_glyph(pos);
+    }
+    return result;
 }
 
 // This is used when the front-end randomness is inconclusive. There are

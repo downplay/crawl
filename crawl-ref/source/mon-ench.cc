@@ -716,6 +716,14 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
         behaviour_event(this, ME_EVAL);
         break;
 
+    case ENCH_AMNESIA:
+        if (!quiet && alive())
+            simple_monster_message(*this, " seems to have remembered something again.");
+
+        // Might have spells they can use.
+        behaviour_event(this, ME_EVAL);
+        break;
+
     case ENCH_REGENERATION:
         if (!quiet)
             simple_monster_message(*this, " is no longer regenerating.");
@@ -1397,6 +1405,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_TEMPERED:
     case ENCH_CHAOS_LACE:
     case ENCH_VEXED:
+    case ENCH_AMNESIA:
         decay_enchantment(en);
         break;
 
@@ -2161,6 +2170,7 @@ static const char *enchant_names[] =
     "misdirected", "changed appearance", "shadowless", "doubled_health",
     "grapnel", "tempered", "hatching", "blinkitis", "chaos_laced", "vexed",
     "charmer",
+    "temporary_amnesia",
     "buggy", // NUM_ENCHANTMENTS
 };
 
@@ -2394,6 +2404,7 @@ int mon_enchant::calc_duration(const monster* mons,
     case ENCH_CHARM:
     case ENCH_CHARMER:
     case ENCH_HEXED:
+    case ENCH_AMNESIA:
         cturn = 500 / modded_speed(mons, 10);
         break;
     case ENCH_TP:

@@ -5581,6 +5581,21 @@ bool player::has_spell(spell_type spell) const
     return find(begin(spells), end(spells), spell) != end(spells);
 }
 
+bool player::has_spells() const
+{
+    for (auto spell : spells)
+    {
+        if (spell != SPELL_NO_SPELL && can_cast_spells())
+            return true;
+    }
+    return false;
+}
+
+bool player::has_amnesia(spell_type spell) const
+{
+    return duration[DUR_AMNESIA] && temporary_amnesia_spells.count(spell);
+}
+
 bool player::cannot_speak() const
 {
     if (silenced(pos()))

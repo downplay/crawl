@@ -25,6 +25,7 @@ string &uppercase(string &s);
 string uppercase_string(string s);
 string lowercase_first(string);
 string uppercase_first(string);
+string uppercase_words(string);
 
 int codepoints(string str);
 

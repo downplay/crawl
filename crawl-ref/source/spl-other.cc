@@ -922,3 +922,75 @@ vector<coord_def> find_spike_launcher_walls()
     }
     return wall_locs;
 }
+
+// Is this the best place for this? Otherwise considered adding a mon-hex.cc for monster-only
+// hexes as mon-cast.cc is a bit overloaded (and there's a weird circular reference)
+void do_temporary_amnesia(actor &target, const actor *agent)
+{
+    if (target.is_player())
+    {
+        auto player = target.as_player();
+
+        // Spells are weighted according to their level and we will aim to disable
+        // 1/3 of the player's levels in total (at least). This way it is not
+        // particularly useful to memorise extra chaff spells to be less likely
+        // to lose your primary spells, and high level spells are rather more
+        // likely to get hit.
+        vector<int> weights = {};
+        int total_levels = 0;
+        for (auto spell : player->spells)
+        {
+            if (spell == SPELL_NO_SPELL)
+            {
+                weights.push_back(0);
+                continue;
+            }
+            int levels = spell_levels_required(spell);
+            total_levels += levels;
+            weights.push_back(levels);
+        }
+        int levels_to_forget = div_round_up(total_levels, 3);
+        int total_forgotten = 0;
+        int tries = 100;
+        set<spell_type> to_forget = {};
+        while (total_forgotten < levels_to_forget && tries-- > 0)
+        {
+            const int index = choose_random_weighted(weights.begin(), weights.end());
+            auto spell = player->spells[index];
+            if (!to_forget.count(spell))
+            {
+                to_forget.insert(spell);
+                total_forgotten += weights[index];
+            }
+        }
+        // Overwrite existing list and we'll shuffle which ones are forgotten
+        // (but still increase the total duration)
+        // TODO: Track which ones are added/removed for better reporting
+        player->temporary_amnesia_spells = to_forget;
+
+        if (player->duration[DUR_AMNESIA])
+            mprf(MSGCH_WARN, "Some spells flow back into your mind, but others will be forgotten longer.");
+        else
+            mprf(MSGCH_WARN, "Your mind is flooded with words, all jumbled up, and some of your spells slip from your memory.");
+
+        player->increase_duration(DUR_AMNESIA, random_range(8,21), 50);
+    }
+    else
+    {
+        auto monster = target.as_monster();
+        // Monster implementation is rather simpler: they will forget either even or odd indexed spells,
+        // on a coinflip.
+        auto ench = mon_enchant(ENCH_AMNESIA,
+                                monster->spells.size() > 1 && coinflip() ? 1 : 0,
+                                agent);
+        if (monster->add_ench(ench))
+        {
+            simple_monster_message(*monster,
+                " appears to have forgotten something important.",
+                false, mons_aligned(agent, &you) ? MSGCH_FRIEND_SPELL
+                                                 : MSGCH_MONSTER_SPELL);
+        }
+        else
+            simple_monster_message(*monster, " looks forgetful for a moment.");
+    }
+}

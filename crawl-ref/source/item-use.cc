@@ -3014,11 +3014,12 @@ bool read(item_def* scroll, dist *target)
         bool aborted;
         do
         {
-            aborted = cast_selective_amnesia() == -1;
-            done = !aborted
+            int result = cast_selective_amnesia();
+            aborted = result == -1;
+            done = result == 1
                    || alreadyknown
                    || crawl_state.seen_hups
-                   || yesno("Really abort (and waste the scroll)?",
+                   || aborted && yesno("Really abort (and waste the scroll)?",
                             false, 0);
             cancel_scroll = aborted && alreadyknown;
         } while (!done);

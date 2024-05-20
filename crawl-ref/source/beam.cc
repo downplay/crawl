@@ -65,6 +65,7 @@
 #include "spl-damage.h"
 #include "spl-goditem.h"
 #include "spl-monench.h"
+#include "spl-other.h"
 #include "spl-summoning.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
@@ -851,8 +852,13 @@ void bolt::choose_ray()
 // Draw the bolt at p if needed.
 void bolt::draw(const coord_def& p, bool force_refresh)
 {
-    if (is_tracer || is_enchantment() || !you.see_cell(p))
+    // If more enchantments want to have visible beams, move this special
+    // case to a flag on zaps
+    if (is_tracer || is_enchantment() && flavour != BEAM_SCRIBE_AMNESIA
+        || !you.see_cell(p))
+    {
         return;
+    }
 
     // We don't clean up the old position.
     // First, most people like to see the full path,
@@ -3377,6 +3383,9 @@ bool bolt::harmless_to_player() const
     case BEAM_VIRULENCE:
         return player_res_poison(false) >= 3;
 
+    case BEAM_SCRIBE_AMNESIA:
+        return you.spell_no == 0 || !can_cast_spells(true);
+
     case BEAM_ROOTS:
         return mons_att_wont_attack(attitude) || !agent()->can_constrict(you, CONSTRICT_ROOTS);
 
@@ -4361,6 +4370,25 @@ void bolt::affect_player()
         return;
     }
 
+    // XX: Shouldn't be here. Should be in affect_player_enchantment.
+    // But if it's an enchantment then the beam isn't drawn and I can't see
+    // a better place to put it (other than just in the spell code and don't
+    // bother with zap data at all).
+    // XXX: Should be possible to include an effect in zap-data rather than
+    // adding increasing special cases to bolts.
+    if (flavour == BEAM_SCRIBE_AMNESIA)
+    {
+        if (you.spell_no == 0)
+        {
+            canned_msg(MSG_YOU_UNAFFECTED);
+            return;
+        }
+        do_temporary_amnesia(you, agent(true));
+        
+        obvious_effect = true;
+        return;
+    }
+
     msg_generated = true;
 
     // FIXME: Lots of duplicated code here (compare handling of
@@ -4420,7 +4448,6 @@ void bolt::affect_player()
         const bool was_parad = you.duration[DUR_PARALYSIS];
         you.paralyse(agent(), 1);
         was_affected = (!was_parad && you.duration[DUR_PARALYSIS]) || was_affected;
-
     }
 
     if (flavour == BEAM_LIGHT && you.can_be_dazzled())
@@ -6077,6 +6104,9 @@ bool ench_flavour_affects_monster(actor *agent, beam_type flavour,
         rc = (mon->res_poison() < 3);
         break;
 
+    case BEAM_SCRIBE_AMNESIA:
+        rc = mon->has_spells();
+
     case BEAM_DRAIN_MAGIC:
         rc = mon->antimagic_susceptible();
         break;
@@ -6698,6 +6728,16 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             }
         }
         return MON_AFFECTED;
+
+    case BEAM_SCRIBE_AMNESIA:
+        if (!mon->has_spells())
+        {
+            simple_monster_message(*mon, " is unaffected.");
+            return MON_UNAFFECTED;
+        }
+        do_temporary_amnesia(*mon, agent(true));
+        obvious_effect = true;
+        break;
 
     case BEAM_AGILITY:
         if (!mon->has_ench(ENCH_AGILE)
@@ -7719,6 +7759,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_SEISMIC:               return "seismic shockwave";
     case BEAM_BOLAS:                 return "entwining bolas";
     case BEAM_MERCURY:               return "mercury";
+    case BEAM_SCRIBE_AMNESIA:        return "scroll of amnesia";
 
     case NUM_BEAMS:                  die("invalid beam type");
     }

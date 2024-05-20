@@ -124,10 +124,14 @@ static string _spell_base_description(spell_type spell, bool viewing)
     desc << "<" << colour_to_str(highlight) << ">" << left;
 
     // spell name
-    desc << chop_string(spell_title(spell), 32);
+    desc << chop_string(spell_title_current(spell), 32);
 
     // spell schools
-    desc << spell_schools_string(spell);
+    // XX: have a spell_schools_string_current and shuffle the school there
+    bool amnesia = you.duration[DUR_AMNESIA]
+                   && you.temporary_amnesia_spells.count(spell);
+    auto schools = spell_schools_string(spell);
+    desc << amnesia ? string(shuffle_chars(schools.c_str())) : schools;
 
     const int so_far = strwidth(desc.str()) - (strwidth(colour_to_str(highlight))+2);
     if (so_far < 58)
@@ -823,7 +827,7 @@ spret cast_a_spell(bool check_range, spell_type spell, dist *_target,
                 else
                 {
                     mprf(MSGCH_PROMPT, "Casting: <w>%s</w> <lightgrey>(%s)</lightgrey>",
-                                       spell_title(you.last_cast_spell),
+                                       spell_title_current(you.last_cast_spell),
                                        _spell_failure_rate_description(you.last_cast_spell).c_str());
                     mprf(MSGCH_PROMPT, "Confirm with . or Enter, or press "
                                        "? or * to list all spells.");
@@ -3228,14 +3232,20 @@ string spell_schools_string(spell_type spell)
 {
     string desc;
 
+    bool amnesia = you.has_amnesia(spell);
+
     bool already = false;
     for (const auto bit : spschools_type::range())
     {
         if (spell_typematch(spell, bit))
         {
+
             if (already)
                 desc += "/";
-            desc += spelltype_long_name(bit);
+            auto long_name = spelltype_long_name(bit);
+            desc += amnesia
+                        ? uppercase_words(lowercase_string(shuffle_chars(long_name)))
+                        : long_name;
             already = true;
         }
     }

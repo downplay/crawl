@@ -69,6 +69,7 @@ const enchant_type dispellable_enchantments[] =
     ENCH_BOUND,
     ENCH_BULLSEYE_TARGET,
     ENCH_ARMED,
+    ENCH_AMNESIA,
 };
 
 bool player_is_debuffable();

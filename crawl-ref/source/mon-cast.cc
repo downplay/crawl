@@ -620,6 +620,23 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
             ASSERT(foe);
             return ai_action::good_or_impossible(foe->res_poison(false) < 3);
     }, 8) },
+    { SPELL_SCRIBE_AMNESIA, _hex_logic(SPELL_SCRIBE_AMNESIA, [](const monster &caster) {
+            const actor* foe = caster.get_foe();
+            ASSERT(foe);
+            if (foe->is_player() && you.spell_no)
+            {
+                if (you.duration[DUR_AMNESIA])
+                    return ai_action::bad();
+                return ai_action::good();
+            }
+            if (foe->is_monster() && foe->as_monster()->has_spells())
+            {
+                if (foe->as_monster()->has_ench(ENCH_AMNESIA))
+                    return ai_action::bad();
+                return ai_action::good();
+            }
+            return ai_action::impossible();
+    }, 20) },
     { SPELL_GRASPING_ROOTS, {
         [](const monster &caster)
         {
@@ -927,7 +944,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
             const int pow = mons_spellpower(caster, SPELL_SIGIL_OF_BINDING);
             cast_sigil_of_binding(caster, pow, false, false);
         }
-    } }
+    } },
 };
 
 // Logic for special-cased Aphotic Marionette hijacking of monster buffs to
@@ -4624,6 +4641,20 @@ static monster_spells _find_usable_spells(monster &mons)
     // TODO: make mons param const (requires waste_of_time param to be const)
 
     monster_spells hspell_pass(mons.spells);
+
+    // Eliminate temporary amnesia spells first, since it depends on odd/even
+    int odd_even = 0;
+    if (mons.has_ench(ENCH_AMNESIA))
+    {
+        auto amnesia = mons.get_ench(ENCH_AMNESIA);
+        erase_if(hspell_pass, [&odd_even, amnesia](const mon_spell_slot &t) {
+            // Skip non-magic spells
+            if (!(t.flags & MON_SPELL_MAGICAL))
+                return false;
+            odd_even = 1 - odd_even;
+            return amnesia.degree == odd_even;
+        });
+    }
 
     if (mons.is_silenced() || mons.is_shapeshifter())
     {

@@ -110,6 +110,35 @@ string uppercase_first(string s)
     return s;
 }
 
+string uppercase_words(string s)
+{
+    if (s.empty())
+        return s;
+    bool upper_next = true;
+    char32_t c;
+    char *pos = &s[0];
+    char *target = new char(s.length());
+    auto result = target;
+    bool done = false;
+    while (!done)
+    {
+        utf8towc(&c, pos);
+        pos = next_glyph(pos);
+        if (!c)
+            done = true;
+        else if (upper_next)
+        {
+            wctoutf8(target, towupper(c));
+            upper_next = false;
+        }
+        else
+            wctoutf8(target, towlower(c));
+        if (c == 32)
+            upper_next = true;
+    }
+    return result;
+}
+
 int codepoints(string str)
 {
     int len = 0;

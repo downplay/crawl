@@ -630,5 +630,6 @@ enum spell_type : int
     SPELL_VEX,
     SPELL_RAISE_SHIELDS,
     SPELL_FLESH_SACRIFICE,
+    SPELL_SCRIBE_AMNESIA,
     NUM_SPELLS
 };

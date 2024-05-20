@@ -626,6 +626,15 @@ const char *spell_title(spell_type spell)
     return _seekspell(spell)->title;
 }
 
+const char *spell_title_current(spell_type spell)
+{
+    bool amnesia = you.has_amnesia(spell);
+    auto title = spell_title(spell);
+    if (!amnesia)
+        return title;
+    return uppercase_words(shuffle_chars(title)).c_str();
+}
+
 // FUNCTION APPLICATORS: Idea from Juho Snellman <jsnell@lyseo.edu.ouka.fi>
 //                       on the Roguelike News pages, Development section.
 //                       <URL:http://www.skoardy.demon.co.uk/rlnews/>
@@ -1189,6 +1198,9 @@ string casting_uselessness_reason(spell_type spell, bool temp)
                 return "your magic and health are inextricable.";
             return "your reserves of magic are already full.";
         }
+
+        if (you.has_amnesia(spell))
+            return "you are currently unable to recall that spell.";
     }
 
     // Check for banned schools (Currently just Ru sacrifices)
@@ -1611,6 +1623,12 @@ int spell_highlight_by_utility(spell_type spell, int default_colour,
     {
         return COL_INAPPLICABLE;
     }
+
+    // Temporarily forgotten spells: they also count as useless but we want
+    // to be able to quickly see which spells have gone.
+    if (transient && you.has_amnesia(spell))
+        return COL_UNMEMORIZED;
+
     // Check if the spell is considered useless based on your current status
     if (spell_is_useless(spell, transient))
         return COL_USELESS;

@@ -180,5 +180,6 @@ enum zap_type
     ZAP_SOJOURNING,
     ZAP_FREEZE,
     ZAP_VEX,
+    ZAP_SCRIBE_AMNESIA,
     NUM_ZAPS
 };

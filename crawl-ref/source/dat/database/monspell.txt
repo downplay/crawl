@@ -222,6 +222,14 @@ Pyroclastic Surge cast
 
 @The_monster@ calls gouts of flame from the lava!
 %%%%
+Scribe Amnesia cast
+
+@The_monster@ takes out a quill and parchment and scribbles furiously.
+%%%%
+unseen Scribe Amnesia cast
+
+A quill and parchment hovers in the air, scribbling furiously.
+%%%%
 Shadow Shot cast
 
 @The_monster@ fires @at@ @target@.

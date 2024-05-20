@@ -144,6 +144,13 @@ int cast_selective_amnesia(const string &pre_msg)
         const bool in_library = you.spell_library[spell];
         if (spell != SPELL_NO_SPELL)
         {
+            if (you.duration[DUR_AMNESIA]
+                && you.temporary_amnesia_spells.count(spell))
+            {
+                mpr("That region of your memory is currently inaccessible.");
+                return 0;
+            }
+
             const string prompt = make_stringf(
                     "Forget %s, freeing %d spell level%s for a total of %d?%s",
                     spell_title(spell), spell_levels_required(spell),

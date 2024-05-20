@@ -1811,6 +1811,7 @@ static const mon_spellbook mspell_list[] =
     {  MST_YAKTAUR_SCRIBE,
       {
        { SPELL_SIGIL_OF_BINDING, 32, MON_SPELL_WIZARD },
+       { SPELL_SCRIBE_AMNESIA, 18, MON_SPELL_WIZARD },
        // The other spells are approximations to other scroll effects
        // (and the scribe has custom cast messages in monspell.txt)
        // These are rare for a bit of flavour but also generally useful

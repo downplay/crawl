@@ -63,3 +63,5 @@ vector<coord_def> find_spike_launcher_walls();
 spret cast_spike_launcher(int pow, bool fail);
 void handle_spike_launcher(int delay);
 void end_spike_launcher();
+
+void do_temporary_amnesia(actor &target, const actor *agent = 0);
