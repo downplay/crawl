@@ -193,6 +193,7 @@ void unmarshallSpells(reader &, monster_spells &
 
 void unmarshall_vehumet_spells(reader &th, set<spell_type>& old_gifts,
         set<spell_type>& gifts);
+void unmarshall_temporary_amnesia_spells(reader &th, set<spell_type>& spells);
 
 FixedVector<int, 52> unmarshall_player_spell_letter_table(reader &th);
 

@@ -1731,7 +1731,8 @@ static const mon_spellbook mspell_list[] =
 
     {  MST_YAKTAUR_GLYPHCASTER,
       {
-       { SPELL_SIGIL_OF_BINDING, 50, MON_SPELL_WIZARD },
+       { SPELL_SIGIL_OF_BINDING, 18, MON_SPELL_WIZARD },
+       { SPELL_SCRIBE_AMNESIA, 12, MON_SPELL_WIZARD },
       }
     },
 

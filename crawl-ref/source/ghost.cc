@@ -104,6 +104,7 @@ static spell_type search_order_misc[] =
     SPELL_SENTINEL_MARK,
     SPELL_DIMENSION_ANCHOR,
     SPELL_FORCE_LANCE,
+    SPELL_SCRIBE_AMNESIA,
 };
 
 /**

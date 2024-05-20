@@ -4404,8 +4404,7 @@ bool read(item_def* scroll, dist *target)
             done = !aborted
                    || alreadyknown
                    || crawl_state.seen_hups
-                   || yesno("Really abort (and waste the scroll)?",
-                            false, 0);
+                   || yesno("Really abort (and waste the scroll)?", false, 0);
             cancel_scroll = aborted && alreadyknown;
         } while (!done);
         if (aborted)

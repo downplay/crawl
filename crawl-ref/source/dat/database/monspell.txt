@@ -1060,6 +1060,10 @@ Hellfire mortar cast
 
 @The_monster@ blasts a torrent of magma @at@ @target@.
 %%%%
+Scribe Amnesia cast
+
+@The_monster@ takes out a quill and parchment and scribbles furiously.
+%%%%
 ###########################################################################
 # Generic messages for priests and wizards which have been polymorphed into
 # something without hands.

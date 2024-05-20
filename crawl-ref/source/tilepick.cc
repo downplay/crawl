@@ -3373,12 +3373,14 @@ tileidx_t tileidx_bolt(const bolt &bolt)
     case MAGENTA:
         if (bolt.name == "string of glyphs")
             return TILE_DNGN_BINDING_SIGIL_MONSTER;
+        if (bolt.name == "scroll of amnesia")
+            return TILE_SCROLL;
         break;
 
     case CYAN:
         if (bolt.name == "slug dart")
             return TILE_BOLT_STONE_ARROW + dir;
-        else if (bolt.name == "umbral torchlight")
+        if (bolt.name == "umbral torchlight")
             return TILE_BOLT_UMBRAL_TORCHLIGHT;
         break;
 
