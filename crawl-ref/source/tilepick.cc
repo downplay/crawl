@@ -3533,6 +3533,8 @@ tileidx_t tileidx_bolt(const bolt &bolt)
             return TILE_BOLT_SHADOW_SHARD;
         if (bolt.name == "string of glyphs")
             return TILE_DNGN_BINDING_SIGIL_MONSTER;
+        if (bolt.name == "scroll of amnesia")
+            return TILE_SCROLL;
         break;
 
     case CYAN:

@@ -670,6 +670,10 @@ static const duration_def duration_data[] =
       "growing destruction", "growing destruction",
       "Your Destruction is growing increasingly wild.", D_EXPIRES,
       {{ "", _end_growing_destruction}}},
+    { DUR_AMNESIA, RED, "Amnesia", "amnesiac", "temporary amnesia",
+      "You are temporarily unable to recall some of your memorised spells.",
+      D_DISPELLABLE | D_EXPIRES, {{ "",
+        [](){mprf(MSGCH_RECOVERY, "Your spells flood back into your mind.");}}}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.

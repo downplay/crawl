@@ -4115,6 +4115,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_SCRIBE_AMNESIA, "Scribe Amnesia",
+    spschool::hexes,
+    spflag::target | spflag::WL_check | spflag::monster,
+    5,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    20,
+    TILEG_ABILITY_SIF_MUNA_AMNESIA,
+},
+
+{
     SPELL_NO_SPELL, "nonexistent spell",
     spschool::none,
     spflag::testing,

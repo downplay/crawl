@@ -64,6 +64,7 @@
 #include "spl-damage.h"
 #include "spl-goditem.h"
 #include "spl-monench.h"
+#include "spl-other.h"
 #include "spl-summoning.h"
 #include "spl-transloc.h"
 #include "spl-util.h"
@@ -3269,6 +3270,9 @@ bool bolt::harmless_to_player() const
     case BEAM_VIRULENCE:
         return player_res_poison(false) >= 3;
 
+    case BEAM_SCRIBE_AMNESIA:
+        return you.spell_no == 0 || !can_cast_spells(true);
+
     case BEAM_ROOTS:
         return mons_att_wont_attack(attitude) || !agent()->can_constrict(you, CONSTRICT_ROOTS);
 
@@ -4253,6 +4257,25 @@ void bolt::affect_player()
         }
 
         affect_player_enchantment();
+        return;
+    }
+    
+    // XX: Shouldn't be here. Should be in affect_player_enchantment.
+    // But if it's an enchantment then the beam isn't drawn and I can't see
+    // a better place to put it (other than just in the spell code and don't
+    // bother with zap data at all).
+    // XXX: Should be possible to include an effect in zap-data rather than
+    // adding increasing special cases to bolts.
+    if (flavour == BEAM_SCRIBE_AMNESIA)
+    {
+        if (you.spell_no == 0 || !can_cast_spells(true))
+        {
+            canned_msg(MSG_YOU_UNAFFECTED);
+            return;
+        }
+        do_temporary_amnesia(you);
+        
+        obvious_effect = true;
         return;
     }
 
@@ -5946,6 +5969,9 @@ bool ench_flavour_affects_monster(actor *agent, beam_type flavour,
         rc = (mon->res_poison() < 3);
         break;
 
+    case BEAM_SCRIBE_AMNESIA:
+        rc = false; // XX: check has_spells
+
     case BEAM_DRAIN_MAGIC:
         rc = mon->antimagic_susceptible();
         break;
@@ -6553,6 +6579,9 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             }
         }
         return MON_AFFECTED;
+
+    case BEAM_SCRIBE_AMNESIA:
+        break;
 
     case BEAM_AGILITY:
         if (!mon->has_ench(ENCH_AGILE)
@@ -7551,6 +7580,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_SHADOW_TORPOR:         return "shadow torpor";
     case BEAM_HAEMOCLASM:            return "gore";
     case BEAM_BLOODRITE:             return "blood";
+    case BEAM_SCRIBE_AMNESIA:        return "amnesia";
 
     case NUM_BEAMS:                  die("invalid beam type");
     }

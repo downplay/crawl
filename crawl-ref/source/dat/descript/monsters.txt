@@ -3143,7 +3143,7 @@ yaktaur scribe
 
 They say the quill is mightier than the sword and perhaps this creature is the
 evidence: a yaktaur learned in the written arts able to inscribe powerful
-sigils to frustrate its foes just as effectively as it wields a crossbow.
+sigils and scrolls to frustrate its foes just as well as it wields a crossbow.
 %%%%
 yellow draconian
 

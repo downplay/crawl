@@ -456,6 +456,20 @@ bool decimal_chance(double chance)
     return random_real() < chance;
 }
 
+const string shuffle_chars(const char *text)
+{
+    // Failed assert if there's no subgenerator for titles
+    string copied = string(text);
+    size_t n = copied.length();
+    while (n > 1)
+    {
+        const int i = random2(n);
+        n--;
+        swap(copied[i], copied[n]);
+    }
+    return copied;
+}
+
 // This is used when the front-end randomness is inconclusive. There are
 // never more than two possibilities, which simplifies things.
 bool defer_rand::x_chance_in_y_contd(int x, int y, int index)

@@ -1400,6 +1400,14 @@ Scorch spell
 Scorches a random foe. Those injured by this have their resistance to fire
 burned away for a short time.
 %%%%
+Scribe Amnesia spell
+
+The creation of magical scrolls is an art more intricate and powerful than
+merely casting a spell, and a hastily-crafted scroll of amnesia is far less
+precise in its memory-pruning capabilities, whilst also less permanent. But
+when targetted against a foe rather than oneself, the temporary loss of a
+number of their spells is quite the desirable outcome.
+%%%%
 Sculpt Simulacrum spell
 
 Forms icy simulacra of an adjacent living, demonic, or holy creature. These

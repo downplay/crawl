@@ -201,6 +201,7 @@ public:
     FixedBitVector<NUM_SPELLS> hidden_spells;
     FixedVector<spell_type, MAX_KNOWN_SPELLS> spells;
     set<spell_type> old_vehumet_gifts, vehumet_gifts;
+    set<spell_type> temporary_amnesia_spells;
 
     uint8_t spell_no;
     game_chapter chapter;
@@ -578,6 +579,7 @@ public:
     kill_category kill_alignment() const override;
 
     bool has_spell(spell_type spell) const override;
+    bool has_spells() const;
 
     string shout_verb(bool directed = false) const;
     int shout_volume() const;

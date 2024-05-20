@@ -106,7 +106,8 @@ enum beam_type                  // bolt::flavour
     BEAM_PETRIFYING_CLOUD,
     BEAM_ENSNARE,
     BEAM_DEATH_RATTLE,
-    BEAM_LAST_REAL = BEAM_DEATH_RATTLE,
+    BEAM_SCRIBE_AMNESIA,
+    BEAM_LAST_REAL = BEAM_SCRIBE_AMNESIA,
 
     // For getting the visual effect of a beam.
     BEAM_VISUAL,

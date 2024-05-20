@@ -151,6 +151,7 @@ static pair<spell_type, zap_type> _spl_zaps[] =
     { SPELL_SHADOW_TEMPEST, ZAP_SHADOW_JOLT },
     { SPELL_SHADOW_TORPOR, ZAP_SHADOW_TORPOR },
     { SPELL_CREEPING_SHADOW, ZAP_CREEPING_SHADOW },
+    { SPELL_SCRIBE_AMNESIA, ZAP_SCRIBE_AMNESIA },
 
     // This is just to satisfy monster spell setup code
     { SPELL_HELLFIRE_MORTAR, ZAP_HELLFIRE_MORTAR_DIG },

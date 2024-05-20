@@ -1607,6 +1607,10 @@ static void _tag_construct_you(writer &th)
     for (auto spell : you.vehumet_gifts)
         marshallShort(th, spell);
 
+    marshallUByte(th, you.temporary_amnesia_spells.size());
+    for (auto spell : you.temporary_amnesia_spells)
+        marshallShort(th, spell);
+
     CANARY;
 
     // how many skills?
@@ -2598,6 +2602,24 @@ void unmarshall_vehumet_spells(reader &th, set<spell_type>& old_gifts,
 #endif
 }
 
+void unmarshall_temporary_amnesia_spells(reader &th, set<spell_type>& spells)
+{
+#if TAG_MAJOR_VERSION == 34
+    if (th.getMinorVersion() >= TAG_MINOR_TEMPORARY_AMNESIA)
+    {
+#endif
+        const auto num_spells = unmarshallUByte(th);
+        for (int i = 0; i < num_spells; ++i)
+        {
+            const auto spell = unmarshallSpellType(th);
+            if (!spell_removed(spell))
+                spells.insert(spell);
+        }
+#if TAG_MAJOR_VERSION == 34
+    }
+#endif
+}
+
 FixedVector<spell_type, MAX_KNOWN_SPELLS> unmarshall_player_spells(reader &th)
 {
     FixedVector<spell_type, MAX_KNOWN_SPELLS> spells(SPELL_NO_SPELL);
@@ -3026,6 +3048,7 @@ static void _tag_read_you(reader &th)
     }
 
     unmarshall_vehumet_spells(th, you.old_vehumet_gifts, you.vehumet_gifts);
+    unmarshall_temporary_amnesia_spells(th, you.temporary_amnesia_spells);
     EAT_CANARY;
 
     // how many skills?

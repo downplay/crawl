@@ -594,6 +594,17 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
             ASSERT(foe);
             return ai_action::good_or_impossible(foe->res_poison(false) < 3);
     }, 8) },
+    { SPELL_SCRIBE_AMNESIA, _hex_logic(SPELL_SCRIBE_AMNESIA, [](const monster &caster) {
+            const actor* foe = caster.get_foe();
+            ASSERT(foe);
+            // XX: Should also check whether any spells are *currently* castable?            
+            if (foe->is_player() && you.spell_no && can_cast_spells(true))
+                return ai_action::good();
+            return ai_action::impossible();
+            // XX: implement amnesia on monster too
+                // foe->is_player() && foe->as_player()->spell_no && foe->as_play
+                // || foe->is_monster() && foe->as_monster()->has_spells());
+    }, 20) },
     { SPELL_GRASPING_ROOTS, {
         [](const monster &caster)
         {
@@ -851,7 +862,7 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
             const int pow = mons_spellpower(caster, SPELL_SIGIL_OF_BINDING);
             cast_sigil_of_binding(caster, pow, false, false);
         }
-    } }
+    } },
 };
 
 // Logic for special-cased Aphotic Marionette hijacking of monster buffs to

@@ -2354,4 +2354,20 @@ _mon_hex_zap(ZAP_VITRIFY, BEAM_VITRIFY),
     false,
 },
 
+{
+    ZAP_SCRIBE_AMNESIA,
+    "scroll of amnesia",
+    200,
+    nullptr,
+    nullptr,
+    nullptr,
+    new tohit_calculator<0, 1, 3>, // ENCH_POW_FACTOR
+    MAGENTA, // same as default "dangerous scroll" glyph
+    false,
+    BEAM_SCRIBE_AMNESIA,
+    DCHAR_ITEM_SCROLL,
+    false,
+    false,
+},
+
 };

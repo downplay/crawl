@@ -97,6 +97,7 @@ int count_bits(enum_bitfield<E, Exp> bits)
 }
 
 const char *spell_title(spell_type which_spell);
+const char *spell_title_current(spell_type which_spell);
 const char* spelltype_short_name(spschool which_spelltype);
 const char* spelltype_long_name(spschool which_spelltype);
 
