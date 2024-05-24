@@ -1431,6 +1431,8 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
     }
     else if (mons_is_child_tentacle(mg.cls))
         blame_prefix = "attached to ";
+    else if (mg.cls == MONS_TOADSTOOL || mg.cls == MONS_WOLF_LICHEN)
+        blame_prefix = "shed by ";
     else
         blame_prefix = "created by ";
 
@@ -2019,6 +2021,10 @@ static const map<monster_type, band_set> bands_by_leader = {
             || !vault_mon_types.empty();
     }},                           {{ BAND_RANDOM_SINGLE, {1, 2} },
                                    { BAND_SILVERFISH,    {1, 2} }}}},
+    { MONS_STROLLING_STONE,  { {2, 0, []() {
+        return branch_has_monsters(you.where_are_you)
+            || !vault_mon_types.empty();
+    }},                           {{ BAND_RANDOM_SINGLE, {1, 2} }}}},
 
     // special-cased band-sizes
     { MONS_SPRIGGAN_DRUID,  { {3}, {{ BAND_SPRIGGAN_DRUID, {0, 1}, true }}}},

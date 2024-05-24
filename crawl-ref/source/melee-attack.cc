@@ -3762,6 +3762,7 @@ void melee_attack::mons_apply_attack_flavour()
         }
         break;
     }
+
     case AF_SLEEP:
         if (!coinflip())
             break;
@@ -3779,6 +3780,13 @@ void melee_attack::mons_apply_attack_flavour()
         }
         defender->put_to_sleep(attacker, attacker->get_experience_level() * 3);
         break;
+
+    case AF_SHED:
+    {
+        if (!defender->is_monster() || !mons_is_firewood(*defender->as_monster()))
+            summon_detritus(*attacker->as_monster(), defender->pos());
+        break;
+    }
     }
 }
 
