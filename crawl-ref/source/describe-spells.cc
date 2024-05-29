@@ -358,11 +358,11 @@ vector<pair<spell_type,char>> map_chars_to_spells(const spellset &spells)
     return ret;
 }
 
-static string _range_string(const spell_type &spell, const monster_info *mon_owner, int hd)
+static string _range_string(const spell_type &spell, const monster_info *mon_owner)
 {
     auto flags = get_spell_flags(spell);
-    int pow = mons_power_for_hd(spell, hd);
-    int range = spell_range(spell, pow, false);
+    int range = mon_owner ? mon_owner->spell_range(spell)
+                          : you.spell_range(spell);
     const bool has_range = mon_owner
                         && range > 0
                         && !testbits(flags, spflag::selfench);
@@ -601,7 +601,6 @@ static void _describe_book(const spellbook_contents &book,
     const bool doublecolumn = source_item == nullptr;
 
     bool first_line_element = true;
-    const int hd = mon_owner ? mon_owner->spell_hd() : 0;
     for (auto spell : book.spells)
     {
         description.cprintf(" ");
@@ -618,7 +617,7 @@ static void _describe_book(const spellbook_contents &book,
         const char spell_letter = entry != spell_map.end()
                                             ? entry->second : ' ';
 
-        const string range_str = _range_string(spell, mon_owner, hd);
+        const string range_str = _range_string(spell, mon_owner);
         string effect_str = _effect_string(spell, mon_owner);
 
         const int effect_len = effect_str.length();

@@ -902,7 +902,7 @@ spret cast_a_spell(bool check_range, spell_type spell, dist *_target,
 
         if ((Options.use_animations & UA_RANGE) && Options.darken_beyond_range)
         {
-            targeter_smite range(&you, calc_spell_range(spell), 0, 0, true);
+            targeter_smite range(&you, you.spell_range(spell), 0, 0, true);
             range_view_annotator show_range(&range);
             delay(50);
         }
@@ -934,7 +934,9 @@ spret cast_a_spell(bool check_range, spell_type spell, dist *_target,
     if (_majin_charge_hp())
         pay_hp(hp_cost);
 
-    const spret cast_result = your_spells(spell, 0, !you.divine_exegesis,
+    auto cast_type = you.divine_exegesis ? spell_cast_type::god
+                                         : spell_cast_type::magical;
+    const spret cast_result = your_spells(spell, 0, cast_type,
                                           nullptr, _target, force_failure);
     if (cast_result == spret::abort
         || you.divine_exegesis && cast_result == spret::fail)
@@ -1081,8 +1083,7 @@ static void _try_monster_cast(spell_type spell, int /*powc*/,
 #endif // WIZARD
 
 static spret _do_cast(spell_type spell, int powc, const dist& spd,
-                           bolt& beam, god_type god, bool fail,
-                           bool actual_spell);
+                           bolt& beam, god_type god, bool fail);
 
 /**
  * Should this spell be aborted before casting properly starts, either because
@@ -1891,7 +1892,7 @@ desc_filter targeter_addl_desc(spell_type spell, int powc, spell_flags flags,
 string target_spell_desc(const monster_info& mi, spell_type spell)
 {
     int powc = calc_spell_power(spell);
-    const int range = calc_spell_range(spell, powc, false);
+    const int range = you.spell_range(spell, powc);
 
     unique_ptr<targeter> hitfunc = find_spell_targeter(spell, powc, range);
     if (!hitfunc)
@@ -1927,22 +1928,30 @@ string target_spell_desc(const monster_info& mi, spell_type spell)
  * exercising, spret::fail otherwise, or spret::abort if the player cancelled
  * the casting.
  **/
-spret your_spells(spell_type spell, int powc, bool actual_spell,
+spret your_spells(spell_type spell, int powc, spell_cast_type how,
                   const item_def* const evoked_wand, dist *target,
                   bool force_failure)
 {
+    const bool actual_spell = how == spell_cast_type::magical;
+
     ASSERT(!crawl_state.game_is_arena());
     ASSERT(!(actual_spell && evoked_wand));
     ASSERT(!evoked_wand || evoked_wand->base_type == OBJ_WANDS);
     ASSERT(!force_failure || !actual_spell && !evoked_wand);
 
-    const bool wiz_cast = (crawl_state.prev_cmd == CMD_WIZARD && !actual_spell);
+    const bool wiz_cast = 
+#ifdef WIZARD
+        how == spell_cast_type::wizard;
+#else
+        false;
+#endif
 
     dist target_local;
     if (!target)
         target = &target_local;
     bolt beam;
     beam.origin_spell = spell;
+    beam.origin_spell_cast = how;
 
     // [dshaligram] Any action that depends on the spellcasting attempt to have
     // succeeded must be performed after the switch.
@@ -1954,7 +1963,7 @@ spret your_spells(spell_type spell, int powc, bool actual_spell,
     if (!powc)
         powc = calc_spell_power(spell);
 
-    const int range = calc_spell_range(spell, powc, actual_spell);
+    const int range = you.spell_range(spell, powc, how);
     beam.range = range;
 
     unique_ptr<targeter> hitfunc = find_spell_targeter(spell, powc, range);
@@ -2148,7 +2157,7 @@ spret your_spells(spell_type spell, int powc, bool actual_spell,
     const bool had_tele = orig_target && orig_target->has_ench(ENCH_TP);
 
     spret cast_result = _do_cast(spell, powc, *target, beam, god,
-                                 force_failure || fail, actual_spell);
+                                 force_failure || fail);
 
     switch (cast_result)
     {
@@ -2238,10 +2247,9 @@ spret your_spells(spell_type spell, int powc, bool actual_spell,
 // Returns spret::success, spret::abort, spret::fail
 // or spret::none (not a player spell).
 static spret _do_cast(spell_type spell, int powc, const dist& spd,
-                           bolt& beam, god_type god, bool fail,
-                           bool actual_spell)
+                           bolt& beam, god_type god, bool fail)
 {
-    if (actual_spell && !you.wizard
+    if (beam.origin_spell_cast == spell_cast_type::magical && !you.wizard
         && (get_spell_flags(spell) & (spflag::monster | spflag::testing)))
     {
         return spret::none;
@@ -3027,16 +3035,6 @@ string spell_power_string(spell_type spell)
         return make_stringf("%d%%", percent);
 }
 
-int calc_spell_range(spell_type spell, int power, bool allow_bonus,
-                     bool ignore_shadows)
-{
-    if (power == 0)
-        power = calc_spell_power(spell);
-    const int range = spell_range(spell, power, allow_bonus, ignore_shadows);
-
-    return range;
-}
-
 /**
  * Give a string visually describing a given spell's range, as cast by the
  * player.
@@ -3049,9 +3047,8 @@ string spell_range_string(spell_type spell)
     if (spell == SPELL_HAILSTORM)
         return "@.->"; // Special case: hailstorm is a ring
 
-    const int cap      = spell_power_cap(spell);
-    const int range    = calc_spell_range(spell, 0);
-    const int maxrange = calc_spell_range(spell, cap, true, true);
+    const int range    = you.spell_range(spell);
+    const int maxrange = you.spell_range(spell, spell_power_cap(spell));
 
     return range_string(range, maxrange, '@');
 }

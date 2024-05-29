@@ -1261,6 +1261,26 @@ void dithmenos_shadow_spell(bolt* orig_beam, spell_type spell)
     shadow_monster_reset(mon);
 }
 
+bool vehumet_supports_spell(spell_type spell)
+{
+    // Conjurations work by conjuring up a chunk of short-lived matter and
+    // propelling it towards the victim. This is the most popular way, but
+    // by no means it has a monopoly for being destructive.
+    // Vehumet loves all direct physical destruction.
+    return spell_typematch(spell, spschool::conjuration)
+           || (get_spell_flags(spell) & spflag::destructive);
+}
+
+bool vehumet_boosts_spell_range(spell_type spell)
+{
+    return vehumet_supports_spell(spell)
+        && spell_range_max(spell) > 1
+        // Spells that are very specific about their ranges
+        && spell != SPELL_FROZEN_RAMPARTS
+        && spell != SPELL_NOXIOUS_BOG
+        && spell != SPELL_HAILSTORM; // uses a special system
+}
+
 void wu_jian_trigger_serpents_lash(bool wall_jump, const coord_def& old_pos)
 {
     if (you.attribute[ATTR_SERPENTS_LASH] == 0)

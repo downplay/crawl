@@ -496,7 +496,7 @@ bool valid_electric_charge_target(const actor& agent, coord_def target, string* 
         return false;
     }
     else if (grid_distance(agent.pos(), target)
-             > spell_range(SPELL_ELECTRIC_CHARGE, 50))
+             > you.spell_range(SPELL_ELECTRIC_CHARGE, 50))
     {
         if (fail_reason)
             *fail_reason = "That's out of range!";
@@ -1522,7 +1522,7 @@ spret cast_golubrias_passage(int pow, const coord_def& where, bool fail)
     }
 
     if (grid_distance(where, you.pos())
-        > spell_range(SPELL_GOLUBRIAS_PASSAGE, pow))
+        > you.spell_range(SPELL_GOLUBRIAS_PASSAGE, pow))
     {
         mpr("That's out of range!");
         return spret::abort;
@@ -1617,7 +1617,7 @@ static int _disperse_monster(monster& mon, int pow)
 spret cast_dispersal(int pow, bool fail)
 {
     fail_check();
-    const int radius = spell_range(SPELL_DISPERSAL, pow);
+    const int radius = you.spell_range(SPELL_DISPERSAL, pow);
     if (!apply_monsters_around_square([pow] (monster& mon) {
             return _disperse_monster(mon, pow);
         }, you.pos(), radius))

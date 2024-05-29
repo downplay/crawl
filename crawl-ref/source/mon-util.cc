@@ -3837,7 +3837,7 @@ bool mons_has_ranged_spell(const monster& mon, bool attack_only,
         if (slot.spell == SPELL_CREATE_TENTACLES)
             return true;
         if (_ms_ranged_spell(slot.spell, attack_only, ench_too)
-            && mons_spell_range(mon, slot.spell) > 1)
+            && mon.spell_range(slot.spell) > 1)
         {
             return true;
         }

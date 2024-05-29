@@ -4596,9 +4596,7 @@ static void _get_spell_description(const spell_type spell,
                                " removed by this.\n";
 
         }
-
-        const int hd = mon_owner->spell_hd();
-        const int range = mons_spell_range_for_hd(spell, hd);
+        const int range = mon_owner->spell_range(spell);
         description += "\nRange : ";
         if (spell == SPELL_CALL_DOWN_LIGHTNING)
             description += stringize_glyph(mons_char(mon_owner->type)) + "..---->";
@@ -4628,8 +4626,10 @@ static void _get_spell_description(const spell_type spell,
         {
             string wiz_info;
 #ifdef WIZARD
-            if (you.wizard)
+            if (you.wizard) {
+                const int hd = mon_owner->spell_hd();
                 wiz_info += make_stringf(" (pow %d)", _hex_pow(spell, hd));
+            }
 #endif
             description += you.immune_to_hex(spell)
                 ? make_stringf("You cannot be affected by this "

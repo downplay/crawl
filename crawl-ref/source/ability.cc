@@ -2786,8 +2786,8 @@ static bool _evoke_orb_of_dispater(dist *target)
 {
     int power = _orb_of_dispater_power();
 
-    if (your_spells(SPELL_HURL_DAMNATION, power, false, nullptr, target)
-        == spret::abort)
+    if (your_spells(SPELL_HURL_DAMNATION, power, spell_cast_type::device,
+                    nullptr, target) == spret::abort)
     {
         return false;
     }
@@ -2799,8 +2799,8 @@ static bool _evoke_staff_of_olgreb(dist *target)
 {
     int power = div_rand_round(20 + you.skill(SK_EVOCATIONS, 20), 4);
 
-    if (your_spells(SPELL_OLGREBS_TOXIC_RADIANCE, power, false, nullptr, target)
-        == spret::abort)
+    if (your_spells(SPELL_OLGREBS_TOXIC_RADIANCE, power, spell_cast_type::device,
+                    nullptr, target) == spret::abort)
     {
         return false;
     }
@@ -2879,7 +2879,7 @@ static spret _do_draconian_breath(const ability_def& abil, dist *target, bool fa
     spret result = spret::abort;
 
     result = your_spells(breath_to_spell[abil.ability], you.experience_level,
-                            false, nullptr, target, fail);
+                         spell_cast_type::natural, nullptr, target, fail);
 
     if (result == spret::success)
         you.props[DRACONIAN_BREATH_USES_KEY].get_int() -= 1;
@@ -2960,7 +2960,8 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
             return spret::abort;
         {
             const int power = get_form()->get_level(200) / 27;
-            return your_spells(SPELL_BLINKBOLT, power, false, nullptr, target);
+            return your_spells(SPELL_BLINKBOLT, power, spell_cast_type::natural,
+                               nullptr, target);
         }
 
     case ABIL_SIPHON_ESSENCE:
@@ -3029,7 +3030,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
     // DEMONIC POWERS:
     case ABIL_DAMNATION:
         return your_spells(SPELL_HURL_DAMNATION, _hurl_damnation_power(),
-                           false, nullptr, target, fail);
+                           spell_cast_type::natural, nullptr, target, fail);
 
     case ABIL_WORD_OF_CHAOS:
         return word_of_chaos(40 + you.experience_level * 6, fail);
@@ -3168,7 +3169,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
     {
         spret result = your_spells(SPELL_HURL_TORCHLIGHT,
                                    _yred_hurl_torchlight_power(),
-                                   false, nullptr, target, fail);
+                                   spell_cast_type::god, nullptr, target, fail);
 
         if (result == spret::success)
             you.props[YRED_TORCH_POWER_KEY].get_int() -= 1;
@@ -3469,7 +3470,7 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
 
     case ABIL_BEOGH_SMITING:
         return your_spells(SPELL_SMITING, _beogh_smiting_power(),
-                           false, nullptr, target, fail);
+                           spell_cast_type::god, nullptr, target, fail);
 
     case ABIL_BEOGH_RECALL_APOSTLES:
         fail_check();
