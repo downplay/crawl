@@ -904,6 +904,14 @@ static void _DAMNATION_launch(bolt* beam)
 
 ///////////////////////////////////////////////////
 
+static unique_ptr<targeter> _CARDINALS_CROSSBOW_hitfunc(const item_def* launcher)
+{
+    auto hitfunc = make_unique<targeter_widebeam>(&you, you.current_vision, 3);
+    return hitfunc;
+}
+
+///////////////////////////////////////////////////
+
 /**
  * Calculate the bonus damage that the Elemental Staff does with an attack of
  * the given flavour.

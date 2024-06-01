@@ -228,7 +228,7 @@ namespace quiver
         a->target.find_target = false;
         a->target.fire_context = this;
         a->target.interactive = true;
-
+mprf("DO_TARGET");
         if (a->is_targeted())
             a->trigger(a->target);
         else
@@ -342,6 +342,7 @@ namespace quiver
 
         void trigger(dist &t) override
         {
+            mpr("TRIGGER RANGED ACTION");
             set_target(t);
             if (!is_valid())
                 return;
@@ -2353,6 +2354,7 @@ namespace quiver
      */
     shared_ptr<action> get_primary_action()
     {
+        mprf("get_primary_action");
         const item_def* weapon = you.weapon();
         if (weapon && is_range_weapon(*weapon))
             return make_shared<ranged_action>();
@@ -2881,6 +2883,7 @@ namespace quiver
      */
     void action_cycler::target()
     {
+        mprf(MSGCH_DIAGNOSTICS, "What???");
         // This is a somewhat indirect interface that allows cycling between
         // arbitrary code paths that call a direction chooser. Because the
         // setup for direction choosers is so varied and complicated, we can't
@@ -2900,18 +2903,21 @@ namespace quiver
         // impractical, because each code path (except throwing) is called from
         // many places.
         shared_ptr<action> initial = get();
-        clear_messages(); // this kind of looks better as a force clear, but
+        // clear_messages(); // this kind of looks better as a force clear, but
                           // for consistency with direct targeting commands,
                           // I will leave it as non-force
-        msgwin_temporary_mode tmp;
+        // msgwin_temporary_mode tmp;
         bool force_restore_initial;
 
         command_type what_happened = CMD_NO_CMD;
+        mprf(MSGCH_DIAGNOSTICS, "About to do_target (1)");
         do
         {
+            mprf("About to do_target (2)");
             flush_prev_message();
             msgwin_clear_temporary();
             force_restore_initial = false;
+            mprf("About to do_target (3)");
             auto a = do_target();
 
             // the point of this: if you cycle to or select some item, fire it,

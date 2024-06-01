@@ -114,6 +114,8 @@ private:
 // could be moved out of here if fire_target_behaviour is exposed.
 void untargeted_fire(quiver::action &a)
 {
+    mprf("UNTARGETED FIRE");
+
     if (!a.is_enabled())
     {
         // should this happen for targeted actions too?
@@ -592,10 +594,9 @@ static void _player_shoot(bolt &pbolt, item_def &item, item_def const *launcher)
 
 // throw_it - handles player throwing/firing only. Monster throwing is handled
 // in mons_throw().
-// called only from ammo_action::trigger; this could probably be further
-// refactored to be a method of quiver::ammo_action.
 void throw_it(quiver::action &a)
 {
+    mprf("THROW IT");
     const item_def *primary = a.get_launcher();
     const item_def *offhand = you.offhand_weapon();
     if (offhand && (!primary || !is_range_weapon(*offhand)))

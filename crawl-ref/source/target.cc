@@ -1683,6 +1683,11 @@ aff_type targeter_widebeam::is_affected(coord_def loc)
     return zapped[loc];
 }
 
+bool targeter_widebeam::can_affect_outside_range()
+{
+    return false;
+}
+
 targeter_widebeam_compass::targeter_widebeam_compass(const actor *a, int range, int width)
     : targeter()
 {

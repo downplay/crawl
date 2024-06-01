@@ -343,6 +343,8 @@ public:
     bool valid_aim(coord_def a) override;
     bool set_aim(coord_def a) override;
     aff_type is_affected(coord_def loc) override;
+    bool can_affect_outside_range() override;
+
     map<coord_def, aff_type> zapped;
     vector<widebeam_beam> beams;
     coord_def unit_forward;

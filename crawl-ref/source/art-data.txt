@@ -1932,6 +1932,18 @@ TILE:     urand_scarf_invisibility
 TILE_EQ:  scarf_invisibility
 BOOL:     inv, nogen
 
+NAME:     Cardinal's Crossbow
+OBJ:      OBJ_WEAPONS/WPN_TRIPLE_CROSSBOW
+TYPE:     triple triple crossbow
+PLUS:     +9
+COLOUR:   ETC_HOLY
+TILE:     urand_cardinals_crossbow
+VALUE:    1000
+TILE_EQ:  cardinals_crossbow
+BRAND:    SPWPN_HOLY_WRATH
+DBRAND:   Triple: It fires three parallel bolts.
++Compass: It can only be fired in cardinal and orthogonal directions.
+
 # This entry must always be last.
 ENUM:   DUMMY2
 NAME:   DUMMY UNRANDART 2
