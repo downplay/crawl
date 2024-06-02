@@ -846,8 +846,13 @@ void bolt::choose_ray()
 // Draw the bolt at p if needed.
 void bolt::draw(const coord_def& p, bool force_refresh)
 {
-    if (is_tracer || is_enchantment() || !you.see_cell(p))
+    // If more enchantments want to have visible beams, move this special
+    // case to a flag on zaps
+    if (is_tracer || is_enchantment() && flavour != BEAM_SCRIBE_AMNESIA
+        || !you.see_cell(p))
+    {
         return;
+    }
 
     // We don't clean up the old position.
     // First, most people like to see the full path,
@@ -3955,6 +3960,17 @@ void bolt::affect_player_enchantment(bool resistible)
             canned_msg(MSG_YOU_UNAFFECTED);
         break;
 
+    case BEAM_SCRIBE_AMNESIA:
+        if (you.spell_no == 0)
+        {
+            canned_msg(MSG_YOU_UNAFFECTED);
+            return;
+        }
+        do_temporary_amnesia(you);
+        
+        obvious_effect = true;
+        break;
+
     default:
         // _All_ enchantments should be enumerated here!
         mpr("Software bugs nibble your toes!");
@@ -4260,25 +4276,6 @@ void bolt::affect_player()
         return;
     }
     
-    // XX: Shouldn't be here. Should be in affect_player_enchantment.
-    // But if it's an enchantment then the beam isn't drawn and I can't see
-    // a better place to put it (other than just in the spell code and don't
-    // bother with zap data at all).
-    // XXX: Should be possible to include an effect in zap-data rather than
-    // adding increasing special cases to bolts.
-    if (flavour == BEAM_SCRIBE_AMNESIA)
-    {
-        if (you.spell_no == 0 || !can_cast_spells(true))
-        {
-            canned_msg(MSG_YOU_UNAFFECTED);
-            return;
-        }
-        do_temporary_amnesia(you);
-        
-        obvious_effect = true;
-        return;
-    }
-
     msg_generated = true;
 
     // FIXME: Lots of duplicated code here (compare handling of
@@ -4338,7 +4335,6 @@ void bolt::affect_player()
         const bool was_parad = you.duration[DUR_PARALYSIS];
         you.paralyse(agent(), 1);
         was_affected = (!was_parad && you.duration[DUR_PARALYSIS]) || was_affected;
-
     }
 
     if (flavour == BEAM_LIGHT && you.can_be_dazzled())
@@ -7580,7 +7576,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_SHADOW_TORPOR:         return "shadow torpor";
     case BEAM_HAEMOCLASM:            return "gore";
     case BEAM_BLOODRITE:             return "blood";
-    case BEAM_SCRIBE_AMNESIA:        return "amnesia";
+    case BEAM_SCRIBE_AMNESIA:        return "scroll of amnesia";
 
     case NUM_BEAMS:                  die("invalid beam type");
     }

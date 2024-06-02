@@ -2363,7 +2363,7 @@ _mon_hex_zap(ZAP_VITRIFY, BEAM_VITRIFY),
     nullptr,
     new tohit_calculator<0, 1, 3>, // ENCH_POW_FACTOR
     MAGENTA, // same as default "dangerous scroll" glyph
-    false,
+    true,
     BEAM_SCRIBE_AMNESIA,
     DCHAR_ITEM_SCROLL,
     false,
