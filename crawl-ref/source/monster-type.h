@@ -515,6 +515,7 @@ enum monster_type                      // env.mons[].type
     MONS_YAKTAUR_CAPTAIN,
 #if TAG_MAJOR_VERSION > 34
     MONS_YAKTAUR_SCRIBE,
+    MONS_YAKTAUR_FUSILIER,
     MONS_FAUN,
     MONS_SATYR,
 #endif
@@ -1351,6 +1352,7 @@ enum monster_type                      // env.mons[].type
     MONS_COBALT_LICHEN_MAW,
     MONS_COBALT_LICHEN_SAC,
     MONS_YAKTAUR_SCRIBE,
+    MONS_YAKTAUR_FUSILIER,
 #endif
 
     NUM_MONSTERS,               // used for polymorph
