@@ -511,6 +511,7 @@ enum monster_type                      // env.mons[].type
     MONS_YAKTAUR_CLERIC,
     MONS_YAKTAUR_SCRIBE,
     MONS_SHIELD_WALL,
+    MONS_YAKTAUR_FUSILIER,
     MONS_FAUN,
     MONS_SATYR,
 #endif
@@ -1326,6 +1327,7 @@ enum monster_type                      // env.mons[].type
     MONS_YAKTAUR_SCRIBE,
     MONS_YAKTAUR_CLERIC,
     MONS_SHIELD_WALL,
+    MONS_YAKTAUR_FUSILIER,
 #endif
 
     NUM_MONSTERS,               // used for polymorph

@@ -505,8 +505,9 @@ static const vector<pop_entry> population[] =
   {  1,  4,  350, RISE, MONS_ARCANIST },
   {  1,  4,   75, FLAT, MONS_NECROMANCER },
   {  1,  4,   75, RISE, MONS_NECROMANCER },
-  {  1,  4,  500, FLAT, MONS_YAKTAUR_CAPTAIN },
-  {  1,  4,  400, RISE, MONS_YAKTAUR_CAPTAIN },
+  {  1,  4,  450, FLAT, MONS_YAKTAUR_CAPTAIN },
+  {  1,  4,  350, RISE, MONS_YAKTAUR_CAPTAIN },
+  {  1,  4,  300, FLAT, MONS_YAKTAUR_FUSILIER },
   {  1,  4,  100, FLAT, MONS_ORC_WARLORD },
   {  1,  4,   50, RISE, MONS_ORC_WARLORD },
   // Top-tier threats:
@@ -546,6 +547,7 @@ static const vector<pop_entry> population[] =
   {  5, 12,  120, FALL, MONS_DEEP_TROLL_EARTH_MAGE },
   // V:5 misc:
   {  5, 12,  800, FALL, MONS_YAKTAUR_CAPTAIN },
+  {  5, 12,  650, FALL, MONS_YAKTAUR_FUSILIER },
   {  5, 12,  750, FALL, MONS_GLOWING_SHAPESHIFTER },
   {  5, 12,  600, FALL, MONS_TENGU_REAVER },
   {  5, 12,  330, FALL, MONS_VERY_UGLY_THING },
@@ -553,7 +555,6 @@ static const vector<pop_entry> population[] =
   {  5, 12,  260, FALL, MONS_WAR_GARGOYLE },
   {  5, 12,  300, FALL, MONS_POLTERGUARDIAN },
   // V:5 chaff from earlier floors
-  {  5,  5,  650, FLAT, MONS_ORC_KNIGHT },
   {  5,  5,  180, FLAT, MONS_FORMLESS_JELLYFISH },
   {  5,  5,   60, FLAT, MONS_DANCING_WEAPON },
   {  5,  5,   60, FLAT, MONS_GREAT_ORB_OF_EYES },

@@ -1144,6 +1144,8 @@ yaktaur_captain-melee MONS_YAKTAUR_CAPTAIN_MELEE
 yaktaur_cleric MONS_YAKTAUR_CLERIC
 yaktaur_cleric-melee MONS_YAKTAUR_CLERIC_MELEE
 shield_wall MONS_SHIELD_WALL
+yaktaur_fusilier MONS_YAKTAUR_FUSILIER
+yaktaur_fusilier-melee MONS_YAKTAUR_FUSILIER_MELEE
 yaktaur_scribe MONS_YAKTAUR_SCRIBE
 yaktaur_scribe-melee MONS_YAKTAUR_SCRIBE_MELEE
 %sdir mon/demihumanoids
