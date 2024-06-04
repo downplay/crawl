@@ -79,9 +79,13 @@ Honest
 
 Lousy
 
+Max[ed|imum]
+
 Mean
 
 Meek
+
+Min[i|ute|imum]
 
 Nice
 
@@ -105,7 +109,7 @@ Stingy
 
 Tight
 %%%%
-common shopkeeper name
+common english name
 
 Andy
 
@@ -198,25 +202,103 @@ Mar[y|ie]
 
 T[|r]ish[|a]
 %%%%
+faerie name begin
+
+Moon
+
+Sun
+
+Bright
+
+Star
+
+Rainbow
+
+Moss
+
+Sparkle
+
+Twinkle
+
+Well
+
+Flower
+
+Night
+
+Fair[y|ie|]
+
+Morning
+
+Dusk
+
+Day
+
+Worm
+%%%%
+faerie name end
+
+beam
+
+bless
+
+feather
+
+shine
+
+shoes
+
+toes
+
+tree
+
+dew
+
+bug
+
+juice
+
+flame
+
+nose
+
+face
+
+worm
+%%%%
+faerie name
+
+@faerie name begin@@faerie name end@
+%%%%
 plain shopkeeper name
 
 w:20
 @Classic_name@
 
-@common shopkeeper name@
+@common english name@
+
+w:3
+@faerie name@
 %%%%
 fancy shopkeeper name
 
 @Classic_name@
 
-@common shopkeeper name@
+@common english name@
+
+w:5
+@faerie name@
 %%%%
 gozag shopkeeper name
 
 w:5
 @Classic_name@
 
-@common shopkeeper name@
+w:12
+@common english name@
+
+w:8
+@faerie name@
 %%%%
 any shopkeeper prefix
 
@@ -316,15 +398,24 @@ The [Best|Greatest|Most|Finest]
 ###############################################################################
 other intro
 
-[The|THE][ Last| Only| Real| One True| One & Only|]
+The
+
+[Ye|YE|The|THE][ Last| LAST| Only| ONLY| Real| One True| One & Only|]
 
 [Ye|The] Old[e|est|]
 
 [|Yet ]Another
 
+[Lots Of|All Kinds Of]
+
+w:5
 @the best@
 
+w:5
 @simply only@ @the best@
+
+w:5
+@simply only@
 %%%%
 ###############################################################################
 # General vocabulary that can be used by a variety of shop types
@@ -465,13 +556,21 @@ Arcane
 
 Buzzing
 
+Contaminated
+
 Fizzing
+
+Glowing
 
 Humming
 
 Magic[al|]
 
 Mystic[al|]
+
+Radioactive
+
+Reactive
 
 [Self|Auto]-[Working|Operating|Aware|Enabled]
 
@@ -533,8 +632,6 @@ plain shop suffix
 
 Den
 
-Goods
-
 House
 
 Kiosk
@@ -572,8 +669,6 @@ Parlour
 Supermarket
 
 Warehouse
-
-[Inc|LTD|PLC]
 ###############################################################################
 # Specific suffixes only really work as "Weapons Stall" etc 
 %%%%
@@ -591,6 +686,8 @@ Etc[etera|]
 For [Sale|Hire|Rent]
 
 To [Buy|Hire|Purchase|Own]
+
+[Inc|LTD|PLC]
 ###############################################################################
 # These suffixes work when we omit the *noun*, or when the synonym is an
 # adjective as in the case of "General Shop"
@@ -632,7 +729,7 @@ shop suffix plural
 %%%%
 intro name
 
-@The_shopkeeper@'s
+@The_shopkeeper's@
 
 w:1
 @other intro@
@@ -758,9 +855,9 @@ For
 %%%%
 general store shop name
 
-@The_shopkeeper@'s @general synonym standalone@
+@The_shopkeeper's@ @general synonym standalone@
 
-@The_shopkeeper@'s @plain shop prefix@ @general synonym standalone@
+@The_shopkeeper's@ @plain shop prefix@ @general synonym standalone@
 
 @intro name@ @general synonym suffixable@ @any general shop suffix@
 
@@ -819,7 +916,7 @@ w:2
 ###############################################################################
 assorted antiques shop name
 
-@The_shopkeeper@'s @antique shop prefix@ @general synonym standalone@
+@The_shopkeeper's@ @antique shop prefix@ @general synonym standalone@
 
 @intro name@ @general synonym suffixable@ @fancy shop suffix@
 
@@ -907,7 +1004,7 @@ weapon noun
 
 Weapon
 
-Arm[|ament]
+Armament
 
 Accoutrement
 
@@ -924,6 +1021,8 @@ w:50
 @weapon noun@s
 
 Aegis
+
+Arms
 
 Ordnance
 
@@ -1021,9 +1120,9 @@ weapon shop name
 
 @intro name@ @weapon synonym singular@ @weapon or shop suffix@
 
-@The_shopkeeper@'s @weapon synonym plural@
+@The_shopkeeper's@ @weapon synonym plural@
 
-@The_shopkeeper@'s @weapon synonym plural@ @shop suffix plural@
+@The_shopkeeper's@ @weapon synonym plural@ @shop suffix plural@
 
 @intro name@ @weapon or shop suffix@ @of connector@ @weapon synonym plural@
 %%%%
@@ -1049,9 +1148,9 @@ antique weapon shop name
 
 @intro name@ @antique weapon synonym singular@ @weapon or shop suffix@
 
-@The_shopkeeper@'s @antique weapon synonym plural@
+@The_shopkeeper's@ @antique weapon synonym plural@
 
-@The_shopkeeper@'s @antique weapon synonym plural@ @shop suffix plural@
+@The_shopkeeper's@ @antique weapon synonym plural@ @shop suffix plural@
 
 @intro name@ @weapon or shop suffix@ @of connector@ @antique weapon synonym plural@
 %%%%
@@ -1202,9 +1301,9 @@ armour shop name
 
 @intro name@ @armour synonym singular@ @armour or shop suffix@
 
-@The_shopkeeper@'s @armour synonym plural@
+@The_shopkeeper's@ @armour synonym plural@
 
-@The_shopkeeper@'s @armour synonym plural@ @shop suffix plural@
+@The_shopkeeper's@ @armour synonym plural@ @shop suffix plural@
 
 @intro name@ @armour or shop suffix@ @of connector@ @armour synonym plural@
 %%%%
@@ -1230,9 +1329,9 @@ antique armour shop name
 
 @intro name@ @antique armour synonym singular@ @armour or shop suffix@
 
-@The_shopkeeper@'s @antique armour synonym plural@
+@The_shopkeeper's@ @antique armour synonym plural@
 
-@The_shopkeeper@'s @antique armour synonym plural@ @shop suffix plural@
+@The_shopkeeper's@ @antique armour synonym plural@ @shop suffix plural@
 
 @intro name@ @armour or shop suffix@ @of connector@ @antique armour synonym plural@
 %%%%
@@ -1318,9 +1417,9 @@ jewellery shop name
 
 @intro name@ @jewellery synonym singular@ @jewellery or shop suffix@
 
-@The_shopkeeper@'s @jewellery synonym plural@
+@The_shopkeeper's@ @jewellery synonym plural@
 
-@The_shopkeeper@'s @jewellery synonym plural@ @shop suffix plural@
+@The_shopkeeper's@ @jewellery synonym plural@ @shop suffix plural@
 
 @intro name@ @jewellery or shop suffix@ @of connector@ @jewellery synonym plural@
 %%%%
@@ -1351,7 +1450,7 @@ Medicine
 
 Milk
 
-[Pick|Wake|Get|Lift]-[Me|You]-Up
+[Bring|Get|Lift|Push|Pick|Ping|Send]-[Me|Em|You|U]-[Back|Down|Up|Round]
 
 Potion
 
@@ -1440,9 +1539,9 @@ distillery shop name
 
 @intro name@ @potion synonym singular@ @potion or shop suffix@
 
-@The_shopkeeper@'s @potion synonym plural@
+@The_shopkeeper's@ @potion synonym plural@
 
-@The_shopkeeper@'s @potion synonym plural@ @shop suffix plural@
+@The_shopkeeper's@ @potion synonym plural@ @shop suffix plural@
 
 @intro name@ @potion or shop suffix@ @of connector@ @potion synonym plural@
 %%%%
@@ -1468,6 +1567,8 @@ Paper
 Parchment
 
 Paper Consumable
+
+Print
 
 Roll
 
@@ -1542,9 +1643,9 @@ magic scroll shop name
 
 @intro name@ @scroll synonym singular@ @scroll or shop suffix@
 
-@The_shopkeeper@'s @scroll synonym plural@
+@The_shopkeeper's@ @scroll synonym plural@
 
-@The_shopkeeper@'s @scroll synonym plural@ @shop suffix plural@
+@The_shopkeeper's@ @scroll synonym plural@ @shop suffix plural@
 
 @intro name@ @scroll or shop suffix@ @of connector@ @scroll synonym plural@
 %%%%
@@ -1566,17 +1667,23 @@ Digest
 
 Learning
 
-Print
+Handbook
+
+Incunabulum
 
 Read
 
 Reference
 
+Reproduction
+
+Text
+
 Tome
 
 Volume
 
-Writings
+Writing
 
 Yarn
 %%%%
@@ -1584,11 +1691,15 @@ book noun singular
 
 w:100
 @book noun@
+
+Autobiograph[y|ical]
 %%%%
 book noun plural
 
 w:100
 @book noun@s
+
+Autobiographies
 %%%%
 good book adjective
 
@@ -1676,9 +1787,9 @@ book shop name
 
 @intro name@ @book synonym singular@ @book or shop suffix@
 
-@The_shopkeeper@'s @book synonym plural@
+@The_shopkeeper's@ @book synonym plural@
 
-@The_shopkeeper@'s @book synonym plural@ @shop suffix plural@
+@The_shopkeeper's@ @book synonym plural@ @shop suffix plural@
 
 @intro name@ @book or shop suffix@ @of connector@ @book synonym plural@
 %%%%
@@ -1781,8 +1892,8 @@ gadget shop name
 
 @intro name@ @gadget synonym singular@ @gadget or shop suffix@
 
-@The_shopkeeper@'s @gadget synonym plural@
+@The_shopkeeper's@ @gadget synonym plural@
 
-@The_shopkeeper@'s @gadget synonym plural@ @shop suffix plural@
+@The_shopkeeper's@ @gadget synonym plural@ @shop suffix plural@
 
 @intro name@ @gadget or shop suffix@ @of connector@ @gadget synonym plural@

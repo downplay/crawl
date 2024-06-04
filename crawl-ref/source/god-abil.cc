@@ -3252,12 +3252,9 @@ static void _gozag_place_shop(int index)
     shop_struct *shop = shop_at(you.pos());
     ASSERT(shop);
 
-    const gender_type gender = random_choose(GENDER_FEMALE, GENDER_MALE,
-                                             GENDER_NEUTRAL);
-
     mprf(MSGCH_GOD, "%s invites you to visit %s %s%s%s.",
                     shop->shop_name.c_str(),
-                    decline_pronoun(gender, PRONOUN_POSSESSIVE),
+                    decline_pronoun(GENDER_NEUTRAL, PRONOUN_POSSESSIVE),
                     shop_type_name(shop->type).c_str(),
                     !shop->shop_suffix_name.empty() ? " " : "",
                     shop->shop_suffix_name.c_str());

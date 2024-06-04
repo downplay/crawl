@@ -1574,7 +1574,7 @@ pair<string, string> generate_shop_name(shop_type type, int shop_level, bool goz
     // We can generate some pretty succinct names so let's start at 16 and go up to 70
     // at max (any more than this would cause display issues anyway).
     const uint target_max = 20 + shop_level;
-    const uint target_min = 20 - shop_level / 5;
+    const uint target_min = 20 - shop_level / 3;
     const size_t target_length = random_range(target_min, target_max);
     const bool fancy = shop_level >= 20; // 20 for orc, 25 for later...
     // string key = (gozag ? "gozag " : fancy ? "fancy " : "")
@@ -1590,13 +1590,13 @@ pair<string, string> generate_shop_name(shop_type type, int shop_level, bool goz
         auto generated = getMiscString(key);
         if (generated.empty())
         {
-            mprf("Empty shopkeeper name! Key: %s", key.c_str());
+            mprf(MSGCH_ERROR, "Empty shopkeeper name! Key: %s", key.c_str());
             continue;
         }
         string name = maybe_pick_random_substring(generated);
         name = replace_all(name, "@The_shopkeeper's@", apostrophise(keeper_name));
         name = replace_all(name, "@The_shopkeeper@", keeper_name);
-        mprf("%s Target: %lu Found: %lu Keeper: %s Name: %s", name.c_str(), target_length, name.size(), keeper_name.c_str(), generated.c_str());
+        dprf("%s Target: %lu Found: %lu Keeper: %s Name: %s", name.c_str(), target_length, name.size(), keeper_name.c_str(), generated.c_str());
 
         if (name.size() == target_length)
         {
@@ -1617,7 +1617,7 @@ pair<string, string> generate_shop_name(shop_type type, int shop_level, bool goz
         best_name_size = best.first.size();
     }
 
-    mprf("Final: %s", best.first.c_str());
+    dprf("Final: %s", best.first.c_str());
 
     return best;
 }
