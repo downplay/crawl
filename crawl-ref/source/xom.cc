@@ -784,8 +784,7 @@ static bool _choose_chaos_upgrade(const monster& mon)
 
 static void _do_chaos_upgrade(item_def &item, const monster* mon)
 {
-    ASSERT(item.base_type == OBJ_MISSILES
-           || item.base_type == OBJ_WEAPONS);
+    ASSERT(item.base_type == OBJ_WEAPONS);
     ASSERT(!is_unrandom_artefact(item));
 
     bool seen = false;
@@ -800,8 +799,7 @@ static void _do_chaos_upgrade(item_def &item, const monster* mon)
             item.name(DESC_PLAIN, false, false, false).c_str());
     }
 
-    const int brand = (item.base_type == OBJ_WEAPONS) ? (int) SPWPN_CHAOS
-                                                      : (int) SPMSL_CHAOS;
+    const int brand = SPWPN_CHAOS;
 
     if (is_random_artefact(item))
     {
@@ -822,8 +820,7 @@ static void _do_chaos_upgrade(item_def &item, const monster* mon)
             item.flags |= ISFLAG_GLOWING;
 
         // Give some extra enchantments to tempt players into using chaos brand.
-        if (item.base_type == OBJ_WEAPONS)
-            item.plus  += random_range(2, 4);
+        item.plus  += random_range(2, 4);
     }
 }
 
