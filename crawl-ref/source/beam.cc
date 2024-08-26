@@ -1158,7 +1158,8 @@ void bolt::affect_cell()
         {
             const bool ignored = ignores_monster(m);
             affect_monster(m);
-            if (hit == AUTOMATIC_HIT && !pierce && !ignored
+            if (!ignored
+                && (hit == AUTOMATIC_HIT && !pierce || m->type == MONS_SHIELD_WALL)
                 && (!is_tracer || (agent() && m->visible_to(agent()))))
             {
                 finish_beam();

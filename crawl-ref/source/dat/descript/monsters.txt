@@ -3124,6 +3124,17 @@ yaktaur captain
 An exceptionally strong and brutish yaktaur, able to order its weaker brethren
 around to do its bidding.
 %%%%
+yaktaur cleric
+
+Resplendant in the finery of religious office and bearing the totem of a
+nameless deity, the Cleric acts with divine purpose. It is able to summon to
+its aid the spirits of ancient warriors of its order.
+%%%%
+shield wall
+
+The ghost of an ancient champion death yak, returned to this plane to protect its
+descendents by literally standing in the way of that which would do them harm.
+%%%%
 yaktaur scribe
 
 They say the quill is mightier than the sword and perhaps this creature is the
