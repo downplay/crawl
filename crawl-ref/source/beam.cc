@@ -1162,11 +1162,15 @@ void bolt::affect_cell()
     if (!hit_player || pierce || is_explosion)
     {
         monster *m = monster_at(pos());
-        if (m && can_affect_actor(m))
+        // Shield walls absorb all hostile beams, even piercing
+        bool is_blocking_monster = m && m->type == MONS_SHIELD_WALL
+                                   && (!agent() || !mons_aligned(m, agent()));
+        if (m && (can_affect_actor(m) || is_blocking_monster))
         {
             const bool ignored = ignores_monster(m);
             affect_monster(m);
-            if (hit == AUTOMATIC_HIT && !pierce && !ignored
+            if (!ignored
+                && (hit == AUTOMATIC_HIT && !pierce || is_blocking_monster)
                 && (!is_tracer || (agent() && m->visible_to(agent()))))
             {
                 finish_beam();

@@ -1354,7 +1354,10 @@ static monster* _place_monster_aux(const mgen_data &mg, const monster *leader,
             blame_prefix = "called from beyond by ";
     }
     else if (mons_class_is_zombified(mg.cls))
-        blame_prefix = "animated by ";
+        if (mg.summon_type == SPELL_FLESH_SACRIFICE)
+            blame_prefix = "sacrificed by ";
+        else
+            blame_prefix = "animated by ";
     else if (mg.cls == MONS_ELDRITCH_TENTACLE
              || mg.cls == MONS_ELDRITCH_TENTACLE_SEGMENT)
     {
@@ -1783,6 +1786,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_YAKTAUR_CAPTAIN, { {2}, {{ BAND_YAKTAURS, {2, 5}, true }}}},
     { MONS_YAKTAUR,         { {2}, {{ BAND_YAKTAURS, {2, 5} }}}},
     { MONS_YAKTAUR_SCRIBE,  { {2}, {{ BAND_YAKTAURS, {2, 5} }}}},
+    { MONS_YAKTAUR_CLERIC,  { {2}, {{ BAND_YAKTAUR_CLERIC, {4, 8} }}}},
     { MONS_DEATH_YAK,       { {}, {{ BAND_DEATH_YAKS, {2, 6} }}}},
     { MONS_OGRE_MAGE,       { {}, {{ BAND_OGRE_MAGE, {4, 8} }}}},
     { MONS_LODUL,           { {}, {{ BAND_OGRES, {6, 10}, true }}}},
@@ -2197,6 +2201,17 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
                                   {MONS_POLTERGUARDIAN, 1},
                                   {MONS_YAKTAUR, 1}},
                                  {{MONS_YAKTAUR, 1}}}},
+    { BAND_YAKTAUR_CLERIC,      {{{MONS_YAKTAUR_FUSILIER, 1}, // Maybe another special yaktaur
+                                  {MONS_YAKTAUR_SCRIBE,   1},
+                                  {MONS_SKELETON, 2}, // XX: Force skeleton to yaktaur
+                                  {MONS_YAKTAUR, 2}},
+                                 {{MONS_POLTERGUARDIAN, 1}, // Maybe an undead-themed support
+                                  {MONS_UNDYING_ARMOURY, 1},
+                                  {MONS_MARTYRED_SHADE, 1},
+                                  {MONS_SKELETON, 1}, // XX: Force skeleton to yaktaur
+                                  {MONS_YAKTAUR, 2}},
+                                 {{MONS_YAKTAUR, 1}, // 50:50 yaktaurs and death yaks
+                                  {MONS_DEATH_YAK, 1}}}}, // for flavour but also fodder for necro
     { BAND_MERFOLK_IMPALER,     {{{MONS_MERFOLK, 1}}}},
     { BAND_MERFOLK_JAVELINEER,  {{{MONS_MERFOLK, 1}}}},
     { BAND_ELEPHANT,            {{{MONS_ELEPHANT, 1}}}},

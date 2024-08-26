@@ -3980,3 +3980,13 @@ bool mons_bennu_can_revive(const monster* mons)
     return !mons->props.exists(BENNU_REVIVES_KEY)
            || mons->props[BENNU_REVIVES_KEY].get_byte() < 1;
 }
+
+void make_skeleton(monster& mons, monster& agent)
+{
+    // _make_derived_undead(&mons, false, MONS_SKELETON, SAME_ATTITUDE(&mons),
+    //                      SPELL_FLESH_SACRIFICE, GOD_NO_GOD);
+    // monster_die(mons, KILL_MON, agent.mindex());
+
+    define_zombie(&mons, MONS_SKELETON, mons.type);
+    mons.hit_points = mons.max_hit_points;
+}
