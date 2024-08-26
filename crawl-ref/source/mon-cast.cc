@@ -2189,6 +2189,7 @@ bool setup_mons_cast(const monster* mons, bolt &pbolt, spell_type spell_cast,
     case SPELL_MESMERISE:
     case SPELL_SUMMON_GREATER_DEMON:
     case SPELL_BROTHERS_IN_ARMS:
+    case SPELL_RAISE_SHIELDS:
     case SPELL_BERSERKER_RAGE:
     case SPELL_SPRINT:
 #if TAG_MAJOR_VERSION == 34
@@ -7019,6 +7020,20 @@ void mons_cast(monster* mons, bolt pbolt, spell_type spell_cast,
         mons->props[BROTHERS_KEY].get_int()++;
         return;
     }
+
+    case SPELL_RAISE_SHIELDS:
+        sumcount2 = 3;
+
+        duration  = min(2 + mons->spell_hd(spell_cast) / 5, 6);
+
+        for (sumcount = 0; sumcount < sumcount2; ++sumcount)
+        {
+            create_monster(
+                mgen_data(MONS_SHIELD_WALL, SAME_ATTITUDE(mons), mons->pos(),
+                          mons->foe)
+                .set_summoned(mons, duration, spell_cast, god));
+        }
+        return;
 
     case SPELL_SYMBOL_OF_TORMENT:
         torment(mons, TORMENT_SPELL, mons->pos());
