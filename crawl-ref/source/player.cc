@@ -5899,6 +5899,7 @@ bool player::has_spells() const
         if (spell != SPELL_NO_SPELL && can_cast_spells())
             return true;
     }
+    return false;
 }
 
 bool player::cannot_speak() const

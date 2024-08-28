@@ -743,7 +743,7 @@ void trigger_binding_sigil(actor& victim)
     revert_terrain_change(victim.pos(), TERRAIN_CHANGE_BINDING_SIGIL);
 }
 
-// Is this the best place for this? Otherwise considered added a mon-hex.cc for monster-only
+// Is this the best place for this? Otherwise considered adding a mon-hex.cc for monster-only
 // hexes as mon-cast.cc is a bit overloaded (and there's a weird circular reference)
 void do_temporary_amnesia(actor &target)
 {
