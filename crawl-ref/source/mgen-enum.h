@@ -143,6 +143,7 @@ enum band_type
     BAND_ROCK_FISH,
     BAND_WOLF_LICHENS,
     BAND_COBALT_LICHENS,
+    BAND_VAULTS_YAKTAURS,
     NUM_BANDS                   // always last
 };
 
