@@ -2270,13 +2270,20 @@ bool summons_are_capped(spell_type spell)
     return summonsdata.count(spell);
 }
 
-int summons_limit(spell_type spell, bool player)
+int summons_limit(spell_type spell, bool player, bool has_company)
 {
     const summon_cap *cap = map_find(summonsdata, spell);
     if (!cap)
         return 0;
     else
-        return player ? cap->player_cap : cap->monster_cap;
+    {
+        const int actor_cap = player ? cap->player_cap : cap->monster_cap;
+        // Orb of Company increases limit by 1 except for summons that
+        // have a limit of 1 always (because there's usually a good reason
+        // why it's only 1). We check the monster cap as it's a bit more generous.
+        return actor_cap && has_company && cap->monster_cap > 1
+                  ? actor_cap + 1 : actor_cap;
+    }
 }
 
 static bool _spell_has_variable_cap(spell_type spell)
@@ -2316,7 +2323,8 @@ static void _expire_capped_summon(monster* mon, bool recurse)
 void summoned_monster(const monster *mons, const actor *caster,
                       spell_type spell)
 {
-    int cap = summons_limit(spell, caster->is_player());
+    int cap = summons_limit(spell, caster->is_player(),
+                            caster->wearing_ego(EQ_ALL_ARMOUR, SPARM_COMPANY));
     if (!cap) // summons aren't capped
         return;
 

@@ -8420,12 +8420,13 @@ ai_action::goodness monster_spell_goodness(monster* mon, spell_type spell)
     // (Marionettes pass their summons onto the player, so count for them instead)
     if (summons_are_capped(spell))
     {
+        const bool has_company = mon->wearing_ego(EQ_ALL_ARMOUR, SPARM_COMPANY);
         if (mon->attitude == ATT_MARIONETTE)
         {
-            if (count_summons(&you, spell) >= summons_limit(spell, false))
+            if (count_summons(&you, spell) >= summons_limit(spell, false, has_company))
                 return ai_action::impossible();
         }
-        else if (count_summons(mon, spell) >= summons_limit(spell, false))
+        else if (count_summons(mon, spell) >= summons_limit(spell, false, has_company))
             return ai_action::impossible();
     }
 
