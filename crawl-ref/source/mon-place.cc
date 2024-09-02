@@ -1884,7 +1884,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_RADROACH,        { {}, {{ BAND_MIXED_SPIDERS, {1, 3} }}}},
     { MONS_JUMPING_SPIDER,  { {2}, {{ BAND_JUMPING_SPIDER, {1, 6} }}}},
     { MONS_TARANTELLA,      { {2}, {{ BAND_TARANTELLA, {1, 5} }}}},
-    { MONS_VAULT_WARDEN,    { {}, {{ BAND_YAKTAURS, {2, 6}, true },
+    { MONS_VAULT_WARDEN,    { {}, {{ BAND_VAULTS_YAKTAURS, {2, 6}, true },
                                    { BAND_VAULT_WARDEN, {2, 5}, true }}}},
     { MONS_IRONBOUND_PRESERVER, { {}, {{ BAND_PRESERVER, {3, 6}, true }}}},
     { MONS_TENGU_CONJURER,  { {2}, {{ BAND_TENGU, {1, 2} }}}},
@@ -2038,6 +2038,14 @@ static band_type _choose_band(monster_type mon_type, int *band_size_p,
             band = BAND_CENTAUR_WARRIORS;
             band_size = random_range(2, 4);
         }
+        break;
+
+    case MONS_YAKTAUR:
+    case MONS_YAKTAUR_CAPTAIN:
+    case MONS_YAKTAUR_FUSILIER:
+    case MONS_YAKTAUR_SCRIBE:
+        if (player_in_branch(BRANCH_VAULTS))
+            band = BAND_VAULTS_YAKTAURS;
         break;
 
     case MONS_ORC_WARLORD:
@@ -2201,9 +2209,13 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
     { BAND_YAKTAURS,            {{{MONS_YAKTAUR_SCRIBE, 1},
                                   {MONS_YAKTAUR_CLERIC, 1},
                                   {MONS_YAKTAUR_FUSILIER, 1},
+                                  {MONS_YAKTAUR, 1}},
+                                 {{MONS_YAKTAUR, 1}}}},
+    { BAND_VAULTS_YAKTAURS,     {{{MONS_YAKTAUR_FUSILIER, 1},
                                   {MONS_YAKTAUR, 2}},
                                  {{MONS_POLTERGUARDIAN, 1},
-                                  {MONS_YAKTAUR, 2}},
+                                  {MONS_UNDYING_ARMOURY, 1},
+                                  {MONS_YAKTAUR, 1}},
                                  {{MONS_YAKTAUR, 1}}}},
     { BAND_YAKTAUR_CLERIC,      {{{MONS_YAKTAUR_FUSILIER, 1}, // Maybe another special yaktaur
                                   {MONS_YAKTAUR_SCRIBE,   1},

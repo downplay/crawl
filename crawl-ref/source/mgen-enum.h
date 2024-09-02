@@ -138,6 +138,7 @@ enum band_type
     BAND_ELEPHANTS_AND_MASTER,
     BAND_SPHINXES,
     BAND_YAKTAUR_CLERIC,
+    BAND_VAULTS_YAKTAURS,
     NUM_BANDS                   // always last
 };
 
