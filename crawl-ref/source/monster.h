@@ -487,13 +487,12 @@ public:
     bool corrode(const actor* source = nullptr,
                  const char* corrision_msg = "the acid",
                  int amount = 4) override;
-    int hurt(const actor *attacker, int amount,
-             beam_type flavour = BEAM_MISSILE,
-             kill_method_type kill_type = KILLED_BY_MONSTER,
-             string source = "",
-             string aux = "",
-             bool cleanup_dead = true,
-             bool attacker_effects = true) override;
+    int hurt_by_mid(mid_t mid, int amount, beam_type flavour = BEAM_MISSILE,
+                    kill_method_type kill_type = KILLED_BY_MONSTER,
+                    string source = "",
+                    string aux = "",
+                    bool cleanup_dead = true,
+                    bool attacker_effects = true) override;
     bool heal(int amount) override;
     void blame_damage(const actor *attacker, int amount);
     void blink(bool ignore_stasis = false) override;

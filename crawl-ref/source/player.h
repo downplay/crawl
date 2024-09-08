@@ -744,13 +744,13 @@ public:
                  const char* corrosion_msg = "the acid",
                  int amount = 4) override;
     void sentinel_mark(bool trap = false);
-    int hurt(const actor *attacker, int amount,
-             beam_type flavour = BEAM_MISSILE,
-             kill_method_type kill_type = KILLED_BY_MONSTER,
-             string source = "",
-             string aux = "",
-             bool cleanup_dead = true,
-             bool attacker_effects = true) override;
+    int hurt_by_mid(mid_t mid, int amount,
+                    beam_type flavour = BEAM_MISSILE,
+                    kill_method_type kill_type = KILLED_BY_MONSTER,
+                    string source = "",
+                    string aux = "",
+                    bool cleanup_dead = true,
+                    bool attacker_effects = true) override;
 
     bool wont_attack() const override { return true; };
     mon_attitude_type temp_attitude() const override { return ATT_FRIENDLY; };

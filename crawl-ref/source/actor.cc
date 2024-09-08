@@ -147,6 +147,14 @@ void actor::set_position(const coord_def &c)
     areas_actor_moved(this, oldpos);
 }
 
+int actor::hurt(const actor *attacker, int amount, beam_type flavour,
+                 kill_method_type kill_type, string source, string aux,
+                 bool cleanup_dead, bool attacker_effects)
+{
+    return hurt_by_mid(attacker ? attacker->mid : MID_NOBODY, amount, flavour,
+                       kill_type, source, aux, cleanup_dead, attacker_effects);
+}
+
 bool actor::can_hibernate(bool holi_only, bool intrinsic_only) const
 {
     // Undead, nonliving, and plants don't sleep. If the monster is

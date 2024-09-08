@@ -240,7 +240,7 @@ void mirror_damage_fineff::fire()
     else
     {
         simple_monster_message(*monster_by_mid(att), " suffers a backlash!");
-        attack->hurt(defender(), damage);
+        attack->hurt_by_mid(def, damage);
     }
 }
 
@@ -253,7 +253,7 @@ void anguish_fineff::fire()
     const string punct = attack_strength_punctuation(damage);
     const string msg = make_stringf(" is wracked by anguish%s", punct.c_str());
     simple_monster_message(*monster_by_mid(att), msg.c_str());
-    attack->hurt(monster_by_mid(MID_YOU_FAULTLESS), damage);
+    attack->hurt_by_mid(MID_YOU_FAULTLESS, damage);
 }
 
 void ru_retribution_fineff::fire()
@@ -428,8 +428,8 @@ void deferred_damage_fineff::fire()
         damage = min(damage, df_hp - 1);
     }
 
-    df->hurt(attacker(), damage, BEAM_MISSILE, KILLED_BY_MONSTER, "", "",
-             true, attacker_effects);
+    df->hurt_by_mid(att, damage, BEAM_MISSILE, KILLED_BY_MONSTER, "", "",
+                    true, attacker_effects);
 }
 
 static void _do_merge_masses(monster* initial_mass, monster* merge_to)

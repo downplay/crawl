@@ -174,7 +174,14 @@ public:
     virtual bool polymorph(int pow, bool allow_immobile = true) = 0;
     virtual bool drain(const actor *agent, bool quiet = false,
                        int pow = 3) = 0;
-    virtual int  hurt(const actor *attacker, int amount,
+            int  hurt(const actor *attacker, int amount,
+                      beam_type flavour = BEAM_MISSILE,
+                      kill_method_type kill_type = KILLED_BY_MONSTER,
+                      string source = "",
+                      string aux = "",
+                      bool cleanup_dead = true,
+                      bool attacker_effects = true);
+    virtual int hurt_by_mid(mid_t mid, int amount,
                       beam_type flavour = BEAM_MISSILE,
                       kill_method_type kill_type = KILLED_BY_MONSTER,
                       string source = "",
