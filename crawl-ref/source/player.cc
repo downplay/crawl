@@ -6930,24 +6930,17 @@ void player::teleport(bool now, bool wizard_tele)
         you_teleport();
 }
 
-int player::hurt(const actor *agent, int amount, beam_type flavour,
-                 kill_method_type kill_type, string source, string aux,
-                 bool /*cleanup_dead*/, bool /*attacker_effects*/)
+int player::hurt_by_mid(mid_t agent_mid, int amount, beam_type flavour,
+                        kill_method_type kill_type, string source, string aux,
+                        bool /*cleanup_dead*/, bool /*attacker_effects*/)
 {
+    const actor *agent = actor_by_mid(agent_mid);
     // We ignore cleanup_dead here.
-    if (!agent)
-    {
-        // FIXME: This can happen if a deferred_damage_fineff does damage
-        // to a player from a dead monster. We should probably not do that,
-        // but it could be tricky to fix, so for now let's at least avoid
-        // a crash even if it does mean funny death messages.
-        ouch(amount, kill_type, MID_NOBODY, aux.c_str(), false, source.c_str());
-    }
-    else
-    {
-        ouch(amount, kill_type, agent->mid, aux.c_str(),
-             agent->visible_to(this), source.c_str());
-    }
+    ouch(amount, kill_type, agent_mid, aux.c_str(),
+         // This can happen if a fineff does damage to a player from a dead
+         // monster. Assuming you *were* able to determine the source of this.
+         agent ? agent->visible_to(this) : true,
+         source.c_str());
 
     if ((flavour == BEAM_DESTRUCTION || flavour == BEAM_MINDBURST)
         && has_blood())

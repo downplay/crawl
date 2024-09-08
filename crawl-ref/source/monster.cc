@@ -4213,10 +4213,11 @@ void monster::acid_corrode(int /*acid_strength*/)
         corrode_equipment();
 }
 
-int monster::hurt(const actor *agent, int amount, beam_type flavour,
-                   kill_method_type kill_type, string /*source*/,
-                   string /*aux*/, bool cleanup_dead, bool attacker_effects)
+int monster::hurt_by_mid(mid_t mid_agent, int amount, beam_type flavour,
+                         kill_method_type kill_type, string /*source*/,
+                         string /*aux*/, bool cleanup_dead, bool attacker_effects)
 {
+    const actor* agent = actor_by_mid(mid_agent);
     if (mons_is_projectile(type)
         || mid == MID_ANON_FRIEND)
     {
