@@ -238,6 +238,7 @@ enum enchant_type
     ENCH_VEXED,
     ENCH_CHARMER,
     ENCH_BYPASS_ARMOUR,
+    ENCH_COMPOSTING,
     // Update enchant_names[] in mon-ench.cc when adding or removing
     // enchantments.
     NUM_ENCHANTMENTS

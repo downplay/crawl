@@ -992,6 +992,12 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
             simple_monster_message(*this, " is no longer able to find chinks in armour.");
         break;
 
+    case ENCH_COMPOSTING:
+        if (!quiet)
+            simple_monster_message(*this, " is no longer composting.");
+        mons_update_aura(*this);
+        break;
+
     default:
         break;
     }
@@ -1356,6 +1362,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_TIDE:
     case ENCH_REGENERATION:
     case ENCH_DOUBLED_VIGOUR:
+    case ENCH_COMPOSTING:
     case ENCH_STRONG_WILLED:
     case ENCH_IDEALISED:
     case ENCH_LIFE_TIMER:
@@ -2168,6 +2175,7 @@ static const char *enchant_names[] =
     "grapnel", "tempered", "hatching", "blinkitis", "chaos_laced", "vexed",
     "charmer",
     "bypass_armour",
+    "composting",
     "buggy", // NUM_ENCHANTMENTS
 };
 
@@ -2352,6 +2360,7 @@ int mon_enchant::calc_duration(const monster* mons,
         cturn = 1000 * deg / _mod_speed(125, mons->speed);
         break;
     case ENCH_STICKY_FLAME:
+    case ENCH_COMPOSTING:
         cturn = 1000 * deg / _mod_speed(200, mons->speed);
         break;
     case ENCH_CORONA:

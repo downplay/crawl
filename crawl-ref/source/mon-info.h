@@ -253,6 +253,7 @@ enum monster_info_flags
     MB_VEXED,
     MB_CHARMER,
     MB_BYPASS_ARMOUR,
+    MB_COMPOSTING,
     NUM_MB_FLAGS
 };
 

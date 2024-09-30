@@ -5164,6 +5164,7 @@ static string _flavour_base_desc(attack_flavour flavour)
         { AF_BOMBLET,           "deploy bomblets" },
         { AF_AIRSTRIKE,         "open air damage" },
         { AF_SHED,              "sheds detritus from its body" },
+        { AF_COMPOST,           "compost victims and heal allies with mycelia" },
         { AF_PLAIN,             "" },
     };
 

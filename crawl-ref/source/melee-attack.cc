@@ -3285,6 +3285,70 @@ void melee_attack::mons_apply_attack_flavour()
         }
         break;
 
+    case AF_COMPOST:
+    {
+        // Heal the mycellial network by composting. Gives regeneration to a
+        // number of targets in LOS. Valid allies will also receive
+        // ENCH_DOUBLED_VIGOUR via an aura (controlled by ENCH_COMPOSTING).
+
+        // Unlike vampirism, all player species can be composted. Undead are
+        // already half way composted, so it's easier in fact. For monsters we
+        // just use the vampirism rules as it checks some other things as well.
+        if (!defender->is_player() && !actor_is_susceptible_to_vampirism(*defender))
+            break;
+
+        auto mons = attacker->as_monster();
+        mons->add_ench({ ENCH_COMPOSTING, damage_done, mons });
+        mons_update_aura(*mons);
+
+        vector<monster*> heal_targets;
+        for (radius_iterator ri(you.pos(), LOS_DEFAULT); ri; ++ri)
+        {
+            auto target = monster_at(*ri);
+            if (target && target != mons && mons_species(target->type) == mons_species(attacker->type)
+                && mons_aligned(target, attacker) && target->stat_hp() < target->stat_maxhp()
+                && mons->see_cell_no_trans(target->pos()) && coinflip())
+            {
+                heal_targets.push_back(target);
+            }
+        }
+        // Maybe heal self (or definitely if we didn't find anyone else to heal)
+        if (mons->stat_hp() < mons->stat_maxhp()
+            && (heal_targets.empty() || one_chance_in(3)))
+        {
+            heal_targets.push_back(mons);
+        }
+
+        // Now actually apply the regen, messaging as appropriate
+        if (needs_message)
+        {
+            mprf("%s %s composting pieces of %s!",
+                    atk_name(DESC_THE).c_str(),
+                    attacker->conj_verb("begin").c_str(),
+                    def_name(DESC_THE).c_str());
+        }
+
+        // Nothing qualifies for regen so exit early
+        if (heal_targets.empty())
+            break;
+
+        // Add regeneration to all selected targets
+        for (auto target : heal_targets)
+        {
+            int duration = div_rand_round(BASELINE_DELAY * damage_done, heal_targets.size());
+            duration = min(BASELINE_DELAY * 10, max(BASELINE_DELAY, duration));
+            target->add_ench({ ENCH_REGENERATION, 0, mons, duration });
+            if (target != attacker && needs_message)
+            {
+                mprf("%s %s receiving nutrients through %s mycelia.",
+                    target->name(DESC_THE).c_str(),
+                    target->conj_verb("start").c_str(),
+                    target->pronoun(PRONOUN_POSSESSIVE).c_str());
+            }
+        }
+        break;
+    }
+
     case AF_BLINK:
         // blinking can kill, delay the call
         if (one_chance_in(3))

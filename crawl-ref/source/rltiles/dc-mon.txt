@@ -1218,6 +1218,11 @@ cobalt_lichen MONS_COBALT_LICHEN
 %compose cobalt_lichen_eyestalk2
 %finish
 
+%start
+%compose cobalt_lichen
+%compose UNUSED/monsters/ravenous_mimic
+%finish MONS_COBALT_LICHEN_MAW
+
 ## Goblins ('g')
 %sdir mon/unique
 ijyb MONS_IJYB
