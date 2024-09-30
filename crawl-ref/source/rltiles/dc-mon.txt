@@ -1202,7 +1202,10 @@ ballistomycete MONS_BALLISTOMYCETE
 wandering_mushroom MONS_WANDERING_MUSHROOM
 deathcap MONS_DEATHCAP
 sleepcap MONS_SLEEPCAP
-%rim 1
+
+# %rim 1
+%sdir mon/fungi_plants
+cobalt_lichen MONS_COBALT_LICHEN
 
 ## Goblins ('g')
 %sdir mon/unique

@@ -393,6 +393,7 @@ enum monster_type                      // env.mons[].type
     MONS_WITHERED_PLANT,
     MONS_SACRED_LOTUS,
     MONS_STARFLOWER,
+    MONS_COBALT_LICHEN,
 #endif
     MONS_BALLISTOMYCETE_SPORE,
     MONS_BALLISTOMYCETE,
@@ -1333,6 +1334,7 @@ enum monster_type                      // env.mons[].type
     MONS_ROCK_FISH,
     MONS_ROCK_FISH_SCHOOL,
     MONS_SILVERFISH,
+    MONS_COBALT_LICHEN,
 #endif
 
     NUM_MONSTERS,               // used for polymorph
