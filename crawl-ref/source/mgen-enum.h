@@ -133,6 +133,7 @@ enum band_type
     BAND_THERMIC_DYNAMOS,
     BAND_ORB_SPIDERS,
     BAND_SIN_BEASTS,
+    BAND_BALLOON_YAKS,
     NUM_BANDS                   // always last
 };
 
