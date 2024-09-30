@@ -1674,62 +1674,6 @@ static monster* _get_allied_target(const monster &caster, bolt &tracer)
     return selected_target;
 }
 
-// Find an ally of the target to cast a hex at.
-// Note that this deliberately does not target the player.
-static bool _set_hex_target(monster* caster, bolt& pbolt)
-{
-    monster* selected_target = nullptr;
-    int min_distance = INT_MAX;
-
-    const actor *foe = caster->get_foe();
-    if (!foe)
-        return false;
-
-    for (monster_near_iterator targ(caster, LOS_NO_TRANS); targ; ++targ)
-    {
-        if (*targ == caster)
-            continue;
-
-        const int targ_distance = grid_distance(targ->pos(), foe->pos());
-
-        bool got_target = false;
-
-        if (mons_aligned(*targ, foe)
-            && !targ->has_ench(ENCH_CHARM)
-            && !targ->has_ench(ENCH_HEXED)
-            && !targ->is_firewood()
-            && !_flavour_benefits_monster(pbolt.flavour, **targ))
-        {
-            got_target = true;
-        }
-
-        if (got_target && targ_distance < min_distance
-            && targ_distance < pbolt.range)
-        {
-            // Make sure we won't hit an invalid target with this aim.
-            pbolt.target = targ->pos();
-            fire_tracer(caster, pbolt);
-            if (!mons_should_fire(pbolt)
-                || pbolt.path_taken.back() != pbolt.target)
-            {
-                continue;
-            }
-
-            min_distance = targ_distance;
-            selected_target = *targ;
-        }
-    }
-
-    if (selected_target)
-    {
-        pbolt.target = selected_target->pos();
-        return true;
-    }
-
-    // Didn't find a target.
-    return false;
-}
-
 static void _whack(const actor &caster, actor &target)
 {
     if (target.alive() && target.is_monster())
@@ -4642,18 +4586,6 @@ static bool _target_and_justify_spell(monster &mons,
 {
     // Setup the spell.
     setup_mons_cast(&mons, beem, spell);
-
-    switch (spell)
-    {
-        case SPELL_CHARMING:
-            // Try to find an ally of the player to hex if we are
-            // hexing the player.
-            if (mons.foe == MHITYOU && !_set_hex_target(&mons, beem))
-                return false;
-            break;
-        default:
-            break;
-    }
 
     // special beam targeting sets the beam's target to an out-of-bounds coord
     // if no valid target was found.
@@ -9209,6 +9141,21 @@ ai_action::goodness monster_spell_goodness(monster* mon, spell_type spell)
     {
         return ai_action::good_or_impossible(
             _mons_cast_hellfire_mortar(*mon, *mon->get_foe(), 100, true));
+    }
+
+    case SPELL_CHARMING:
+    {
+        ASSERT(foe);
+        if (foe->is_player())
+        {
+            // XX: Is this already checked somewhere and redundant?
+            if (foe->as_player()->immune_to_hex(SPELL_CHARMING))
+                return ai_action::impossible();
+            // If player already charmed, other actions are probably better
+            if (mon->has_ench(ENCH_CHARMER))
+                return ai_action::possible(50);
+        }
+        return ai_action::good();
     }
 
 #if TAG_MAJOR_VERSION == 34
