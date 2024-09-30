@@ -297,6 +297,8 @@ habitat_type mons_habitat(const monster& mon, bool real_amphibious = false);
 habitat_type mons_class_primary_habitat(monster_type mc);
 habitat_type mons_primary_habitat(const monster& mon);
 habitat_type mons_class_secondary_habitat(monster_type mc);
+habitat_type mons_secondary_habitat(const monster& mon);
+bool mons_preferred_habitat(const monster& mon, dungeon_feature_type feat);
 
 bool mons_skeleton(monster_type mc);
 

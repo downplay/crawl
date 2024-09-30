@@ -268,6 +268,7 @@ public:
     bool     can_burrow() const override;
     bool     can_burrow_through(dungeon_feature_type feat) const;
     bool     is_habitable_feat(dungeon_feature_type actual_grid) const override;
+    bool     is_habitable(const coord_def &_pos) const override;
     bool     shove(const char* name = "") override;
 
     size_type   body_size(size_part_type psize = PSIZE_TORSO,

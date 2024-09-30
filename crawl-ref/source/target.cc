@@ -82,7 +82,7 @@ bool targeter::anyone_there(coord_def loc)
 
 bool targeter::affects_monster(const monster_info& /*mon*/)
 {
-    return true; //TODO: false
+    return true;
 }
 
 static inline bool _ti_should_iterate(aff_type cur_aff, aff_type threshold)
@@ -250,8 +250,13 @@ void targeter_beam::set_explosion_target(bolt &tempbeam)
     tempbeam.target = origin;
     for (auto c : path_taken)
     {
-        if (cell_is_solid(c) && !tempbeam.can_affect_wall(c))
+        if (cell_is_solid(c) && !tempbeam.can_affect_wall(c)
+            // If we're digging and this is an undiggable wall, don't allow the
+            // target just because there's a wall monster present
+            && (!anyone_there(c) || can_affect_walls()))
+        {
             break;
+        }
         tempbeam.target = c;
         if (anyone_there(c) && !tempbeam.ignores_monster(monster_at(c)))
             break;
@@ -287,6 +292,7 @@ aff_type targeter_beam::is_affected(coord_def loc)
     {
         if (cell_is_solid(pc)
             && !beam.can_affect_wall(pc)
+            && (can_affect_walls() || !anyone_there(pc))
             && max_expl_rad > 0)
         {
             break;
@@ -301,11 +307,10 @@ aff_type targeter_beam::is_affected(coord_def loc)
             else if (cell_is_solid(pc))
             {
                 bool res = beam.can_affect_wall(pc);
-                if (res)
+                if (res || (!can_affect_walls() && anyone_there(pc)))
                     return current;
                 else
                     return AFF_NO;
-
             }
             else
                 continue;
@@ -324,7 +329,8 @@ aff_type targeter_beam::is_affected(coord_def loc)
     {
         if ((loc - c).rdist() <= 9)
         {
-            bool aff_wall = beam.can_affect_wall(loc);
+            bool aff_wall = beam.can_affect_wall(loc)
+                            || (!can_affect_walls() && anyone_there(loc));
             if (!cell_is_solid(loc) || aff_wall)
             {
                 coord_def centre(9,9);
@@ -414,7 +420,7 @@ bool targeter_smite::valid_aim(coord_def a)
     }
     if ((origin - a).rdist() > range)
         return notify_fail("Out of range.");
-    if (!affects_walls && cell_is_solid(a))
+    if (!can_affect_walls() && cell_is_solid(a) && !anyone_there(a))
         return notify_fail(_wallmsg(a));
     return true;
 }
@@ -675,7 +681,7 @@ targeter_permafrost::targeter_permafrost(const actor &act, int power) :
     {
         targets.insert(t);
         for (adjacent_iterator ai(t); ai; ++ai)
-            if (!cell_is_solid(*ai))
+            if (!cell_is_invalid_target(*ai))
                 targets.insert(*ai);
     }
     single_target = possible_centres.size() <= 1;
@@ -1122,7 +1128,7 @@ aff_type targeter_splash::is_affected(coord_def loc)
     coord_def c;
     for (auto pc : path_taken)
     {
-        if (cell_is_solid(pc))
+        if (cell_is_invalid_target(pc))
             break;
 
         c = pc;
@@ -1688,7 +1694,7 @@ targeter_multiposition::targeter_multiposition(const actor *a,
 
 aff_type targeter_multiposition::is_affected(coord_def loc)
 {
-    if ((cell_is_solid(loc) && !can_affect_walls())
+    if ((cell_is_solid(loc) && !can_affect_walls() && !anyone_there(loc))
         || !cell_see_cell(agent->pos(), loc, LOS_NO_TRANS))
     {
         return AFF_NO;
@@ -1848,21 +1854,15 @@ targeter_multimonster::targeter_multimonster(const actor *a)
 
 aff_type targeter_multimonster::is_affected(coord_def loc)
 {
-    if ((cell_is_solid(loc) && !can_affect_walls())
-        || !cell_see_cell(agent->pos(), loc, LOS_NO_TRANS))
-    {
+    if (!cell_see_cell(agent->pos(), loc, LOS_NO_TRANS))
         return AFF_NO;
-    }
 
-    //if (agent && act && !agent->can_see(*act))
-    //    return AFF_NO;
+    if (can_affect_walls() && cell_is_solid(loc))
+        return AFF_YES;
 
     // Any special checks from our inheritors
     const monster_info *mon = env.map_knowledge(loc).monsterinfo();
-    if (!mon || !affects_monster(*mon))
-        return AFF_NO;
-
-    return AFF_YES;
+    return (mon && affects_monster(*mon)) ? AFF_YES : AFF_NO;
 }
 
 targeter_drain_life::targeter_drain_life()
@@ -1959,7 +1959,7 @@ bool targeter_boulder::set_aim(coord_def a)
     int _hp = hp;
     for (auto pos : path_taken)
     {
-        if (cell_is_solid(pos))
+        if (cell_is_invalid_target(pos))
             continue;
 
         // If we've already passed the point of possible destruction, no
@@ -2066,7 +2066,7 @@ aff_type targeter_petrify::is_affected(coord_def loc)
     {
         if (pc == loc)
         {
-            if (cell_is_solid(pc))
+            if (cell_is_invalid_target(pc))
                 return AFF_NO;
 
             return AFF_YES;
@@ -2149,7 +2149,7 @@ aff_type targeter_explosive_beam::is_affected(coord_def loc)
     // First check the main beam path
     for (auto c : path_taken)
     {
-        if (cell_is_solid(c))
+        if (cell_is_invalid_target(c))
             break;
         if (c == loc)
             return AFF_YES;
