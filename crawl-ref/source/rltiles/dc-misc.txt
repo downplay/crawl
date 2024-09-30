@@ -310,6 +310,11 @@ cloud_magnetic0 CLOUD_MAGNETISED_DUST
 cloud_magnetic2
 cloud_magnetic2
 
+# TODO: Better placeholder
+UNUSED/other/gold_sparkles1 CLOUD_SPORE
+UNUSED/other/gold_sparkles2
+UNUSED/other/gold_sparkles3
+
 %sdir mon
 fungi_plants/ballistomycete_spore SPORE_OVERLAY
 

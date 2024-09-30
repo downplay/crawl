@@ -1201,6 +1201,19 @@ flytrap_plant_open_morph_mellow
 %compose UNUSED/monsters/ravenous_mimic
 %finish
 
+## XX: Choose one of these styles and make some variants of that
+%start
+%compose misc/mold_glowing4
+%compose misc/mold_glowing1
+%compose poison_pollen
+%finish MONS_WOLF_LICHEN_SAC
+
+%start
+%compose misc/mold_glowing3
+%compose misc/mold_glowing2
+%compose bloom_plant_01
+%finish
+
 ## Goblins ('g')
 %sdir mon/unique
 ijyb MONS_IJYB
