@@ -17,18 +17,21 @@ struct mon_aura_data
     string player_key;
     function<bool(const actor& targ)> valid_target;
     function<void(const monster& source)> player_msg;
+    function<bool(const monster& source)> active_source;
 
     mon_aura_data(monster_type _mon_source, enchant_type _ench_type,
                   int _base_duration, bool _is_hostile,
                   duration_type _dur_type = NUM_DURATIONS,
                   string _player_key = "",
                   function<bool(const actor& targ)> _valid_target = nullptr,
-                  function<void(const monster& source)> _player_msg = nullptr):
+                  function<void(const monster& source)> _player_msg = nullptr,
+                  function<bool(const monster& source)> _active_source = nullptr):
                   mon_source(_mon_source), ench_type(_ench_type),
                   base_duration(_base_duration), is_hostile(_is_hostile),
                   dur_type(_dur_type), player_key(_player_key),
                   valid_target(_valid_target),
-                  player_msg(_player_msg)
+                  player_msg(_player_msg),
+                  active_source(_active_source)
                   {}
 };
 
@@ -73,6 +76,19 @@ static const vector<mon_aura_data> aura_map =
             // Affects other lichens through the mycelial network
             return targ.is_monster()
                 && mons_species(targ.type) == MONS_WOLF_LICHEN;
+        }},
+
+    {MONS_WOLF_LICHEN_MAW,
+        ENCH_DOUBLED_VIGOUR, 1, false,
+        NUM_DURATIONS, "",
+        [](const actor& targ) {
+            // Affects other lichens through the mycelial network
+            return targ.is_monster()
+                && mons_species(targ.type) == MONS_WOLF_LICHEN;
+        },
+        nullptr,
+        [](const monster& source) {
+            return source.has_ench(ENCH_COMPOSTING);
         }},
 };
 
@@ -151,6 +167,10 @@ bool mons_has_aura_of_type(const monster& mon, duration_type type)
 static bool _aura_could_affect(const mon_aura_data& aura, const monster& source,
                                const actor& victim)
 {
+    // Apply custom logic for aura activation
+    if (aura.active_source && !aura.active_source(source))
+        return false;
+
     // Auras do not apply to self
     if (victim.is_monster() && victim.as_monster() == &source)
         return false;
@@ -184,6 +204,10 @@ void mons_update_aura(const monster& mon)
         return;
 
     const mon_aura_data aura = _get_aura_for(mon);
+
+    // Apply custom logic for aura activation
+    if (aura.active_source && !aura.active_source(mon))
+        return;
 
     // Hostile auras are suppressed by the source being in a sanctuary
     if (aura.is_hostile && is_sanctuary(mon.pos()))

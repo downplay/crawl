@@ -3143,6 +3143,14 @@ are those eyes that are blinking?
 It is able to communicate via its mycelial network to let nearby lichen know
 of chinks in your armour.
 %%%%
+wolf lichen maw
+
+A carpet of colourful but toxic moss-like fungus found often in woodlands. But
+is that a jaw opening, and are those teeth?
+
+It is able to compost the flesh of its victims to provide healing nutrients to
+other lichen in its mycelial network.
+%%%%
 wolf spider
 
 A hairy fast-moving hunting spider with vicious mandibles, the size of a wolf.

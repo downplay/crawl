@@ -154,4 +154,5 @@ static const vector<monster_info_flag_name> monster_info_flag_names = {
     { MB_ENGULFING_PLAYER, "engulfing you", "engulfing you", "engulfing you"},
     { MB_CHARMER, "charmer", "has charmed you", "charmers"},
     { MB_BYPASS_ARMOUR, "bypassing armour", "bypassing armour", "bypassing armour"},
+    { MB_COMPOSTING, "composting", "composting nutrients", "composting"},
 };
