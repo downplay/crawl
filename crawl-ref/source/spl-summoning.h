@@ -126,6 +126,7 @@ bool summon_spider(const actor &agent, coord_def pos, god_type god,
                         spell_type spell, int pow);
 spret summon_spiders(actor &agent, int pow, god_type god, bool fail = false);
 bool summon_swarm_clone(const monster& agent, coord_def target_pos);
+bool summon_detritus(const monster& agent, coord_def target_pos, bool is_death = false);
 
 spret summon_butterflies();
 

@@ -2779,6 +2779,12 @@ strange machine
 A strange mechanical contraption, all hisses and pops. Shadows seem to dance
 across its reflective surface.
 %%%%
+strolling stone
+
+They say a rolling stone gathers no moss; but a strolling one gathers all
+kinds of detritus. A craggy, statuesque beast, shuffling through the dungeon
+covered in moss, lichen, and mushrooms.
+%%%%
 sun demon
 
 A demonic figure shining with the heat and fury of a fallen star.

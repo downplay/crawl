@@ -4995,6 +4995,7 @@ static string _flavour_base_desc(attack_flavour flavour)
         { AF_FOUL_FLAME,        "extra damage, especially to the good" },
         { AF_HELL_HUNT,         "summon demonic beasts" },
         { AF_SWARM,             "summon more of itself" },
+        { AF_SHED,              "sheds detritus from its body" },
         { AF_PLAIN,             "" },
     };
 
