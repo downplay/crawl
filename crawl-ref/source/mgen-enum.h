@@ -144,6 +144,7 @@ enum band_type
     BAND_WOLF_LICHENS,
     BAND_COBALT_LICHENS,
     BAND_VAULTS_YAKTAURS,
+    BAND_BALLOON_YAKS,
     NUM_BANDS                   // always last
 };
 

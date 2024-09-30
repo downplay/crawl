@@ -1061,6 +1061,10 @@ Dominate Undead vampire bloodprince cast
 
 @The_monster@ whispers, "Kneel."
 %%%%
+blink other close balloon yak cast
+
+@The_monster@ sucks in a gale of air pulling @target@ towards it!
+%%%%
 ########################################################################
 # Monster species and genus messages.
 ########################################################################
