@@ -106,8 +106,18 @@ bool ranged_attack::attack()
     if (defender->missile_repulsion())
         ev += REPEL_MISSILES_EV_BONUS;
 
-    ev_margin = test_hit(to_hit, ev, !attacker->is_player());
-    bool shield_blocked = attack_shield_blocked(false);
+    bullet_time_method bypass = bullet_time_method::none;
+
+    if (defender->props[BULLET_TIME_TARGET_KEY])
+    {
+        bypass = (bullet_time_method)
+            defender->props[BULLET_TIME_METHOD_KEY].get_byte();
+    }
+
+    ev_margin = bypass == bullet_time_method::evasion ? -1
+                : test_hit(to_hit, ev, !attacker->is_player());
+    bool shield_blocked = bypass == bullet_time_method::shield ? false
+                : attack_shield_blocked(false);
 
     god_conduct_trigger conducts[3];
     if (attacker->is_player() && attacker != defender)
@@ -203,12 +213,24 @@ bool ranged_attack::handle_phase_blocked()
         maybe_trigger_jinxbite();
     }
 
+    if (defender->props[BULLET_TIME_TARGET_KEY])
+    {
+        defender->props[BULLET_TIME_METHOD_KEY].get_byte()
+            = (char)bullet_time_method::shield;
+    }
+
     return attack::handle_phase_blocked();
 }
 
 bool ranged_attack::handle_phase_dodged()
 {
     did_hit = false;
+
+    if (defender->props[BULLET_TIME_TARGET_KEY])
+    {
+        defender->props[BULLET_TIME_METHOD_KEY].get_byte()
+            = (char)bullet_time_method::evasion;
+    }
 
     if (defender->missile_repulsion() && ev_margin > -REPEL_MISSILES_EV_BONUS)
     {
@@ -263,6 +285,12 @@ static bool _jelly_eat_missile(const item_def& projectile, int damage_done)
 
 bool ranged_attack::handle_phase_hit()
 {
+    if (defender->props[BULLET_TIME_TARGET_KEY])
+    {
+        defender->props[BULLET_TIME_METHOD_KEY].get_byte()
+            = (char)bullet_time_method::armour;
+    }
+
     if (mulch_bonus()
         // XXX: this kind of hijacks the shield block check
         || !is_penetrating_attack(*attacker, weapon, *projectile))

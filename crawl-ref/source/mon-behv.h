@@ -14,6 +14,9 @@
 
 #define MON_SPELL_USABLE_KEY "mon_spell_usable"
 
+#define BULLET_TIME_METHOD_KEY "bullet_time_method"
+#define BULLET_TIME_TARGET_KEY "bullet_time_target"
+
 class actor;
 
 enum mon_event_type
@@ -25,6 +28,15 @@ enum mon_event_type
     ME_WHACK,                           // physical attack
     ME_SCARE,                           // frighten monster
     ME_CORNERED,                        // cannot flee
+};
+
+enum class bullet_time_method
+{
+    none = 0,
+    armour,
+    evasion,
+    shield,
+    //resist,??
 };
 
 class monster;

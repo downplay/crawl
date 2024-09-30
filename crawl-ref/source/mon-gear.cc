@@ -441,7 +441,17 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         { WPN_FLAIL,            10 },
         { WPN_MORNINGSTAR,      5 },
         { WPN_DIRE_FLAIL,       2 }, };
-
+    static const mon_weapon_spec ANACHROBAT_WEAPONS =
+    {   { { WPN_HAND_CANNON,      1 }, },
+            { 2, 1, 5 },
+            { { SPWPN_NORMAL,         20 },
+              { SPWPN_FLAME,          10 },
+              { SPWPN_FREEZING,       10 },
+              { SPWPN_VENOM,          10 },
+              { SPWPN_ACID,            8 },
+              { SPWPN_DISTORTION,      5 },
+              { SPWPN_CHAOS,           3 }, },
+        };
     static const map<monster_type, mon_weapon_spec> primary_weapon_specs = {
         { MONS_ROBIN,
             { { { WPN_CLUB,             35 },
@@ -1013,6 +1023,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
               { SPWPN_DISTORTION,      2 },
               { SPWPN_CHAOS,           1 }, },
         } },
+        { MONS_ANACHROBAT, ANACHROBAT_WEAPONS },
         { MONS_CERULEAN_IMP,  { { { WPN_SPEAR, 1 } }, {}, { { SPWPN_NORMAL, 1 } } } },
     };
 
@@ -1419,7 +1430,8 @@ static void _give_weapon(monster *mon, int level, bool second_weapon = false)
     {
         const item_def &first_sword = *mon->weapon();
         ASSERT(first_sword.base_type == OBJ_WEAPONS);
-        item_def twin_sword = first_sword; // copy
+        // Make a copy of the first weapon
+        item_def twin_sword = first_sword;
         give_specific_item(mon, twin_sword);
         return;
     }

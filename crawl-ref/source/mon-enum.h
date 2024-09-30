@@ -102,6 +102,9 @@ enum attack_flavour
 #if TAG_MAJOR_VERSION == 34
     AF_STICKY_FLAME,
 #endif
+    // Intentional: doesn't follow naming convention of other _CHAOS enums, due
+    // to a specific build issue on cygwin. See #3c404ee for full explanation.
+    // AF_CHAOS conflicts with an address macro for the MIT CHAOS protocol.
     AF_CHAOTIC,
     AF_STEAL,
 #if TAG_MAJOR_VERSION == 34

@@ -588,6 +588,9 @@ enum monster_type                      // env.mons[].type
     MONS_UNDYING_ARMOURY,
 #endif
     MONS_KILLER_KLOWN,
+#if TAG_MAJOR_VERSION > 34
+    MONS_ANACHROBAT,
+#endif
     MONS_SHAPESHIFTER,
     MONS_GLOWING_SHAPESHIFTER,
 
@@ -1343,6 +1346,7 @@ enum monster_type                      // env.mons[].type
     MONS_COBALT_LICHEN_EYESTALK,
     MONS_COBALT_LICHEN_MAW,
     MONS_COBALT_LICHEN_SAC,
+    MONS_ANACHROBAT,
 #endif
 
     NUM_MONSTERS,               // used for polymorph

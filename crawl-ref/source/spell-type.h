@@ -629,5 +629,6 @@ enum spell_type : int
     SPELL_SOJOURNING_BOLT,
     SPELL_VEX,
     SPELL_SHOOTING_STAR,
+    SPELL_BULLET_TIME,
     NUM_SPELLS
 };
