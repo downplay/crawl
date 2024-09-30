@@ -1,0 +1,20 @@
+name: "school of rock fish"
+enum: rock_fish_school
+glyph: {char: "F", colour: brown}
+flags: [no_skeleton, no_gen_derived, no_poly_to]
+resists: {elec: 1, petrify: 1}
+xp_mult: 15
+species: rock_fish
+holiness: [nonliving]
+will: 0
+attacks:
+ - {type: bite, damage: 10}
+hd: 3
+hp_10x: 240
+ac: 4
+ev: 1
+intelligence: animal
+habitat: walls
+speed: 12
+size: tiny
+shape: fish

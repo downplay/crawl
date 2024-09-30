@@ -997,6 +997,54 @@ void blorkula_bat_merge(monster& bat)
     }
 }
 
+#define ROCK_FISH_SCHOOL_SIZE 3
+
+static bool _rock_fish_school_disperse(monster& defend, killer_type ktype)
+{
+    // Can't recover from these
+    if (RESET_KILL(ktype))
+        return false;
+
+    auto old_beh = SAME_ATTITUDE(&defend);
+    auto old_pos = defend.pos();
+    auto old_foe = defend.foe;
+
+    mprf("%s disperses!", defend.name(DESC_THE).c_str());
+
+    int spawned = 0;
+    for (int n=0; n<ROCK_FISH_SCHOOL_SIZE; n++)
+    {
+        coord_def npos = find_newmons_square(MONS_ROCK_FISH, old_pos, 1, 5, -1,
+                                             YOU_KILL(ktype) ? &you : nullptr);
+        if (!in_bounds(npos))
+            continue;
+
+        auto mg = mgen_data(MONS_ROCK_FISH, old_beh, npos, old_foe, MG_FORBID_BANDS);
+        auto fish = create_monster(mg);
+        if (!fish)
+            continue;
+
+        // Duplicate some metadata and enchantments. Hopefully we don't have
+        // narrow cases where duping an enchantment causes a huge breakage.
+        fish->damage_friendly = defend.damage_friendly;
+        fish->damage_total = defend.damage_total;
+        fish->enchantments = defend.enchantments;
+        fish->ench_cache = defend.ench_cache;
+        spawned++;
+    }
+
+    // If we spawned exactly the right number, remove the original
+    if (spawned == ROCK_FISH_SCHOOL_SIZE)
+        monster_die(defend, KILL_RESET, NON_MONSTER, true);
+    else
+    {
+        // Otherwise change it to a single rock fish and restore HP
+        change_monster_type(&defend, MONS_ROCK_FISH, false);
+        defend.hit_points = defend.max_hit_points;
+    }
+    return true;
+}
+
 /**
  * Attempt to save the given monster's life at the last moment.
  *
@@ -1046,6 +1094,9 @@ static bool _monster_avoided_death(monster* mons, killer_type killer,
 
     if (mons->type == MONS_BLORKULA_THE_ORCULA)
         return _blorkula_bat_split(*mons, killer);
+
+    if (mons->type == MONS_ROCK_FISH_SCHOOL)
+        return _rock_fish_school_disperse(*mons, killer);
 
     if (mons->hit_points < -25 || mons->hit_points < -mons->max_hit_points)
         return false;
