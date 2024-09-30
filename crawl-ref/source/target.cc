@@ -274,7 +274,6 @@ bool targeter_beam::valid_aim(coord_def a)
 
 bool targeter_beam::can_affect_outside_range()
 {
-    // XXX is this everything?
     return max_expl_rad > 0;
 }
 
@@ -447,7 +446,6 @@ bool targeter_smite::set_aim(coord_def a)
 
 bool targeter_smite::can_affect_outside_range()
 {
-    // XXX is this everything?
     return exp_range_max > 0;
 }
 
