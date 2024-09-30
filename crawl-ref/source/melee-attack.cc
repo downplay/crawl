@@ -3723,6 +3723,7 @@ void melee_attack::mons_apply_attack_flavour()
         }
         break;
     }
+
     case AF_SLEEP:
         if (!coinflip())
             break;
@@ -3740,7 +3741,6 @@ void melee_attack::mons_apply_attack_flavour()
         }
         defender->put_to_sleep(attacker, attacker->get_experience_level() * 3);
         break;
-
 
     case AF_ALEMBIC:
     {
@@ -3774,6 +3774,13 @@ void melee_attack::mons_apply_attack_flavour()
 
         if (--attacker->as_monster()->number == 0)
             alembic_brew_potion(*attacker->as_monster());
+    }
+
+    case AF_SHED:
+    {
+        if (!defender->is_firewood())
+            summon_detritus(*attacker->as_monster(), defender->pos());
+        break;
     }
     break;
 

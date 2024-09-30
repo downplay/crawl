@@ -5163,6 +5163,7 @@ static string _flavour_base_desc(attack_flavour flavour)
         { AF_ALEMBIC,           "vent poison clouds" },
         { AF_BOMBLET,           "deploy bomblets" },
         { AF_AIRSTRIKE,         "open air damage" },
+        { AF_SHED,              "sheds detritus from its body" },
         { AF_PLAIN,             "" },
     };
 
