@@ -3135,6 +3135,14 @@ why is it flowing at speed across the floor and up the walls?
 It is able to flow past you to flank you from behind, and it is able to move
 on and through walls.
 %%%%
+wolf lichen eyestalk
+
+A carpet of colourful but toxic moss-like fungus found often in woodlands. But
+are those eyes that are blinking?
+
+It is able to communicate via its mycelial network to let nearby lichen know
+of chinks in your armour.
+%%%%
 wolf spider
 
 A hairy fast-moving hunting spider with vicious mandibles, the size of a wolf.

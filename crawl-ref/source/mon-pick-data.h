@@ -160,6 +160,7 @@ static const vector<pop_entry> population[] =
   { 15, 24,  345, FALL, MONS_ORC_KNIGHT },
   { 15, 25,  315, FALL, MONS_OGRE_MAGE },
   { 15, 25,  275, PEAK, MONS_WOLF_SPIDER },
+  { 15, 25,  150, FALL, MONS_WOLF_LICHEN_EYESTALK },
   { 16, 24,   89, PEAK, MONS_REDBACK },
   { 16, 27,   92, PEAK, MONS_ICE_DRAGON },
   { 17, 23,   89, PEAK, MONS_VERY_UGLY_THING },

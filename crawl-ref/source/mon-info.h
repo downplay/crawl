@@ -241,6 +241,7 @@ enum monster_info_flags
     MB_DOUBLED_VIGOUR,
     MB_FLOUNDERING,
     MB_CHARMER,
+    MB_BYPASS_ARMOUR,
     NUM_MB_FLAGS
 };
 

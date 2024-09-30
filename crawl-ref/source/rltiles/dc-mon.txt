@@ -1175,6 +1175,18 @@ mold_glowing2
 mold_glowing3
 mold_glowing4
 
+%start
+%compose mold_glowing4
+%compose mold_glowing2
+%compose mon/fungi_plants/wolf_lichen_eyestalk1
+%finish MONS_WOLF_LICHEN_EYESTALK
+
+%start
+%compose mold_glowing1
+%compose mold_glowing3
+%compose mon/fungi_plants/wolf_lichen_eyestalk2
+%finish
+
 ## Goblins ('g')
 %sdir mon/unique
 ijyb MONS_IJYB

@@ -981,6 +981,11 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
         props.erase(MONSTER_TILE_KEY);
         break;
 
+    case ENCH_BYPASS_ARMOUR:
+        if (!quiet)
+            simple_monster_message(*this, " is no longer able to find chinks in armour.");
+        break;
+
     default:
         break;
     }
@@ -1389,6 +1394,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_REPEL_MISSILES:
     case ENCH_MISDIRECTED:
     case ENCH_CHANGED_APPEARANCE:
+    case ENCH_BYPASS_ARMOUR:
         decay_enchantment(en);
         break;
 
@@ -2165,6 +2171,7 @@ static const char *enchant_names[] =
     "armed",
     "misdirected", "changed appearance", "shadowless", "doubled_vigour",
     "charmer",
+    "bypass_armour",
     "buggy", // NUM_ENCHANTMENTS
 };
 
