@@ -119,6 +119,18 @@ bool deferred_damage_fineff::mergeable(const final_effect &fe) const
            && attacker_effects == o->attacker_effects && fatal == o->fatal;
 }
 
+bool charmer_damage_share_fineff::mergeable(const final_effect &fe) const
+{
+    const charmer_damage_share_fineff *o = dynamic_cast<const charmer_damage_share_fineff *>(&fe);
+    return o && att == o->att && def == o->def;
+}
+
+bool charmer_escape_fineff::mergeable(const final_effect &fe) const
+{
+    const charmer_escape_fineff *o = dynamic_cast<const charmer_escape_fineff *>(&fe);
+    return o && att == o->att && def == o->def;
+}
+
 bool starcursed_merge_fineff::mergeable(const final_effect &fe) const
 {
     const starcursed_merge_fineff *o = dynamic_cast<const starcursed_merge_fineff *>(&fe);
@@ -197,6 +209,24 @@ void deferred_damage_fineff::merge(const final_effect &fe)
 {
     const deferred_damage_fineff *ddamfe =
         dynamic_cast<const deferred_damage_fineff *>(&fe);
+    ASSERT(ddamfe);
+    ASSERT(mergeable(*ddamfe));
+    damage += ddamfe->damage;
+}
+
+void charmer_damage_share_fineff::merge(const final_effect &fe)
+{
+    const charmer_damage_share_fineff *ddamfe =
+        dynamic_cast<const charmer_damage_share_fineff *>(&fe);
+    ASSERT(ddamfe);
+    ASSERT(mergeable(*ddamfe));
+    damage += ddamfe->damage;
+}
+
+void charmer_escape_fineff::merge(const final_effect &fe)
+{
+    const charmer_escape_fineff *ddamfe =
+        dynamic_cast<const charmer_escape_fineff *>(&fe);
     ASSERT(ddamfe);
     ASSERT(mergeable(*ddamfe));
     damage += ddamfe->damage;
@@ -430,6 +460,72 @@ void deferred_damage_fineff::fire()
 
     df->hurt(attacker(), damage, BEAM_MISSILE, KILLED_BY_MONSTER, "", "",
              true, attacker_effects);
+}
+
+void charmer_damage_share_fineff::fire()
+{
+    // The player has attacked a charming monster and takes sympathetic damage
+    monster *charmer = cached_monster_copy_by_mid(def);
+    ASSERT(charmer);
+
+    actor *target = attacker();
+    if (!target || !target->alive())
+        return;
+    ASSERT(target->is_player());
+
+    player *player = attacker()->as_player();
+
+    if (charmer->alive())
+    {
+        // Chance to end charming based on your willpower
+        if (player->check_willpower(charmer,
+                                charmer->get_ench(ENCH_CHARMER).degree) > 0)
+        {
+            mprf("You break free of %s mind games!",
+                 apostrophise(charmer->name(DESC_THE)).c_str());
+            charmer->del_ench(ENCH_CHARMER);
+            return;
+        }
+        mprf("You share in the suffering of your friend %s!",
+             charmer->name(DESC_THE).c_str());
+    }
+    else
+    {
+        mprf("You anguish over the death of your friend %s!",
+            charmer->name(DESC_THE).c_str());
+    }
+
+    // Self-kill prevention is handled with KILLED_BY_CHARMER. It's also used to
+    // prevent recursive charm escape fineffs from the player being hurt.
+    player->hurt(charmer, div_rand_round(damage, 4), BEAM_MISSILE,
+                 KILLED_BY_CHARMER);
+}
+
+void charmer_escape_fineff::fire()
+{
+    actor *source = attacker();
+    monster *charmer = source ? source->as_monster() : nullptr;
+
+    // If they're dead then we already broke free
+    if (!charmer || !charmer->alive())
+        return;
+
+    actor *target = defender();
+    if (!target || !target->alive())
+        return;
+    ASSERT(target->is_player());
+
+    player *player = target->as_player();
+
+    // Chance to end charming based on your willpower
+    if (player->check_willpower(charmer,
+                                charmer->get_ench(ENCH_CHARMER).degree) > 0)
+    {
+        mprf("You break free of %s mind games!",
+             apostrophise(charmer->name(DESC_THE)).c_str());
+        charmer->del_ench(ENCH_CHARMER);
+        return;
+    }
 }
 
 static void _do_merge_masses(monster* initial_mass, monster* merge_to)

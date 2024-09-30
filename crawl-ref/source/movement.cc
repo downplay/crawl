@@ -277,6 +277,7 @@ bool cancel_confused_move(bool stationary)
     monster *bad_mons = 0;
     string bad_suff, bad_adj;
     bool penance = false;
+    bool self_hurt = false;
     bool flight = false;
     for (adjacent_iterator ai(you.pos(), false); ai; ++ai)
     {
@@ -298,12 +299,12 @@ bool cancel_confused_move(bool stationary)
                 && (stationary
                     || !(is_sanctuary(you.pos()) && is_sanctuary(mons->pos()))
                        && !fedhas_passthrough(mons))
-                && bad_attack(mons, adj, suffix, penance))
+                && bad_attack(mons, adj, suffix, penance, self_hurt))
             {
                 bad_mons = mons;
                 bad_suff = suffix;
                 bad_adj = adj;
-                if (penance)
+                if (penance || self_hurt)
                     break;
             }
         }

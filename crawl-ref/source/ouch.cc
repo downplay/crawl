@@ -573,6 +573,18 @@ static void _maybe_inflict_anguish(int dam, mid_t death_source)
     anguish_fineff::schedule(mons, dam);
 }
 
+static void _maybe_escape_charmer(int dam, mid_t attack_source)
+{
+    const monster* mons = monster_by_mid(attack_source);
+    if (!mons
+        || !mons->alive()
+        || !mons->has_ench(ENCH_CHARMER))
+    {
+        return;
+    }
+    charmer_escape_fineff::schedule(mons, dam);
+}
+
 static void _maybe_spawn_rats(int dam, kill_method_type death_type)
 {
     if (dam <= 0
@@ -1112,7 +1124,14 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
 
     // Don't wake the player with fatal or poison damage.
     if (dam > 0 && dam < you.hp && death_type != KILLED_BY_POISON)
+    {
         you.check_awaken(500);
+        if (monster* mon_source = monster_by_mid(source))
+        {
+            if (mon_source->attitude == ATT_MARIONETTE)
+                dam = 0;
+        }
+    }
 
     const bool non_death = death_type == KILLED_BY_QUITTING
                         || death_type == KILLED_BY_WINNING
@@ -1167,6 +1186,10 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
                 return;
         }
 
+        // Never directly die from attacking your charmer
+        if (dam >= you.hp && death_type == KILLED_BY_CHARMER)
+            dam = max(0, you.hp - 1);
+
         if (dam >= you.hp && you.hp_max > 0 && god_protects_from_harm())
         {
             simple_god_message(" protects you from harm!");
@@ -1217,6 +1240,9 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
             _handle_poor_constitution(dam);
             _maybe_ru_retribution(dam, source);
             _maybe_inflict_anguish(dam, source);
+            // Don't give an escape chance when dealing sympathy damage
+            if (death_type != KILLED_BY_CHARMER)
+                _maybe_escape_charmer(dam, source);
             _maybe_spawn_monsters(dam, death_type, source);
             _maybe_spawn_rats(dam, death_type);
             _maybe_summon_demonic_guardian(dam, death_type);
