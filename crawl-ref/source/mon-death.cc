@@ -3141,6 +3141,43 @@ item_def* monster_die(monster& mons, killer_type killer,
         env.markers.add(marker);
         env.markers.clear_need_activate();
     }
+    else if (mons.type == MONS_COBALT_LICHEN_SAC && real_death && !mons.pacified())
+    {
+        // Since monster might be on a wall, find a valid origin for the clouds
+        coord_def source = mons.pos();
+        if (cell_is_solid(source))
+        {
+            vector<coord_def> valid_spots;
+            for (adjacent_iterator ai(mons.pos()); ai; ++ai)
+            {
+                if (!cell_is_solid(*ai) && you.see_cell_no_trans(*ai))
+                    valid_spots.push_back(*ai);
+            }
+
+            if (!valid_spots.size())
+                for (adjacent_iterator ai(mons.pos()); ai; ++ai)
+                {
+                    if (!cell_is_solid(*ai))
+                        valid_spots.push_back(*ai);
+                }
+
+            if (valid_spots.size())
+                source = valid_spots[random2(valid_spots.size())];
+        }
+
+        // If there were no spots, monster must be somehow encased in rock
+        if (!cell_is_solid(source))
+        {
+            map_cloud_spreader_marker *marker =
+                new map_cloud_spreader_marker(source, CLOUD_SPORE, 5,
+                                            20 + random2(15), LOS_DEFAULT_RANGE,
+                                            5, &mons);
+            // Start the cloud at radius 1, regardless of the speed of the killing blow
+            marker->speed_increment -= you.time_taken;
+            env.markers.add(marker);
+            env.markers.clear_need_activate();
+        }
+    }
     else if (!mons.is_summoned() && mummy_curse_power(mons.type) > 0)
     {
         // TODO: set attacker better? (Player attacker is handled by checking

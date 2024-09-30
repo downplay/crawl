@@ -3840,6 +3840,28 @@ void melee_attack::mons_apply_attack_flavour()
             alembic_brew_potion(*attacker->as_monster());
     }
 
+    case AF_CHARM:
+        if (attk_type == AT_SPORE)
+        {
+            if (defender->is_unbreathing())
+                break;
+
+            if (defender_visible)
+            {
+                mprf("%s %s engulfed in a cloud of empathogenic spores!",
+                     defender->name(DESC_THE).c_str(),
+                     defender->conj_verb("are").c_str());
+            }
+        }
+        if (defender->is_player())
+            you.charm(attacker, 50);
+        else if (ench_flavour_affects_monster(attacker, BEAM_CHARM,
+                                              defender->as_monster()))
+        {
+            enchant_actor_with_flavour(defender, attacker, BEAM_CHARM, 50);
+        }
+        break;
+
     case AF_SHED:
     {
         if (!defender->is_firewood())

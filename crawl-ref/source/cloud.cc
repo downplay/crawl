@@ -332,6 +332,12 @@ static const cloud_data clouds[] = {
       ETC_ELECTRICITY,                                 // colour
       { TILE_CLOUD_MAGNETISED_DUST, CTVARY_RANDOM },   // tile
     },
+    // CLOUD_SPORE,
+    { "empathogenic spores", nullptr,                  // terse, verbose name
+      LIGHTCYAN,                                       // colour
+      // XX: Make it CTVARY_DUR to see spores decreasing
+      { TILE_CLOUD_SPORE, CTVARY_RANDOM },             // tile
+},
 };
 COMPILE_CHECK(ARRAYSZ(clouds) == NUM_CLOUD_TYPES);
 
@@ -865,6 +871,7 @@ static bool _cloud_has_negative_side_effects(cloud_type cloud)
     case CLOUD_ACID:
     case CLOUD_MISERY:
     case CLOUD_BLASTMOTES:
+    case CLOUD_SPORE:
         return true;
     default:
         return false;
@@ -968,6 +975,8 @@ bool actor_cloud_immune(const actor &act, cloud_type type)
             return act.res_polar_vortex();
         case CLOUD_RAIN:
             return !act.is_fiery();
+        case CLOUD_SPORE:
+            return act.is_unbreathing();
         default:
             return false;
     }
@@ -1204,6 +1213,30 @@ static bool _actor_apply_cloud_side_effects(actor *act,
             return false;
         explode_blastmotes_at(cloud.pos);
         return true;
+
+    case CLOUD_SPORE:
+    {
+        // Agent has died so don't even try to look them up:
+        // Choose a random hostile monster in LOS to be charmed by instead
+        // (yes, even if agent was friendly before dying)
+        monster *agent = choose_random_nearby_monster([](const monster& mon){
+            return mon.temp_attitude() == ATT_HOSTILE;
+        });
+
+        if (player)
+        {
+            if (!agent)
+                mpr("You experience the fleeting memory of a long forgotten friend.");
+            else
+                act->as_player()->charm(agent, 30);
+        }
+        else if (agent && ench_flavour_affects_monster(agent, BEAM_CHARM,
+                                                       act->as_monster()))
+        {
+            enchant_actor_with_flavour(act->as_monster(), agent, BEAM_CHARM, 30);
+        }
+    }
+    break;
 
     default:
         break;
