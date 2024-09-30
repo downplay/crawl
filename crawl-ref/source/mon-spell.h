@@ -1952,11 +1952,17 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
-    // ('F') Froggos.
+    // ('F') Froggos and Fishies.
     {  MST_JEREMIAH,
       {
        { SPELL_BLINK_RANGE, 16, MON_SPELL_NATURAL },
        { SPELL_SMITING, 16, MON_SPELL_PRIEST },
+      }
+    },
+
+    {  MST_SILVERFISH,
+      {
+       { SPELL_SILVER_CHARGE, 28, MON_SPELL_NATURAL },
       }
     },
 

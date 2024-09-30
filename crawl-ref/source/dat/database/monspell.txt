@@ -603,6 +603,10 @@ Paralyse Xtahua cast
 
 @The_monster@ thunders ferociously @at@ @target@!
 %%%%
+Silver Charge cast
+
+VISUAL:@The_monster@ curls into a silver star and shoots @at@ @foe@.
+%%%%
 ########################################################################
 # Individual monsters
 ########################################################################

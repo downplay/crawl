@@ -29,6 +29,9 @@ string movement_impossible_reason();
 coord_def get_electric_charge_landing_spot(const actor& agent,
                                            coord_def target,
                                            string* fail_reason = nullptr);
+coord_def get_silver_charge_landing_spot(const actor& agent,
+                                         coord_def target,
+                                         string* fail_reason = nullptr);
 
 bool valid_electric_charge_target(const actor& agent, coord_def target,
                                   string* fail_reason = nullptr);

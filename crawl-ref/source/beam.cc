@@ -4337,6 +4337,14 @@ void bolt::affect_player()
 
     pre_res_dam = max(0, pre_res_dam);
 
+    // Adjust for silver damage after AC was applied
+    string special_damage_message;
+    if (flavour == BEAM_SILVER)
+    {
+        pre_res_dam += silver_damages_victim(&you, pre_res_dam,
+                                             special_damage_message);
+    }
+
     // If the beam is of the MMISSILE type (Earth magic) we might bleed on the
     // floor.
     if (!engulfs && flavour == BEAM_MMISSILE)
@@ -4360,6 +4368,8 @@ void bolt::affect_player()
              final_dam || damage.num == 0 ? "" : " but does no damage",
              attack_strength_punctuation(final_dam).c_str());
     }
+    if (!special_damage_message.empty())
+        mpr(special_damage_message);
 
     // Now print the messages associated with checking resistances, so that
     // these come after the beam actually hitting.
@@ -4377,8 +4387,11 @@ void bolt::affect_player()
 
     }
 
-    if (flavour == BEAM_LIGHT && you.can_be_dazzled())
+    if ((flavour == BEAM_LIGHT || origin_spell == SPELL_SILVER_CHARGE)
+         && you.can_be_dazzled())
+    {
         blind_player(random_range(7, 12), WHITE);
+    }
 
     if (flavour == BEAM_MIASMA && final_dam > 0)
         was_affected = miasma_player(agent(), name);
@@ -5273,7 +5286,7 @@ void bolt::monster_post_hit(monster* mon, int dmg)
         mon->add_ench(mon_enchant(ENCH_PARALYSIS, 1, agent(), BASELINE_DELAY));
     }
 
-    if (flavour == BEAM_LIGHT
+    if ((flavour == BEAM_LIGHT || origin_spell == SPELL_SILVER_CHARGE)
         && mon->can_be_dazzled()
         && !mon->has_ench(ENCH_BLIND))
     {
@@ -5772,8 +5785,18 @@ void bolt::affect_monster(monster* mon)
             const int blood = min(postac/2, mon->hit_points);
             bleed_onto_floor(mon->pos(), mon->type, blood, true);
         }
+
+        string special_damage_message;
+        if (flavour == BEAM_SILVER)
+        {
+            final += silver_damages_victim(mon, final,
+                                           special_damage_message);
+        }
+
         // Now hurt monster.
         mon->hurt(agent(), final, flavour, KILLED_BY_BEAM, "", "", false);
+        if (!special_damage_message.empty() && you.can_see(*mon))
+            mpr(special_damage_message);
 
         // Haemoclasm explosions will always chain-explode if they kill something
         if (!mon->alive() && flavour == BEAM_HAEMOCLASM
@@ -7628,6 +7651,7 @@ static string _beam_type_name(beam_type type)
     case BEAM_HAEMOCLASM:            return "gore";
     case BEAM_BLOODRITE:             return "blood";
     case BEAM_DOUBLE_VIGOUR:         return "vigour-doubling";
+    case BEAM_SILVER:                return "silver";
 
     case NUM_BEAMS:                  die("invalid beam type");
     }

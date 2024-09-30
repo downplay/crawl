@@ -3395,6 +3395,11 @@ void melee_attack::mons_apply_attack_flavour()
         }
         break;
 
+    case AF_SILVER:
+        special_damage = silver_damages_victim(defender, attk_damage,
+                                               special_damage_message);
+        break;
+
     case AF_FOUL_FLAME:
     {
         const int rff = defender->res_foul_flame();

@@ -2568,6 +2568,12 @@ A terrible spirit which brings an unearthly silence to the area around it,
 making it impossible to recite the magical incantations involved with casting
 spells or reading scrolls.
 %%%%
+silverfish
+
+A glimmering thing made of flowing metal and glowing with a holy aura. Light
+beams spill from its gills. Surely this must be a favoured pet of Zin? As
+a creature of the element of earth it is able to swim in walls.
+%%%%
 simulacrum
 
 An icy replica of a monster, animated by heretical magics.

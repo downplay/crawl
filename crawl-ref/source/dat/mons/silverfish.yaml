@@ -1,0 +1,21 @@
+name: "silverfish"
+glyph: {char: "F", colour: etc_silver}
+flags: [no_skeleton]
+resists: {elec: 3, fire: 1, petrify: 1}
+xp_mult: 6
+holiness: [holy]
+will: 40
+attacks:
+ - {type: bite, flavour: silver, damage: 9}
+ - {type: tail_slap, flavour: silver, damage: 7}
+hd: 8
+hp_10x: 240
+ac: 15
+ev: 12
+spells: silverfish
+intelligence: animal
+habitat: walls
+speed: 12
+energy: {swim: 10}
+size: tiny
+shape: fish
