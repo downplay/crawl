@@ -219,6 +219,27 @@ protected:
     bool fatal;
 };
 
+class charmer_damage_share_fineff : public final_effect
+{
+public:
+    bool mergeable(const final_effect &a) const override;
+    void merge(const final_effect &a) override;
+    void fire() override;
+
+    static void schedule(const monster *charmer, int dam)
+    {
+        final_effect::schedule(
+            new charmer_damage_share_fineff(charmer, dam));
+    }
+protected:
+    charmer_damage_share_fineff(const monster *charmer, int dam)
+        : final_effect(&you, charmer, coord_def()),
+          damage(dam)
+    {
+    }
+    int damage;
+};
+
 class starcursed_merge_fineff : public final_effect
 {
 public:

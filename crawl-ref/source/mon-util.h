@@ -371,7 +371,7 @@ gender_type mons_class_gender(monster_type mc);
 const char *mons_pronoun(monster_type mon_type, pronoun_type variant,
                          bool visible = true);
 
-bool mons_aligned(const actor *m1, const actor *m2);
+bool mons_aligned(const actor *m1, const actor *m2, bool ignore_charm = false);
 bool mons_atts_aligned(mon_attitude_type fr1, mon_attitude_type fr2);
 
 bool mons_att_wont_attack(mon_attitude_type fr);

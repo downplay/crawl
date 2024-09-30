@@ -729,12 +729,22 @@ bool monster::likes_wand(wand_type wand) const
                            && !crawl_state.game_is_sprint();
 
     const int hd = get_hit_dice();
+    // Get a min and max HD for monsters that can use this wand.
+
+// Tier  Min Max              Wand
+// 0     X   X            Dig
+// 1     1   6     4       Flame
+// 2     3   10    10       Poly Ice/Roots/Warp
+// 3     5   14    20       Acid/Li/Quick  Charm/Para Mind
+// 4     7   100   100
+
+    // Artificers can use any higher tier wands
     // Monsters of hd 7 and above get to use the highest tier (so Grinder no
     // longer needs a special flag).
     const int min = artificer ? 1 : tier * 2 - 1;
     // Bad wands won't be used past hd 6; mediocre wands past hd 10;
-    // good wands past hd 14; best wants past hd 18.
-    const int max = tier * 4 + 2;
+    // good wands past hd 14; best wands no real limit.
+    const int max = tier == 4 ? 100 : (tier * tier * 2 + 2);
     return hd >= min && hd <= max;
 }
 
@@ -5828,6 +5838,18 @@ void monster::react_to_damage(const actor *oppressor, int damage,
                                              master_damage, false);
             ++hits;
         }
+    }
+
+    // If the player is charmed and hurts one of their "friends", some damage
+    // will be reflected on them (with a chance to end the charming).
+    // Do this in a fineff to prevent multiple escape rolls in a turn.
+    if (has_ench(ENCH_CHARMER) && oppressor->is_player())
+    {
+        // Save a copy in case we die before the fineff is fired
+        env.final_effect_monster_cache.push_back(*this);
+        // Only count how much it took to kill them
+        const int capped_damage = min(damage, hit_points + damage);
+        charmer_damage_share_fineff::schedule(this, capped_damage);
     }
 
     // Interrupt autorest for allies standing clouds, on fire, etc.

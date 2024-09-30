@@ -5731,6 +5731,35 @@ void player::banish(const actor* /*agent*/, const string &who, const int power,
     banished_power = power;
 }
 
+void player::charm(actor* agent, const int power)
+{
+    ASSERT(!crawl_state.game_is_arena());
+    ASSERT(agent->is_monster());
+
+    monster* mon_agent = agent->as_monster();
+
+    mon_agent->add_ench({ ENCH_CHARMER, power, agent });
+    simple_monster_message(*mon_agent,
+                           " reminds you of an old friend long forgotten...",
+                           false, MSGCH_WARN);
+
+    // A very rare situation a monster behind glass can be affected, but remember
+    // it's the *player* that's really being affected
+    for (monster_near_iterator mi(you.pos(), LOS_DEFAULT); mi; ++mi)
+    {
+        // If you can't see a monster, you can't be charmed by them...
+        // Must also be aligned and either same species or same band as charmer
+        if (*mi == mon_agent || !you.can_see(**mi) || !(mons_aligned(agent, *mi)
+            && (mon_agent->mons_species() == mi->mons_species()
+                || mi->is_band_follower_of(*mon_agent))))
+        {
+            continue;
+        }
+        if (x_chance_in_y(power, 200))
+            mi->add_ench({ ENCH_CHARMER, power, agent });
+    }
+}
+
 /*
  * Approximate the loudest noise the player heard in the last
  * turn, possibly rescaling. This gets updated every

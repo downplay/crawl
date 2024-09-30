@@ -97,7 +97,7 @@ bool player_unrand_bad_target(const item_def *weapon,
                               bool check_only);
 
 bool bad_attack(const monster *mon, string& adj, string& suffix,
-                bool& would_cause_penance,
+                bool& would_cause_penance, bool& could_self_hurt,
                 coord_def attack_pos = coord_def(0, 0));
 
 bool stop_attack_prompt(const monster* mon, bool beam_attack,

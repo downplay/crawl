@@ -3849,10 +3849,11 @@ void bolt::affect_player_enchantment(bool resistible)
         break;
 
     case BEAM_CHARM:
-        mprf(MSGCH_WARN, "Your will is overpowered!");
-        confuse_player(5 + random2(3));
+        // The enchantment degree controls the escape chance, use double
+        // original spell power as it will decay
+        you.charm(agent(), ench_power * 2);
         obvious_effect = true;
-        break;     // charming - confusion?
+        break;
 
     case BEAM_BANISH:
         if (YOU_KILL(thrower))
@@ -4821,7 +4822,8 @@ void bolt::handle_stop_attack_prompt(monster* mon)
     {
         string adj, suffix;
         bool penance;
-        if (bad_attack(mon, adj, suffix, penance, target))
+        bool self_hurt;
+        if (bad_attack(mon, adj, suffix, penance, self_hurt, target))
             friendly_past_target = true;
         return;
     }
@@ -6128,7 +6130,7 @@ bool ench_flavour_affects_monster(actor *agent, beam_type flavour,
     // Special allies whose loyalty can't be so easily bent
     case BEAM_CHARM:
         rc = !never_harm_monster(agent, mon)
-             && !mons_aligned(agent, mon);
+             && !mons_aligned(agent, mon, true);
         break;
 
     case BEAM_MINDBURST:
@@ -6578,6 +6580,13 @@ mon_resist_type bolt::apply_enchantment_to_monster(monster* mon)
             mon->add_ench(mon_enchant(good, 0, agent()));
             if (!obvious_effect && could_see && !you.can_see(*mon))
                 obvious_effect = true;
+            return MON_AFFECTED;
+        }
+
+        // Monsters that have charmed the player return to normal
+        if (mon->has_ench(ENCH_CHARMER) && agent()->wont_attack())
+        {
+            obvious_effect = mon->del_ench(ENCH_CHARMER);
             return MON_AFFECTED;
         }
 

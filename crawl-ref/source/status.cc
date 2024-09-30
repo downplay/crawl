@@ -902,6 +902,10 @@ bool fill_status_info(int status, status_info& inf)
         inf.light_text = make_stringf("Enkindled (%d)", you.props[ENKINDLE_CHARGES_KEY].get_int());
         break;
 
+    case STATUS_CHARMED:
+        inf.light_colour = LIGHTMAGENTA;
+        break;
+
     default:
         if (!found)
         {

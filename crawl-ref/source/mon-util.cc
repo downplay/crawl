@@ -3450,13 +3450,21 @@ int mons_power(monster_type mc)
 }
 
 /// Are two actors 'aligned'? (Will they refuse to attack each-other?)
-bool mons_aligned(const actor *m1, const actor *m2)
+bool mons_aligned(const actor *m1, const actor *m2, bool ignore_charm)
 {
     if (!m1 || !m2)
         return true;
 
     if (mons_is_projectile(m1->type) || mons_is_projectile(m2->type))
         return true; // they won't directly attack each-other, anyway
+
+    // Player and their allies consider a charmer to be aligned (but this is
+    // asymmetrical, the player is still foe to the charmer)
+    if (!ignore_charm && m1->wont_attack() && m2->is_monster()
+        && m2->as_monster()->has_ench(ENCH_CHARMER))
+    {
+        return true;
+    }
 
     return mons_atts_aligned(m1->temp_attitude(), m2->temp_attitude());
 }
