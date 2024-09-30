@@ -162,6 +162,13 @@ bool summon_dismissal_fineff::mergeable(const final_effect &fe) const
     return o && def == o->def;
 }
 
+bool rockfish_disperse_fineff::mergeable(const final_effect &fe) const
+{
+    const rockfish_disperse_fineff *o =
+        dynamic_cast<const rockfish_disperse_fineff *>(&fe);
+    return o && def == o->def;
+}
+
 void mirror_damage_fineff::merge(const final_effect &fe)
 {
     const mirror_damage_fineff *mdfe =
@@ -240,6 +247,12 @@ void shock_discharge_fineff::merge(const final_effect &fe)
 }
 
 void summon_dismissal_fineff::merge(const final_effect &)
+{
+    // no damage to accumulate, but no need to fire this more than once
+    return;
+}
+
+void rockfish_disperse_fineff::merge(const final_effect &)
 {
     // no damage to accumulate, but no need to fire this more than once
     return;
@@ -1083,6 +1096,65 @@ void death_spawn_fineff::fire()
                                          false))
     {
         pillar->add_ench(mon_enchant(ENCH_SLOWLY_DYING, 1, &you, duration));
+    }
+}
+
+#define ROCKFISH_SCHOOL_SIZE 3
+
+void rockfish_disperse_fineff::fire()
+{
+    actor *defend = defender();
+    if (!defend || !defend->alive())
+        return;
+
+    monster *mon = defend->as_monster();
+
+    actor *attack = attacker();
+    unsigned short foe = attack && attack->alive() ? attack->mindex() : MHITNOT;
+    // may be ANON_FRIENDLY_MONSTER
+    if (invalid_monster_index(foe) && foe != MHITYOU)
+        foe = MHITNOT;
+
+    // Give them the same attitude as source
+    const beh_type spawn_beh = attitude_creation_behavior(defend->as_monster()->attitude);
+
+    // How much HP left to divide 3 ways?
+    int hp_to_distribute = mon->hit_points;
+
+    int spawned = 0;
+    for (int n=0; n<ROCKFISH_SCHOOL_SIZE; n++)
+    {
+        coord_def npos = find_newmons_square_contiguous(MONS_ROCK_FISH, posn, 3, false);
+        if (!in_bounds(npos))
+            continue;
+
+        int hp_share = div_rand_round(hp_to_distribute, ROCKFISH_SCHOOL_SIZE-n);
+        hp_to_distribute -= hp_share;
+
+        auto mg = mgen_data(MONS_ROCK_FISH, spawn_beh, npos, foe,
+                              MG_DONT_COME | MG_FORBID_BANDS);
+        /*auto fish = */create_monster(mg);
+        spawned++;
+    }
+
+    if (spawned > 0)
+        mprf("%s disperses!", defend->name(DESC_THE).c_str());
+    else
+    {
+        mprf("%s writhes", defend->name(DESC_THE).c_str());
+        return;
+    }
+
+    // If we spawned exactly the right number, remove the original
+    if (spawned == ROCKFISH_SCHOOL_SIZE)
+        monster_die(*defend->as_monster(), KILL_RESET, NON_MONSTER, true);
+    else
+    {
+        // Otherwise change it to a rockfish and assign remaining HP.
+        // The player might have lost some potential XP by missing out on
+        // extra fish but this is further encouragement to one-shot the school.
+        change_monster_type(defend->as_monster(), MONS_ROCK_FISH, false);
+        defend->as_monster()->hit_points = hp_to_distribute;
     }
 }
 
