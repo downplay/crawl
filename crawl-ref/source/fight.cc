@@ -1233,7 +1233,8 @@ int mons_weapon_damage_rating(const item_def &launcher)
 }
 
 bool bad_attack(const monster *mon, string& adj, string& suffix,
-                bool& would_cause_penance, coord_def attack_pos)
+                bool& would_cause_penance, bool& could_self_hurt,
+                coord_def attack_pos)
 {
     ASSERT(mon); // XXX: change to const monster &mon
     ASSERT(!crawl_state.game_is_arena());
@@ -1247,9 +1248,17 @@ bool bad_attack(const monster *mon, string& adj, string& suffix,
     adj.clear();
     suffix.clear();
     would_cause_penance = false;
+    could_self_hurt = false;
 
     if (is_sanctuary(mon->pos()) || is_sanctuary(attack_pos))
         suffix = ", despite your sanctuary";
+
+    if (mon->has_ench(ENCH_CHARMER))
+    {
+        adj = "\"friendly\" ";
+        could_self_hurt = true;
+        return true;
+    }
 
     if (mon->friendly())
     {
@@ -1271,7 +1280,6 @@ bool bad_attack(const monster *mon, string& adj, string& suffix,
                 adj += "the ";
 
             would_cause_penance = true;
-
         }
         else
         {
@@ -1313,6 +1321,7 @@ bool stop_attack_prompt(const monster* mon, bool beam_attack,
 {
     ASSERT(mon); // XXX: change to const monster &mon
     bool penance = false;
+    bool self_hurt = false;
 
     if (prompted)
         *prompted = false;
@@ -1327,7 +1336,7 @@ bool stop_attack_prompt(const monster* mon, bool beam_attack,
         return false;
 
     string adj, suffix;
-    if (!bad_attack(mon, adj, suffix, penance, attack_pos))
+    if (!bad_attack(mon, adj, suffix, penance, self_hurt, attack_pos))
         return false;
 
     // We have already determined this attack *would* prompt, so stop here
@@ -1356,9 +1365,10 @@ bool stop_attack_prompt(const monster* mon, bool beam_attack,
     else
         verb = "attack ";
 
-    const string prompt = make_stringf("Really %s%s%s?%s",
+    const string prompt = make_stringf("Really %s%s%s?%s%s",
              verb.c_str(), mon_name.c_str(), suffix.c_str(),
-             penance ? " This attack would place you under penance!" : "");
+             penance ? " This attack would place you under penance!" : "",
+             self_hurt ? " You might inflict damage on yourself!" : "");
 
     if (prompted)
         *prompted = true;
@@ -1407,7 +1417,8 @@ bool stop_attack_prompt(targeter &hitfunc, const char* verb,
 
         string adjn, suffixn;
         bool penancen = false;
-        if (bad_attack(mon, adjn, suffixn, penancen))
+        bool self_hurt = false;
+        if (bad_attack(mon, adjn, suffixn, penancen, self_hurt))
         {
             // record the adjectives for the first listed, or
             // first that would cause penance

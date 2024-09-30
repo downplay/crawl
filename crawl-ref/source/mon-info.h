@@ -240,6 +240,7 @@ enum monster_info_flags
     MB_ENGULFING_PLAYER,
     MB_DOUBLED_VIGOUR,
     MB_FLOUNDERING,
+    MB_CHARMER,
     NUM_MB_FLAGS
 };
 

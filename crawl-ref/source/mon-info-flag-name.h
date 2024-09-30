@@ -152,4 +152,5 @@ static const vector<monster_info_flag_name> monster_info_flag_names = {
     { MB_FROZEN_IN_TERROR, "paralysed with fear", "paralysed with fear", "paralysed with fear"},
     { MB_SOUL_SPLINTERED, "soul-splintered", "soul-splintered", "soul-splintered"},
     { MB_ENGULFING_PLAYER, "engulfing you", "engulfing you", "engulfing you"},
+    { MB_CHARMER, "charmer", "has charmed you", "charmers"},
 };

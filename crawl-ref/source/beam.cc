@@ -3748,9 +3748,11 @@ void bolt::affect_player_enchantment(bool resistible)
 
     case BEAM_CHARM:
         mprf(MSGCH_WARN, "Your will is overpowered!");
-        confuse_player(5 + random2(3));
+        // Double original effective spell power to be used on escape checks
+        // (degree will decay with the enchantment though)
+        you.charm(agent(), ench_power * 2);
         obvious_effect = true;
-        break;     // charming - confusion?
+        break;
 
     case BEAM_BANISH:
         if (YOU_KILL(thrower))
@@ -4706,7 +4708,8 @@ void bolt::handle_stop_attack_prompt(monster* mon)
     {
         string adj, suffix;
         bool penance;
-        if (bad_attack(mon, adj, suffix, penance, target))
+        bool self_hurt;
+        if (bad_attack(mon, adj, suffix, penance, self_hurt, target))
             friendly_past_target = true;
         return;
     }

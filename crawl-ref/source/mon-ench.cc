@@ -1905,6 +1905,11 @@ void monster::apply_enchantment(const mon_enchant &me)
         decay_enchantment(en);
         break;
 
+    case ENCH_CHARMER:
+        if (decay_enchantment(en))
+            simple_monster_message(*this, " no longer appears friendly.");
+        break;
+
     default:
         break;
     }
@@ -2159,6 +2164,7 @@ static const char *enchant_names[] =
     "magnetised",
     "armed",
     "misdirected", "changed appearance", "shadowless", "doubled_vigour",
+    "charmer",
     "buggy", // NUM_ENCHANTMENTS
 };
 
@@ -2394,6 +2400,7 @@ int mon_enchant::calc_duration(const monster* mons,
         cturn += 1000 * min(4, deg) / _mod_speed(100, mons->speed);
         break;
     case ENCH_CHARM:
+    case ENCH_CHARMER:
     case ENCH_HEXED:
         cturn = 500 / modded_speed(mons, 10);
         break;

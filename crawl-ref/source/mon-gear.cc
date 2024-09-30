@@ -180,8 +180,8 @@ static wand_type _choose_wand_for_monster(monster* mon)
 static void _give_wand(monster* mon, int level)
 {
     const bool always_wand = mons_class_flag(mon->type, M_ARTIFICER);
-    if (!always_wand && (!mons_is_unique(mon->type)
-            || mons_class_flag(mon->type, M_NO_WAND)
+    if (!always_wand && (/*!mons_is_unique(mon->type)
+            ||*/ mons_class_flag(mon->type, M_NO_WAND)
             || !_should_give_unique_item(mon)
             || !one_chance_in(5)))
     {
