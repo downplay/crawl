@@ -570,6 +570,8 @@ monster_info::monster_info(const monster* m, int milev)
 
     if (m->airborne())
         mb.set(MB_AIRBORNE);
+    if (m->floundering())
+        mb.set(MB_FLOUNDERING);
     if (mons_wields_two_weapons(*m))
         mb.set(MB_TWO_WEAPONS);
     if (!mons_can_regenerate(*m))
@@ -1726,6 +1728,11 @@ bool monster_info::airborne() const
 bool monster_info::ground_level() const
 {
     return !airborne();
+}
+
+bool monster_info::floundering() const
+{
+    return is(MB_FLOUNDERING);
 }
 
 bool monster_info::fellow_slime() const {
