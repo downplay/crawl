@@ -572,7 +572,7 @@ static coord_def _find_best_step(monster* mons)
     if (!in_bounds_y(s.y))
         dir.y = 0;
 
-    if (delta.rdist() > 3)
+    if (delta.rdist() > 1)
     {
         // Reproduced here is some semi-legacy code that makes monsters
         // move somewhat randomly along oblique paths. It is an
@@ -582,12 +582,19 @@ static coord_def _find_best_step(monster* mons)
         // Added a check so that oblique movement paths aren't used when
         // close to the target square. -- bwr
 
+        // Tweaked so that rather than the coinflip, we base the chance on the
+        // ratio of x delta to y delta, and lowered the distance as which this
+        // fuzz still applies: so actors are far less guaranteed to drift onto
+        // the nearest cardinal or ordinal. -- mumra
+        const int ax = abs(delta.x);
+        const int ay = abs(delta.y);
+
         // Sometimes we'll just move parallel the x axis.
-        if (abs(delta.x) > abs(delta.y) && coinflip())
+        if (dir.y && ax > ay && !x_chance_in_y(ay, ax))
             dir.y = 0;
 
         // Sometimes we'll just move parallel the y axis.
-        if (abs(delta.y) > abs(delta.x) && coinflip())
+        if (dir.x && ay > ax && !x_chance_in_y(ax, ay))
             dir.x = 0;
     }
 
