@@ -1,0 +1,21 @@
+name: "cobalt lichen eyestalk"
+glyph: {char: "f", colour: cyan}
+flags: [amorphous, no_skeleton, herd, has_aura]
+resists: {poison: 1, fire: -1}
+species: cobalt_lichen
+genus: fungus
+holiness: [plant]
+will: 100
+attacks: # Give it a slighty different attack?
+ - {type: spore, flavour: flank, damage: 20}
+hd: 12
+hp_10x: 250
+ac: 0
+ev: 9
+has_corpse: true
+intelligence: human
+habitat: walls
+speed: 10
+size: little
+shape: orb
+tile_variance: random
