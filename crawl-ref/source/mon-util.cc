@@ -4111,6 +4111,13 @@ bool mons_class_can_pass(monster_type mc, dungeon_feature_type grid)
             // Prevent passing through runed doors and so on.
             if (is_notable_terrain(grid))
                 return false;
+            // Rockfish don't like trees (lichen love them of course)
+            // XX: Maybe not necessary, or silver fish should have this too?
+            if ((mc == MONS_ROCK_FISH || mc == MONS_ROCK_FISH_SCHOOL)
+                && feat_is_tree(grid))
+            {
+                return false;
+            }
             // All other solids are fine
             return true;
         }
