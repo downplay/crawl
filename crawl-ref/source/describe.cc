@@ -2333,6 +2333,9 @@ static const char* _item_ego_desc(special_armour_type ego)
     case SPARM_ENERGY:
         return "it may return the magic spent to cast spells, but lowers their "
                "success rate. It always returns the magic spent on miscasts.";
+    case SPARM_COMPANY:
+        return "it increases how many summons the wearer can sustain at once, "
+               "for most types of Summoning spells.";
     default:
         return "it makes the wearer crave the taste of eggplant.";
     }
@@ -4663,14 +4666,17 @@ static string _player_spell_desc(spell_type spell)
     }
 
     // Report summon cap
-    const int limit = summons_limit(spell, true);
+    const bool has_company = you.wearing_ego(OBJ_ARMOUR, SPARM_COMPANY);
+    const int limit = summons_limit(spell, true, has_company);
     if (limit)
     {
         description << "You can sustain at most " + number_in_words(limit)
                     // Attempt to clarify that flayed ghosts are NOT included in the cap
                     << (spell == SPELL_MARTYRS_KNELL ? " martyred shade" : " creature")
                     << (limit > 1 ? "s" : "")
-                    << " summoned by this spell.\n";
+                    << " summoned by this spell"
+                    << (has_company && limit > 1 ? " (with orb of company)" : "")
+                    << ".\n";
     }
 
     if (god_hates_spell(spell, you.religion))
@@ -4811,14 +4817,18 @@ static void _get_spell_description(const spell_type spell,
         description += "\n";
 
         // Report summon cap
-        const int limit = summons_limit(spell, false);
+        const bool has_company = mon_owner->inv[MSLOT_SHIELD]
+            && get_armour_ego_type(*mon_owner->inv[MSLOT_SHIELD]) == SPARM_COMPANY;
+
+        const int limit = summons_limit(spell, false, has_company);
         if (limit)
         {
             description += make_stringf("%s can sustain at most %s creature%s "
-                               "summoned by this spell.\n",
+                               "summoned by this spell%s.\n",
                                uppercase_first(mon_owner->full_name(DESC_THE)).c_str(),
                                number_in_words(limit).c_str(),
-                               limit > 1 ? "s" : "");
+                               limit > 1 ? "s" : "",
+                               has_company && limit > 1 ? " (with orb of company)" : "");
         }
 
         // only display this if the player exists (not in the main menu)
