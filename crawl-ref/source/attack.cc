@@ -992,8 +992,18 @@ int attack::calc_damage()
 
         set_attack_verb(damage);
 
-        ac_type ac_rule = stat_source().as_monster()->has_ench(ENCH_BYPASS_ARMOUR)
-            ? ac_type::none : ac_type::normal;
+        ac_type ac_rule = ac_type::normal;
+        
+        if (stat_source().as_monster()->has_ench(ENCH_BYPASS_ARMOUR))
+            ac_rule = ac_type::half;
+
+        if (defender->props[BULLET_TIME_TARGET_KEY]
+            && (bullet_time_method)defender->props[BULLET_TIME_METHOD_KEY].get_byte()
+               == bullet_time_method::armour)
+        {
+            ac_rule = ac_type::none;
+        }
+
         return apply_defender_ac(damage, damage_max, ac_rule);
     }
     else

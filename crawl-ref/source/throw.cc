@@ -855,9 +855,15 @@ bool mons_throw(monster* mons, bolt &beam, bool teleport)
     const item_def &missile = *beam.item;
     ASSERT(missile.base_type == OBJ_MISSILES);
 
-    // Energy is already deducted for the spell cast, if using portal projectile
+    // Energy is already deducted for the spell cast, if portal projectile or
+    // bullet time have initiated the throw
     // FIXME: should it use this delay and not the spell delay?
-    if (!teleport)
+    bool expend_energy = !teleport;
+    // Looks a bit hacky but this can *only* ever occur during bullet time cast
+    if (actor_at(beam.target) && actor_at(beam.target)->props[BULLET_TIME_TARGET_KEY])
+        expend_energy = false;
+
+    if (expend_energy)
     {
         const int energy = mons->action_energy(EUT_MISSILE);
         const int delay = mons->attack_delay(&missile).roll();

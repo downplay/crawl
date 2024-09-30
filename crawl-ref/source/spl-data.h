@@ -4137,6 +4137,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_BULLET_TIME, "Bullet Time",
+    spschool::translocation | spschool::hexes,
+    spflag::target | spflag::monster,
+    6,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    0,
+    TILEG_QUICKSILVER_BOLT,
+},
+
+{
     SPELL_NO_SPELL, "nonexistent spell",
     spschool::none,
     spflag::testing,

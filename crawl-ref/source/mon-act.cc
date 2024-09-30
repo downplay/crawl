@@ -1329,7 +1329,8 @@ static bool _handle_wand(monster& mons)
     return true;
 }
 
-bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
+bool handle_throw(monster* mons, bolt &beem, bool teleport, bool check_only,
+                  bool alt_weapon)
 {
     // Yes, there is a logic to this ordering {dlb}:
     if (mons->incapacitated()
@@ -1362,8 +1363,7 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
     // Most monsters won't shoot in melee range, largely for balance reasons.
     // Specialist archers are an exception to this rule, though most archers
     // lack the M_PREFER_RANGED flag.
-    // Monsters who only can attack with ranged still should. Keep in mind
-    // that M_PREFER_RANGED only applies if the monster has ammo.
+    // Monsters who only can attack with ranged still should.
     if (adjacent(beem.target, mons->pos()) && !prefer_ranged_attack)
         return false;
 
@@ -1371,7 +1371,7 @@ bool handle_throw(monster* mons, bolt & beem, bool teleport, bool check_only)
     if (mons_is_fleeing(*mons) || mons->pacified())
         return false;
 
-    const item_def *launcher = mons->launcher();
+    const item_def *launcher = mons->launcher(alt_weapon);
     item_def *throwable = mons->missiles();
     const bool can_throw = (throwable && is_throwable(mons, *throwable));
     item_def fake_proj;
@@ -1758,7 +1758,10 @@ static bool _mons_take_special_action(monster &mons, int old_energy)
     if (friendly_or_near)
     {
         bolt beem = setup_targeting_beam(mons);
-        if (handle_throw(&mons, beem, false, false))
+        if (handle_throw(&mons, beem, false, false,
+                         // Use alt launcher randomly (only affects the order
+                         // of checking slots, no effect if only one launcher)
+                         mons_wields_two_weapons(mons) && coinflip()))
         {
             DEBUG_ENERGY_USE_REF("_handle_throw()");
             return true;
@@ -3846,4 +3849,119 @@ static bool _monster_move(monster* mons, coord_def& delta)
     }
 
     return ret;
+}
+
+static string _bullet_time_method_verb(bullet_time_method method)
+{
+    switch (method)
+    {
+        case bullet_time_method::armour:
+            return "exploiting a gap in";
+
+        case bullet_time_method::evasion:
+            return "anticipating";
+
+        case bullet_time_method::shield:
+            return "punching past";
+
+        default:
+            return "bugging";
+    }
+}
+
+static string _bullet_time_method_name(bullet_time_method method)
+{
+    switch (method)
+    {
+        case bullet_time_method::armour:
+            return "armour";
+
+        case bullet_time_method::evasion:
+            return "next dodge";
+
+        case bullet_time_method::shield:
+            return "shield";
+
+        default:
+            return "bugs";
+    }
+}
+
+static void _clean_up_bullet_time(actor &target)
+{
+    if (!target.alive())
+        return;
+    
+    target.props.erase(BULLET_TIME_METHOD_KEY);
+    target.props.erase(BULLET_TIME_TARGET_KEY);
+}
+
+void bullet_time(monster &mons)
+{
+    // Fires a launcher (slowly) at the before and after positions
+    bolt beem = setup_targeting_beam(mons);
+    beem.draw_delay = 80;
+    actor *target = actor_at(mons.target);
+    // Really shouldn't happen
+    if (!target || !target->alive())
+        return;
+
+    const coord_def target_pos = target->pos();
+    target->props[BULLET_TIME_TARGET_KEY] = 1;
+    target->props[BULLET_TIME_METHOD_KEY] = (char)bullet_time_method::none;
+
+    // Which weapon first?
+    const bool alt_weapon = coinflip();
+
+    if (!handle_throw(&mons, beem, false, alt_weapon)
+        // Killed by reflection etc
+        || !mons.alive())
+    {
+        _clean_up_bullet_time(*target);
+        return;
+    }
+
+    const bullet_time_method method =
+        (bullet_time_method)target->props[BULLET_TIME_METHOD_KEY].get_byte();
+
+    mprf("Bullet time method %i", (char)method);
+
+    // XX: At this point could apply a status to the player to make the relevant
+    // stat appear as 0 briefly, but is it noticable?
+
+    // XX: Maybe should account for possibility that we actually hit a different
+    // target first, and re-aim at them instead? oR RE-AIM 
+
+    // Make a jumpy move (whether to jump close or away scales with distance)
+    const int dist = target_pos.distance_from(mons.pos());
+    if (dist >= LOS_MAX_RANGE - 2
+        || dist > 2 && x_chance_in_y(dist - 2, LOS_MAX_RANGE - 1))
+    {
+        blink_close(mons);
+    }
+    else
+        blink_range(mons);
+
+    if (!target->alive())
+        return;
+
+    if (method != bullet_time_method::none && you.see_cell(target_pos)
+        && you.see_cell(mons.pos()))
+    {
+        // XX: randomise "catches .. off guard"
+        // "dances around you", "takes you by surprise", "feints towards/away from you", "distracts you with xxxx"
+        // "darts with sudden speed"
+        mprf(MSGCH_DANGER, "%s catches %s off guard, %s %s %s.",
+             mons.name(DESC_THE).c_str(), target->name(DESC_THE).c_str(),
+             _bullet_time_method_verb(method).c_str(),
+             target->pronoun(PRONOUN_POSSESSIVE).c_str(),
+             _bullet_time_method_name(method).c_str());
+    }
+
+    // Fire second shot. The bypass is handled via the props.
+    bolt beem2 = setup_targeting_beam(mons);
+    beem2.draw_delay = 80;
+    handle_throw(&mons, beem2, false, false, !alt_weapon);
+    _clean_up_bullet_time(*target);
+    return;
 }

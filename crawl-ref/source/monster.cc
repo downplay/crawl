@@ -479,13 +479,13 @@ item_def *monster::missiles() const
     return inv[MSLOT_MISSILE] != NON_ITEM ? &env.item[inv[MSLOT_MISSILE]] : nullptr;
 }
 
-item_def *monster::launcher() const
+item_def *monster::launcher(bool alt_weapon) const
 {
-    item_def *weap = mslot_item(MSLOT_WEAPON);
+    item_def *weap = mslot_item(alt_weapon ? MSLOT_ALT_WEAPON : MSLOT_WEAPON);
     if (weap && is_range_weapon(*weap))
         return weap;
 
-    weap = mslot_item(MSLOT_ALT_WEAPON);
+    weap = mslot_item(alt_weapon ? MSLOT_WEAPON : MSLOT_ALT_WEAPON);
     return weap && is_range_weapon(*weap) ? weap : nullptr;
 }
 
@@ -2106,11 +2106,17 @@ void monster::swap_weapons(maybe_bool maybe_msg)
     item_def *weap = mslot_item(MSLOT_WEAPON);
     item_def *alt  = mslot_item(MSLOT_ALT_WEAPON);
 
-    if (weap && !unequip(*weap, msg))
+    // Dual wielders with two weapons shouldn't need to swap them
+    // (and it creates a lot of message spam for dual handguns)
+    if (weap && is_weapon(*weap) && alt && is_weapon(*alt)
+        && mons_wields_two_weapons(*this))
     {
-        // Item was cursed.
         return;
     }
+
+    // Is item cursed?
+    if (weap && !unequip(*weap, msg))
+        return;
 
     swap(inv[MSLOT_WEAPON], inv[MSLOT_ALT_WEAPON]);
 
@@ -5855,7 +5861,7 @@ void monster::react_to_damage(const actor *oppressor, int damage,
 
     // Rockfish schools disperse into individual fishies (if they're
     // still alive at all after everything else processes)
-    if (type == MONS_ROCKFISH_SCHOOL)
+    if (type == MONS_ROCK_FISH_SCHOOL)
         rockfish_disperse_fineff::schedule(oppressor, this, pos());
 
     // Damage sharing from the spectral weapon to its owner
@@ -6539,6 +6545,7 @@ bool monster::is_jumpy() const
 {
     return type == MONS_JUMPING_SPIDER
         || type == MONS_BOULDER_BEETLE
+        || type == MONS_ANACHROBAT
         || mons_species() == MONS_BARACHI;
 }
 

@@ -263,7 +263,9 @@ bool monster_habitable_position(monster_type mt, coord_def pos, bool preferred)
     if (!feat_is_solid(actual))
         return true;
 
-    return has_non_solid_adjacent(pos);
+    // Whatever magic makes no_tele work also makes the walls uninhabitable (and
+    // prevents them breaching transporter/ghost/decorative vaults)
+    return !(env.pgrid(pos) & FPROP_NO_TELE_INTO) && has_non_solid_adjacent(pos);
 }
 
 static int _ood_fuzzspan(level_id &place)
@@ -2484,7 +2486,7 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
                                  {{MONS_TENTACLED_MONSTROSITY, 1},
                                   {MONS_CACODEMON, 2},
                                   {MONS_SHADOW_DEMON, 3},
-                                  {MONS_VERY_UGLY_THING, 3},
+                                  {MONS_ANACHROBAT, 3},
                                   {MONS_NEQOXEC, 3}}}},
 
     { BAND_LOM_LOBON,           {{{MONS_SPRIGGAN_AIR_MAGE, 1},
