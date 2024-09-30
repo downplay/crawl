@@ -631,9 +631,10 @@ enum monster_type                      // env.mons[].type
     MONS_SALAMANDER_MYSTIC,
     MONS_SALAMANDER_TYRANT,
 
-    // Rock fish:
+    // Earth-flavoured fish:
     MONS_ROCK_FISH,
     MONS_ROCK_FISH_SCHOOL,
+    MONS_SILVER_FISH,
 
 #endif
 
@@ -1327,6 +1328,7 @@ enum monster_type                      // env.mons[].type
     MONS_SPHINX_MARAUDER,
     MONS_ROCK_FISH,
     MONS_ROCK_FISH_SCHOOL,
+    MONS_SILVER_FISH,
 #endif
 
     NUM_MONSTERS,               // used for polymorph

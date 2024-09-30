@@ -2701,4 +2701,21 @@ _mon_hex_zap(ZAP_VITRIFY, BEAM_VITRIFY),
     false,
 },
 
+{
+    ZAP_SHOOTING_STAR,
+    "flash of silver",
+    200,
+    nullptr,
+    nullptr,
+    new dicedef_calculator<2, 5, 1, 12>,
+    new tohit_calculator<10, 1, 25>,
+    ETC_SILVER,
+    false,
+    BEAM_SILVER,
+    DCHAR_FIRED_MISSILE,
+    true,
+    false,
+    TILE_BOLT_SILVER,
+},
+
 };

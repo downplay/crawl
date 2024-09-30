@@ -154,6 +154,7 @@ enum attack_flavour
     AF_ALEMBIC,
     AF_BOMBLET,
     AF_AIRSTRIKE,
+    AF_SILVER,
 };
 
 // Non-spell "summoning" types to give to monster::mark_summoned(), or
