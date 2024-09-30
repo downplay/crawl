@@ -4390,8 +4390,6 @@ static string _ru_spell_stop_desc(monster &mons)
 /// What spells can the given monster currently use?
 static monster_spells _find_usable_spells(monster &mons)
 {
-    // TODO: make mons param const (requires waste_of_time param to be const)
-
     monster_spells hspell_pass(mons.spells);
 
     if (mons.is_silenced() || mons.is_shapeshifter())
