@@ -2614,7 +2614,7 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
                                  {{MONS_TENTACLED_MONSTROSITY, 1},
                                   {MONS_CACODEMON, 2},
                                   {MONS_SHADOW_DEMON, 3},
-                                  {MONS_VERY_UGLY_THING, 3},
+                                  {MONS_ANACHROBAT, 3},
                                   {MONS_NEQOXEC, 3}}}},
 
     { BAND_LOM_LOBON,           {{{MONS_SPRIGGAN_AIR_MAGE, 1},

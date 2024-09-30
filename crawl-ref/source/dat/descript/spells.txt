@@ -233,6 +233,12 @@ Brothers in Arms spell
 
 <Brothers in Arms ability>
 %%%%
+Bullet Time spell
+
+Slows time around the caster, allowing them to perform incredible feats of
+gymnastics and accuracy quickly enough to catch the target off-guard and bypass
+some defences entirely.
+%%%%
 Call Canine Familiar spell
 
 Summons an inugami to the caster's aid. These mystical canines form a bond with

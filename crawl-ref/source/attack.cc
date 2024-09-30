@@ -968,6 +968,10 @@ int attack::calc_damage()
 
         ac_type ac_rule = stat_source().as_monster()->has_ench(ENCH_BYPASS_ARMOUR)
             ? ac_type::none : ac_type::normal;
+
+        if (defender && is_bullet_time(*defender, bullet_time_method::armour))
+            ac_rule = ac_type::none;
+
         return apply_defender_ac(damage, damage_max, ac_rule);
     }
     else
