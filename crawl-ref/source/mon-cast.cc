@@ -104,6 +104,7 @@ static coord_def _mons_fragment_target(const monster &mons);
 static void _maybe_throw_ally(const monster &mons);
 static void _siren_sing(monster* mons, bool avatar);
 static void _doom_howl(monster &mon);
+static void _shooting_star(monster &mon, int pow, const coord_def &target, bolt &beam);
 static void _corrupt_locale(monster &mon);
 static ai_action::goodness _monster_spell_goodness(monster* mon, mon_spell_slot slot);
 static string _god_name(god_type god);
@@ -692,6 +693,21 @@ static const map<spell_type, mons_spell_logic> spell_to_logic = {
         [] (monster &caster, mon_spell_slot /*slot*/, bolt& /*beem*/) {
             const int pow = mons_spellpower(caster, SPELL_ELECTROLUNGE);
             electric_charge(caster, pow, false, caster.get_foe()->pos());
+        }
+    } },
+    { SPELL_SHOOTING_STAR, {
+        [](const monster &caster) {
+            const actor* foe = caster.get_foe();
+            ASSERT(foe);
+            const coord_def dest = get_shooting_star_landing_spot(caster, foe->pos());
+            if (actor_at(dest) || dest.origin())
+                return ai_action::impossible();
+
+            return ai_action::good();
+        },
+        [] (monster &caster, mon_spell_slot /*slot*/, bolt& beem) {
+            const int pow = mons_spellpower(caster, SPELL_SHOOTING_STAR);
+            _shooting_star(caster, pow, beem.target, beem);
         }
     } },
     { SPELL_CORRUPT_LOCALE, {
@@ -1749,7 +1765,7 @@ static int _mons_power_hd_factor(spell_type spell)
  * Does this spell use spell_hd or just hit_dice for damage and accuracy?
  *
  * @param spell The spell in question.
- * @return True iff the spell should use spell_hd.
+ * @return True if the spell should use spell_hd.
  */
 bool mons_spell_is_spell(spell_type spell)
 {
@@ -1765,6 +1781,7 @@ bool mons_spell_is_spell(spell_type spell)
         case SPELL_SEARING_BREATH:
         case SPELL_ELECTRICAL_BOLT:
         case SPELL_FLAMING_CLOUD:
+        case SPELL_SHOOTING_STAR:
             return false;
         default:
             return true;
@@ -2003,6 +2020,7 @@ bolt mons_spell_beam(const monster* mons, spell_type spell_cast, int power,
     case SPELL_HELLFIRE_MORTAR:
     case SPELL_MAGMA_BARRAGE:
     case SPELL_SHADOW_TORPOR:
+    case SPELL_SHOOTING_STAR:
         zappy(spell_to_zap(real_spell), power, true, beam);
         break;
 
@@ -6713,6 +6731,51 @@ int mons_wand_power(monster_type type, int hd)
     // less threatening than before (33->28), Maurice is rather more. (36->40)
     bool is_artificer = mons_class_flag(type, M_ARTIFICER);
     return 12 + hd * (is_artificer ? 6 : 4);
+}
+
+/**
+ * Monster-only; was based on electric charge initially but it's much simpler.
+ *
+ * @param fail          Whether this came from a miscast spell (& should
+ *                      therefore fail after selecting a target)
+ * @return              Whether the charge succeeded, aborted, or was miscast.
+ */
+static void _shooting_star(monster& agent, int powc, const coord_def &target, bolt &beam)
+{
+    coord_def dest_pos = get_shooting_star_landing_spot(agent, target);
+
+    // Should be impossible, but bail out if there's no valid landing pos
+    if (dest_pos.origin())
+        return;
+
+    beam.range =  spell_range(SPELL_SHOOTING_STAR, powc, false);
+    beam.source = agent.pos();
+    beam.target = dest_pos;
+    beam.aimed_at_spot = true;
+    zappy(spell_to_zap(SPELL_SHOOTING_STAR), powc, true, beam);
+
+    // This should rarely happen, since the spell is vetoed for
+    // blockers before this; this requires a blocker who is also
+    // invisible to the agent.
+    monster* dest_mon = monster_at(dest_pos);
+    if (dest_mon && mons_class_is_stationary(dest_mon->type))
+        return;
+
+    if (!agent.attempt_escape()) // prints its own messages
+        return;
+
+    // Perform the effect first
+    beam.draw_delay = 40;
+    beam.fire();
+
+    // Actually move the agent
+    const coord_def orig_pos = agent.pos();
+    agent.move_to_pos(dest_pos);
+    agent.apply_location_effects(orig_pos);
+
+    noisy(2, agent.pos());
+    agent.did_deliberate_movement();
+    agent.clear_far_engulf(false, true);
 }
 
 /**

@@ -284,6 +284,8 @@ skyshark MONS_SKYSHARK
 %sdir mon/aquatic
 rock_fish MONS_ROCK_FISH
 rock_fish_school MONS_ROCK_FISH_SCHOOL
+%sdir mon/holy
+silverfish MONS_SILVERFISH
 %sdir mon/undead
 marrowcuda MONS_MARROWCUDA
 
