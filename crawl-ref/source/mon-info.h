@@ -253,6 +253,7 @@ enum monster_info_flags
     MB_VEXED,
     MB_CHARMER,
     MB_AMNESIA,
+    MB_SPIRIT_ARROW,
     NUM_MB_FLAGS
 };
 

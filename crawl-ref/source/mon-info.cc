@@ -146,6 +146,7 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_VEXED,           MB_VEXED },
     { ENCH_CHARMER,         MB_CHARMER },
     { ENCH_AMNESIA,         MB_AMNESIA },
+    { ENCH_SPIRIT_ARROW,    MB_SPIRIT_ARROW },
 };
 
 static monster_info_flags ench_to_mb(const monster& mons, enchant_type ench)

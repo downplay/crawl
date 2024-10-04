@@ -291,7 +291,8 @@ bool ranged_attack::handle_phase_hit()
     }
     else
     {
-        damage_done = calc_damage();
+        damage_done = calc_damage(projectile->is_type(OBJ_MISSILES, MI_SPIRIT_ARROW)
+                                  ? ac_type::half : ac_type::normal);
         if (damage_done > 0)
         {
             if (!handle_phase_damaged())

@@ -2171,6 +2171,7 @@ static const char *enchant_names[] =
     "grapnel", "tempered", "hatching", "blinkitis", "chaos_laced", "vexed",
     "charmer",
     "temporary_amnesia",
+    "spirit_arrows",
     "buggy", // NUM_ENCHANTMENTS
 };
 

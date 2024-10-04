@@ -139,6 +139,7 @@ enum band_type
     BAND_SPHINXES,
     BAND_YAKTAUR_CLERIC,
     BAND_VAULTS_YAKTAURS,
+    BAND_RANDOM_RANGED,
     NUM_BANDS                   // always last
 };
 

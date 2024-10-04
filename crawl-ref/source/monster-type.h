@@ -95,6 +95,9 @@ enum monster_type                      // env.mons[].type
 #endif
     MONS_YAK,
     MONS_DEATH_YAK,
+#if TAG_MAJOR_VERSION > 34
+    MONS_SPIRIT_YAK,
+#endif
     MONS_CATOBLEPAS,
     MONS_ELEPHANT,
     MONS_DIRE_ELEPHANT,
@@ -1328,6 +1331,7 @@ enum monster_type                      // env.mons[].type
     MONS_YAKTAUR_CLERIC,
     MONS_SHIELD_WALL,
     MONS_YAKTAUR_FUSILIER,
+    MONS_SPIRIT_YAK,
 #endif
 
     NUM_MONSTERS,               // used for polymorph
@@ -1341,6 +1345,7 @@ enum monster_type                      // env.mons[].type
     RANDOM_COMPATIBLE_MONSTER, // used for player shadow creatures (prevents repulsing summons)
     RANDOM_BANDLESS_MONSTER,
     RANDOM_POLYMORPH_MONSTER, // choose from a per-monster set
+    RANDOM_RANGED_MONSTER,
 
     // A random draconian, either base coloured drac or specialised.
     RANDOM_DRACONIAN,

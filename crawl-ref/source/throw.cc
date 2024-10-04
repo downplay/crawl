@@ -855,7 +855,7 @@ void setup_monster_throw_beam(monster* mons, bolt &beam)
     beam.pierce  = false;
 }
 
-bool mons_throw(monster* mons, bolt &beam, bool teleport)
+bool mons_throw(monster* mons, bolt &beam, bool teleport, bool use_energy)
 {
     ASSERT(beam.item);
     const item_def &missile = *beam.item;
@@ -863,7 +863,7 @@ bool mons_throw(monster* mons, bolt &beam, bool teleport)
 
     // Energy is already deducted for the spell cast, if using portal projectile
     // FIXME: should it use this delay and not the spell delay?
-    if (!teleport)
+    if (!teleport && use_energy)
     {
         const int energy = mons->action_energy(EUT_MISSILE);
         const int delay = mons->attack_delay(&missile).roll();

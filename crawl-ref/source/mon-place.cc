@@ -322,6 +322,7 @@ static bool _is_random_monster(monster_type mt)
     return mt == RANDOM_MONSTER || mt == RANDOM_MOBILE_MONSTER
            || mt == RANDOM_COMPATIBLE_MONSTER
            || mt == RANDOM_BANDLESS_MONSTER
+           || mt == RANDOM_RANGED_MONSTER
            || mt == WANDERING_MONSTER;
 }
 
@@ -339,6 +340,25 @@ static bool _is_incompatible_monster(monster_type mt)
 static bool _is_banded_monster(monster_type mt)
 {
     return _choose_band(mt) != BAND_NO_BAND;
+}
+
+static bool _is_unranged_monster(monster_type mt)
+{
+    // Statues
+    if (mons_class_is_stationary(mt))
+        return false;
+    // Natural ranged user
+    if (mons_class_flag(mt, M_ARCHER))
+        return false;
+    // No fighters or dual wielders (who aren't already archers anyway)
+    if (mons_class_wields_two_weapons(mt) || mons_class_flag(mt, M_FIGHTER))
+        return true;
+    // No equipment available
+    if (mons_class_itemuse(mt) < MONUSE_STARTING_EQUIPMENT)
+        return true;
+    // Remaining monsters can all feasibly be generated with a ranged weapon
+    // XX: Should avoid uniques?
+    return _is_banded_monster(mt);
 }
 
 // Caller must use !invalid_monster_type to check if the return value
@@ -374,6 +394,8 @@ monster_type pick_random_monster(level_id place,
         return pick_monster(place, _is_incompatible_monster);
     else if (kind == RANDOM_BANDLESS_MONSTER)
         return pick_monster(place, _is_banded_monster);
+    else if (kind == RANDOM_RANGED_MONSTER)
+        return pick_monster(place, _is_unranged_monster);
     else if (crawl_state.game_is_sprint())
         return pick_monster(place, _has_big_aura);
     else
@@ -460,7 +482,9 @@ monster_type resolve_monster_type(monster_type mon_type,
                    || mon_type == RANDOM_COMPATIBLE_MONSTER
                       && _is_incompatible_monster((monster_type)type)
                    || mon_type == RANDOM_BANDLESS_MONSTER
-                      && _is_banded_monster((monster_type)type));
+                      && _is_banded_monster((monster_type)type)
+                   || mon_type == RANDOM_RANGED_MONSTER
+                      && _is_unranged_monster((monster_type)type));
 
             int base = vault_mon_bases[i];
             bool banded = vault_mon_bands[i];
@@ -2042,8 +2066,6 @@ static band_type _choose_band(monster_type mon_type, int *band_size_p,
 
     case MONS_YAKTAUR:
     case MONS_YAKTAUR_CAPTAIN:
-    case MONS_YAKTAUR_FUSILIER:
-    case MONS_YAKTAUR_SCRIBE:
         if (player_in_branch(BRANCH_VAULTS))
             band = BAND_VAULTS_YAKTAURS;
         break;
@@ -2217,7 +2239,8 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
                                   {MONS_UNDYING_ARMOURY, 1},
                                   {MONS_YAKTAUR, 1}},
                                  {{MONS_YAKTAUR, 1}}}},
-    { BAND_YAKTAUR_CLERIC,      {{{MONS_YAKTAUR_FUSILIER, 1}, // Maybe another special yaktaur
+    { BAND_YAKTAUR_CLERIC,      {{{MONS_SPIRIT_YAK, 6}, // Roll another special yak/yaktaur
+                                  {MONS_YAKTAUR_FUSILIER, 1},
                                   {MONS_YAKTAUR_SCRIBE,   1},
                                   {MONS_SKELETON, 2}, // XX: Force skeleton to yaktaur
                                   {MONS_YAKTAUR, 2}},
@@ -2675,6 +2698,15 @@ static monster_type _band_member(band_type band, int which,
         monster_type tmptype = MONS_PROGRAM_BUG;
         coord_def tmppos;
         return resolve_monster_type(RANDOM_BANDLESS_MONSTER, tmptype,
+                                    PROX_ANYWHERE, &tmppos, 0,
+                                    &parent_place, nullptr, allow_ood);
+    }
+
+    case BAND_RANDOM_RANGED:
+    {
+        monster_type tmptype = MONS_PROGRAM_BUG;
+        coord_def tmppos;
+        return resolve_monster_type(RANDOM_RANGED_MONSTER, tmptype,
                                     PROX_ANYWHERE, &tmppos, 0,
                                     &parent_place, nullptr, allow_ood);
     }
