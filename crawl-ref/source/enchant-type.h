@@ -239,6 +239,7 @@ enum enchant_type
     ENCH_CHARMER,
     ENCH_AMNESIA,
     ENCH_SPIRIT_ARROW,
+    ENCH_DAMPENED,
     // Update enchant_names[] in mon-ench.cc when adding or removing
     // enchantments.
     NUM_ENCHANTMENTS

@@ -160,4 +160,5 @@ static const vector<monster_info_flag_name> monster_info_flag_names = {
     { MB_CHARMER, "charmer", "has charmed you", "charmers"},
     { MB_AMNESIA, "amnesiac", "temporary amnesia", "amnesiac"},
     { MB_SPIRIT_ARROW, "spirit arrow", "armed with spirit arrows", "spirit arrows"},
+    { MB_DAMPENED, "dampened", "magically dampened", "spell range dampening"},
 };

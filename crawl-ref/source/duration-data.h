@@ -697,6 +697,9 @@ static const duration_def duration_data[] =
       "You are temporarily unable to recall some of your memorised spells.",
       D_DISPELLABLE | D_EXPIRES, {{ "",
         [](){mprf(MSGCH_RECOVERY, "Your spells flood back into your mind.");}}}},
+    { DUR_DAMPENED, RED, "-Range", "magic range is reduced", "reduced range",
+      "Your magical abilities have reduced range.", D_DISPELLABLE,
+      {{ "Your magical range is fully restored." }}},
 
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.

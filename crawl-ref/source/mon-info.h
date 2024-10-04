@@ -254,6 +254,7 @@ enum monster_info_flags
     MB_CHARMER,
     MB_AMNESIA,
     MB_SPIRIT_ARROW,
+    MB_DAMPENED,
     NUM_MB_FLAGS
 };
 

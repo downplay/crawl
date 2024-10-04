@@ -1937,6 +1937,11 @@ static const map<monster_type, band_set> bands_by_leader = {
         return branch_has_monsters(you.where_are_you)
             || !vault_mon_types.empty();
     }},                           {{ BAND_RANDOM_SINGLE, {1, 3} }}}},
+    { MONS_HALF_MOON_MOTH,  { {2, 0, []() {
+        // XX: Could use same placement as spirit yak only ranged
+        return branch_has_monsters(you.where_are_you)
+            || !vault_mon_types.empty();
+    }},                           {{ BAND_RANDOM_SINGLE, {1, 3} }}}},
     { MONS_CEREBOV,         { {}, {{ BAND_CEREBOV, {5, 8}, true }}}},
     { MONS_GLOORX_VLOQ,     { {}, {{ BAND_GLOORX_VLOQ, {5, 8}, true }}}},
     { MONS_MNOLEG,          { {}, {{ BAND_MNOLEG, {5, 8}, true }}}},
@@ -1950,7 +1955,11 @@ static const map<monster_type, band_set> bands_by_leader = {
         return you.where_are_you == BRANCH_DEPTHS;
     }},                           {{ BAND_SPARK_WASPS, {1, 4} }}}},
     { MONS_HOWLER_MONKEY,   { {2, 6}, {{ BAND_HOWLER_MONKEY, {1, 3} }}}},
-    { MONS_GLASS_EYE,   { {0, 0, []() {
+    { MONS_GLASS_EYE,       { {0, 0, []() {
+        return branch_has_monsters(you.where_are_you)
+            || !vault_mon_types.empty();
+    }},                           {{ BAND_RANDOM_SINGLE, {1, 2} }}}},
+    { MONS_HALF_MOON_MOTH,   { {0, 0, []() {
         return branch_has_monsters(you.where_are_you)
             || !vault_mon_types.empty();
     }},                           {{ BAND_RANDOM_SINGLE, {1, 2} }}}},
@@ -2237,6 +2246,7 @@ static const map<band_type, vector<member_possibilities>> band_membership = {
                                   {MONS_YAKTAUR, 2}},
                                  {{MONS_POLTERGUARDIAN, 1},
                                   {MONS_UNDYING_ARMOURY, 1},
+                                  {MONS_HALF_MOON_MOTH, 1},
                                   {MONS_YAKTAUR, 1}},
                                  {{MONS_YAKTAUR, 1}}}},
     { BAND_YAKTAUR_CLERIC,      {{{MONS_SPIRIT_YAK, 6}, // Roll another special yak/yaktaur

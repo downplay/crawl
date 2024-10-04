@@ -281,5 +281,6 @@ enum duration_type
     DUR_VAINGLORY,
     DUR_VEXED,
     DUR_AMNESIA,
+    DUR_DAMPENED,
     NUM_DURATIONS
 };

@@ -2172,6 +2172,7 @@ static const char *enchant_names[] =
     "charmer",
     "temporary_amnesia",
     "spirit_arrows",
+    "dampened",
     "buggy", // NUM_ENCHANTMENTS
 };
 

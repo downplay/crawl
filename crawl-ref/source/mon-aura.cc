@@ -36,6 +36,9 @@ struct mon_aura_data
                   {}
 };
 
+static const vector<string> _dampen_nouns =
+    { "treacle", "sludge", "pea soup", "syrup", "cold gravy", "cotton wool" };
+
 static const vector<mon_aura_data> aura_map =
 {
     {MONS_TORPOR_SNAIL,
@@ -85,6 +88,16 @@ static const vector<mon_aura_data> aura_map =
         NUM_DURATIONS, "",
         [](const actor& targ)
             {   return targ.is_monster() && targ.as_monster()->launcher();
+            }},
+
+    {MONS_HALF_MOON_MOTH,
+        ENCH_DAMPENED, 1, true, DUR_DAMPENED, HALF_MOON_DAMPEN_KEY,
+        [](const actor& targ) { return targ.antimagic_susceptible() ;},
+        [](const monster& source)
+            {  mprf("As %s beats %s wings, the atmosphere starts to feel like %s.",
+                        source.name(DESC_THE).c_str(),
+                        source.pronoun(PRONOUN_POSSESSIVE).c_str(),
+                        _dampen_nouns[random2(ARRAYSZ(_dampen_nouns))].c_str());
             }},
 };
 
