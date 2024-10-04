@@ -75,6 +75,7 @@ static bool _handle_pickup(monster* mons);
 static bool _monster_move(monster* mons, coord_def& delta);
 static bool _monster_swaps_places(monster* mon, const coord_def& delta);
 static bool _do_move_monster(monster& mons, const coord_def& delta);
+static void _post_monster_move(monster* mons);
 
 /**
  * Get the monster's "hit dice".
@@ -1794,12 +1795,13 @@ static void _pre_monster_move(monster& mons)
 
 // Handle weird stuff like spells/special abilities, item use,
 // reaching, swooping, etc.
-// Returns true iff the monster used up their turn.
+// Returns true if the monster used up their turn.
 static bool _mons_take_special_action(monster &mons, int old_energy)
 {
     if ((mons.asleep() || mons_is_wandering(mons))
         // Slime creatures can split while wandering or resting.
-        && mons.type != MONS_SLIME_CREATURE)
+        && mons.type != MONS_SLIME_CREATURE
+        || mons.has_ench(ENCH_REMOTE_CONTROL))
     {
         return false;
     }
@@ -1886,14 +1888,35 @@ static bool _beetle_must_return(const monster* mons)
            && !adjacent(mons->pos(), creator->pos());
 }
 
-void handle_monster_move(monster* mons)
+int force_monster_move(monster& mons, coord_def move)
+{
+    int start_energy = mons.speed_increment;
+    handle_monster_move(&mons, move);
+    _post_monster_move(&mons);
+    fire_final_effects();
+    you.turn_is_over = true;
+    return start_energy - mons.speed_increment;
+}
+
+void handle_monster_move(monster* mons, coord_def force_move)
 {
     ASSERT(mons); // XXX: change to monster &mons
+
     const monsterentry* entry = get_monster_data(mons->type);
     if (!entry)
         return;
 
-    coord_def mmov;
+    // Don't make a normal move while remote controlled: only when forced by player
+    if (mons->has_ench(ENCH_REMOTE_CONTROL) && force_move.origin())
+    {
+        // Lose energy anyway to avoid infinite loop
+        // XX: Should lose energy depending on the attack?
+        // will this result in things getting overly hammered by e.g. clouds?
+        mons->lose_energy(EUT_ATTACK);
+        return;
+    }
+
+    coord_def mmov = force_move;
 
     const bool disabled = crawl_state.disables[DIS_MON_ACT]
                           && _unfriendly_or_impaired(*mons);
@@ -1907,7 +1930,8 @@ void handle_monster_move(monster* mons)
 #endif
     coord_def old_pos = mons->pos();
 
-    if (!mons->has_action_energy())
+    // Ignore energy for remote controlled moves
+    if (!mons->has_action_energy() && !mons->has_ench(ENCH_REMOTE_CONTROL))
         return;
 
     if (!disabled)
@@ -2192,7 +2216,7 @@ void handle_monster_move(monster* mons)
         // Struggling against the net takes time.
         _swim_or_move_energy(*mons);
     }
-    else if (!mons->petrified())
+    else if (!mons->petrified() && force_move.origin())
     {
         // Calculates mmov based on monster target.
         mmov = _find_best_step(mons);
@@ -2205,6 +2229,7 @@ void handle_monster_move(monster* mons)
             mmov = _confused_move_dir(mons);
         }
     }
+
     if (!mons->asleep())
         maybe_mons_speaks(mons);
 

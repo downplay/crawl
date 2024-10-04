@@ -63,6 +63,8 @@ public:
 
     coord_def vgrdc;               // What grid pos is at the centre of the view
                                    // usually you.pos().
+    coord_def offset;              // Additional amount to offset the view by
+                                   // during render
 
     coord_def viewhalfsz;
 
@@ -87,12 +89,12 @@ public:
 
     inline coord_def view2grid(const coord_def &pos) const
     {
-        return pos - viewhalfsz + vgrdc - coord_def(1, 1);
+        return pos + offset - viewhalfsz + vgrdc - coord_def(1, 1);
     }
 
     inline coord_def grid2view(const coord_def &pos) const
     {
-        return pos - vgrdc + viewhalfsz + coord_def(1, 1);
+        return pos - offset - vgrdc + viewhalfsz + coord_def(1, 1);
     }
 
     inline coord_def view2show(const coord_def &pos) const

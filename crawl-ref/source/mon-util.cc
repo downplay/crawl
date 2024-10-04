@@ -728,11 +728,13 @@ bool mons_class_gives_xp(monster_type mc, bool indirect)
 bool mons_gives_xp(const monster& victim, const actor& agent)
 {
     const bool mon_killed_friend
-        = agent.is_monster() && mons_aligned(&victim, &agent);
+        = agent.is_monster() && mons_aligned(&victim, &agent)
+          && !agent.as_monster()->has_ench(ENCH_REMOTE_CONTROL);
     return !victim.is_summoned()                        // no summons
             && mons_class_gives_xp(victim.type)         // class must reward xp
             && (!testbits(victim.flags, MF_WAS_NEUTRAL) // no neutral monsters
-                || victim.has_ench(ENCH_MAD))           // ...except frenzied ones
+                || victim.has_ench(ENCH_MAD)            // ...except frenzied ones
+                || victim.has_ench(ENCH_REMOTE_CONTROL))// or otherwise influenced
             && !testbits(victim.flags, MF_NO_REWARD)    // no reward for no_reward
             && !mon_killed_friend;
 }

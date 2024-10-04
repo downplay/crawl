@@ -317,13 +317,13 @@ void crawl_view_geometry::init_view()
 void crawl_view_geometry::shift_player_to(const coord_def &c)
 {
     // Preserve vgrdc offset after moving.
-    const coord_def offset = crawl_view.vgrdc - last_player_pos;
-    crawl_view.vgrdc = offset + c;
+    const coord_def last_offset = crawl_view.vgrdc - last_player_pos;
+    crawl_view.vgrdc = last_offset + c;
     last_player_pos = c;
 
     set_player_at(c);
 
-    ASSERT(crawl_view.vgrdc == offset + c);
+    ASSERT(crawl_view.vgrdc == last_offset + c);
     ASSERT(last_player_pos == c);
 }
 

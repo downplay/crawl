@@ -694,6 +694,11 @@ static const duration_def duration_data[] =
       "blinking rapidly", "blinkitis",
       "You are untethered in space.", D_DISPELLABLE, {{"You feel more stable."}} },
 
+    { DUR_REMOTE_CONTROL, LIGHTBLUE, "Mind", "using remote control", "remote control",
+      "You are controlling the mind of another.", D_DISPELLABLE | D_EXPIRES, {{ "",
+        [](){remote_control_end_effect();}}, "You feel you are losing control of your puppet."
+        }, 1},
+
     // The following are visible in wizmode only, or are handled
     // specially in the status lights and/or the % or @ screens.
 

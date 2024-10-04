@@ -1509,6 +1509,22 @@ Regenerate Other spell
 Causes another creature to rapidly regenerate over a short period of time.
 This regeneration is proportional to that creature's maximum health.
 %%%%
+Remote Control spell
+
+Takes full control of a victim's actions for a short while by bending space
+with raw translocational force. You can control their movement and make them
+fight in melee, but may not use any other abilities except those intrinsic to
+attacks. Their allies may sometimes notice their strange behaviour and turn on
+them.
+
+While in control you boost the damage of the victim's attacks with your own
+skill in the relevant training.
+
+You cannot control stationary or insubstantial beings nor those affected by
+stasis, and you cannot control the same victim twice. You will relinquish
+control of your puppet if you take too much damage or you cannot see them,
+or instantly at any time of your choosing.
+%%%%
 Rending Blade spell
 
 Condenses the caster's magical energy into the form of a violently crackling

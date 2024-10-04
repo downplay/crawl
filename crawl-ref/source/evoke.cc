@@ -962,6 +962,17 @@ static bool _gravitambourine(dist *target)
     return true;
 }
 
+static bool _voodoo_paw(dist *target)
+{
+    const spret ret = your_spells(SPELL_REMOTE_CONTROL, _gravitambourine_power(),
+            false, nullptr, target);
+
+    if (ret == spret::abort)
+        return false;
+
+    return true;
+}
+
 static transformation _form_for_talisman(const item_def &talisman)
 {
     if (you.using_talisman(talisman))
@@ -1145,6 +1156,16 @@ bool evoke_item(item_def& item, dist *preselect)
 
         case MISC_GRAVITAMBOURINE:
             if (_gravitambourine(preselect))
+            {
+                expend_xp_evoker(item.sub_type);
+                practise_evoking(3);
+            }
+            else
+                return false;
+            break;
+
+        case MISC_VOODOO_PAW:
+            if (_voodoo_paw(preselect))
             {
                 expend_xp_evoker(item.sub_type);
                 practise_evoking(3);

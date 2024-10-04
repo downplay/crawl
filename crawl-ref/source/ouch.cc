@@ -66,6 +66,7 @@
 #include "spl-damage.h"
 #include "spl-goditem.h"
 #include "spl-selfench.h"
+#include "spl-transloc.h"
 #include "state.h"
 #include "stringutil.h"
 #include "teleport.h"
@@ -1215,6 +1216,7 @@ void ouch(int dam, kill_method_type death_type, mid_t source, const char *aux,
                            damage_desc.c_str()));
 
             _handle_poor_constitution(dam);
+            maybe_end_remote_control();
             _maybe_ru_retribution(dam, source);
             _maybe_inflict_anguish(dam, source);
             _maybe_spawn_monsters(dam, death_type, source);

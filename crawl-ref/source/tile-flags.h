@@ -10,11 +10,12 @@ enum tile_flags ENUM_INT64
 {
     //// Foreground flags
 
-    // 3 mutually exclusive flags for attitude.
-    TILE_FLAG_ATT_MASK     = 0x00030000ULL,
+    // 5 mutually exclusive flags for attitude.
+    TILE_FLAG_ATT_MASK     = 0x00070000ULL,
     TILE_FLAG_PET          = 0x00010000ULL,
     TILE_FLAG_GD_NEUTRAL   = 0x00020000ULL,
     TILE_FLAG_NEUTRAL      = 0x00030000ULL,
+    TILE_FLAG_CONTROLLED   = 0x00050000ULL,
 
     TILE_FLAG_S_UNDER      = 0x00040000ULL,
     TILE_FLAG_FLYING       = 0x00080000ULL,

@@ -603,6 +603,10 @@ public:
     bool      is_firewood() const override { return false; };
     bool      is_peripheral() const override { return false; };
 
+    actor* acting_as();
+    const actor* acting_as() const;
+    coord_def acting_as_pos() const;
+
     bool        swimming() const override;
     bool        floundering() const override;
     bool        extra_balanced() const override;

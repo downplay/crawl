@@ -6974,7 +6974,7 @@ spret makhleb_unleash_destruction(int power, bolt& beam, bool fail)
         else
         {
             you.duration[DUR_GROWING_DESTRUCTION] = you.time_taken + 1;
-           ++stacks;
+            ++stacks;
         }
     }
 

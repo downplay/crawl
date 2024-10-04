@@ -63,8 +63,10 @@
 #include "spl-other.h"
 #include "spl-summoning.h"
 #include "spl-selfench.h"
+#include "spl-transloc.h"
 #include "sprint.h" // SPRINT_MULTIPLIER
 #include "state.h"
+#include "status.h"
 #include "stepdown.h"
 #include "stringutil.h"
 #include "tag-version.h"
@@ -2296,7 +2298,8 @@ item_def* monster_die(monster& mons, killer_type killer,
     {
         bool arena = crawl_state.game_is_arena();
         mon_enchant ench = mons.get_ench(ENCH_CHARM);
-        if (ench.who == KC_YOU || (!arena && ench.who == KC_FRIENDLY))
+        if (ench.who == KC_YOU || (!arena && ench.who == KC_FRIENDLY)
+            || mons.has_ench(ENCH_REMOTE_CONTROL))
         {
             ASSERT(!arena);
             killer = KILL_YOU_CONF; // Well, it was confused in a sense... (jpeg)
@@ -2528,6 +2531,12 @@ item_def* monster_die(monster& mons, killer_type killer,
                                     random_range(4, 14) * BASELINE_DELAY,
                                     SPELL_RIMEBLIGHT);
     }
+
+    // End player remote control when puppet dies
+    // XX: Custom message here?
+    // XX: And ensure we get XP for remote control kills
+    if (mons.has_ench(ENCH_REMOTE_CONTROL))
+        end_remote_control();
 
     if (monster_explodes(mons))
     {

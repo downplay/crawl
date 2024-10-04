@@ -280,5 +280,6 @@ enum duration_type
     DUR_BLINKITIS,
     DUR_VAINGLORY,
     DUR_VEXED,
+    DUR_REMOTE_CONTROL,
     NUM_DURATIONS
 };

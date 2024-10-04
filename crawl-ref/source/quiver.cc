@@ -1283,6 +1283,7 @@ namespace quiver
         switch (a)
         {
         case ABIL_END_TRANSFORMATION:
+        case ABIL_END_REMOTE_CONTROL:
         case ABIL_BEGIN_UNTRANSFORM:
         case ABIL_EXSANGUINATE:
         case ABIL_TSO_BLESS_WEAPON:
@@ -2355,7 +2356,7 @@ namespace quiver
      */
     shared_ptr<action> get_primary_action()
     {
-        const item_def* weapon = you.weapon();
+        const item_def* weapon = you.acting_as()->weapon();
         if (weapon && is_range_weapon(*weapon))
             return make_shared<ranged_action>();
         return make_shared<melee_action>(); // always valid

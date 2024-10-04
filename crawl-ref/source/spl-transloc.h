@@ -2,6 +2,9 @@
 
 #include "spl-cast.h"
 
+#define REMOTE_CONTROL_PUPPET_KEY    "remote_control_puppet"
+#define REMOTE_CONTROL_MINHP_KEY     "remote_control_minhp"
+
 class actor;
 class dist;
 struct dice_def;
@@ -57,6 +60,17 @@ spret cast_dispersal(int pow, bool fail);
 int gravitas_radius(int pow);
 spret cast_gravitas(int pow, const coord_def& where, bool fail);
 void pull_monsters_inward(const coord_def& center, int radius);
+
+spret cast_remote_control(int pow, const coord_def& where, bool fail);
+monster* get_remote_control_puppet();
+string remote_control_puppet_name(const monster* puppet = nullptr);
+bool remote_control_prevents_action(bool quiet = false);
+void remote_control_end_effect(bool quiet = false);
+void end_remote_control(bool quiet = false);
+void maybe_end_remote_control();
+void remote_control_move(coord_def move);
+void check_remote_control_los(monster* moved = nullptr);
+bool valid_remote_control_puppet(const monster* target);
 
 bool beckon(actor &beckoned, const bolt &path);
 void attract_monsters(int delay);

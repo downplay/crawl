@@ -961,6 +961,18 @@ int attack::calc_damage()
         damage_max += attk_damage;
         damage     += 1 + random2(attk_damage);
 
+        // Remote controlled monsters are further enhanced by the player's own
+        // training in the relevant skills.
+        // XX: Show this in xv somehow
+        // XX: Consider enhancement based on player's stats (str or dex depending)
+        if (attacker->as_monster()->has_ench(ENCH_REMOTE_CONTROL))
+        {
+            // Apply melee and unarmed bonus
+            if (using_weapon() || wpn_skill == SK_UNARMED_COMBAT)
+                damage = apply_weapon_skill(damage, wpn_skill, true);
+            damage = apply_fighting_skill(damage, false, true);
+        }
+
         damage = apply_damage_modifiers(damage);
 
         set_attack_verb(damage);

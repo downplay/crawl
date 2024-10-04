@@ -1676,6 +1676,16 @@ crawl_view_buffer view_dungeon(animation *a, bool anim_updates, view_renderer *r
 
     const coord_def tl = coord_def(1, 1);
     const coord_def br = vbuf.size();
+
+    coord_def offset = you.duration[DUR_REMOTE_CONTROL]
+                           ? you.acting_as_pos() - you.pos()
+                           : coord_def(0,0);
+    if (offset != crawl_view.offset)
+    {
+        crawl_view.offset = offset;
+        crawl_view.set_player_at(you.pos());
+    }
+
     for (rectangle_iterator ri(tl, br); ri; ++ri)
     {
         // in grid coords

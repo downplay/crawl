@@ -1631,6 +1631,9 @@ static void _take_stairs(bool down)
     ASSERT(!crawl_state.game_is_arena());
     ASSERT(!crawl_state.arena_suspended);
 
+    if (remote_control_prevents_action())
+        return;
+
     const dungeon_feature_type ygrd = env.grid(you.pos());
 
     const bool shaft = (down && get_trap_type(you.pos()) == TRAP_SHAFT);
@@ -2033,6 +2036,38 @@ public:
     }
 };
 
+static bool _remote_control_compatible_command(command_type cmd)
+{
+    // XX: Probably do this in a totally different way. In the end the
+    // vast majority of commands *should* do something. Just need to
+    // handle it properly everywhere.
+
+    // if (cmd == CMD_DISPLAY_INVENTORY)
+    // {
+    //     return false;
+    // }
+
+    // Autofight just doesn't work, as the Lua massively assumes it's the
+    // player fighting. And we want to be careful about our moves anyway.
+    if (cmd >= CMD_AUTOFIGHT && cmd <= CMD_AUTOFIRE)
+        return false;
+
+    if (cmd >= CMD_MOVE_LEFT && cmd <= CMD_REST
+        || cmd >= CMD_CHARACTER_DUMP)
+    {
+        return true;
+    }
+
+    switch (cmd)
+    {
+        case CMD_USE_ABILITY:
+        case CMD_LOOK_AROUND:
+            return true;
+        default:
+            return false;
+    }
+}
+
 // Note that in some actions, you don't want to clear afterwards.
 // e.g. list_jewellery, etc.
 // calling this directly will not record the command for later replay; if you
@@ -2048,6 +2083,12 @@ void process_command(command_type cmd, command_type prev_cmd)
         if (m.cmd == CMD_NO_CMD)
             return;
         cmd = m.cmd;
+    }
+
+    if (you.duration[DUR_REMOTE_CONTROL] && !_remote_control_compatible_command(cmd))
+    {
+        remote_control_prevents_action();
+        return;
     }
 
     switch (cmd)
@@ -2162,6 +2203,8 @@ void process_command(command_type cmd, command_type prev_cmd)
         break;
 
     case CMD_INSPECT_FLOOR:
+        if (remote_control_prevents_action())
+            break;
         if (player_on_single_stack() && !you.running)
             pickup(true);
         else
@@ -2172,8 +2215,11 @@ void process_command(command_type cmd, command_type prev_cmd)
     case CMD_ADJUST_INVENTORY: adjust(); break;
 
     case CMD_SAFE_WAIT:
-        if (!i_feel_safe(true) && can_rest_here(true))
+        if (remote_control_prevents_action()
+            || !i_feel_safe(true) && can_rest_here(true))
+        {
             break;
+        }
         // else fall-through
     case CMD_WAIT:
         update_acrobat_status();
@@ -2182,6 +2228,8 @@ void process_command(command_type cmd, command_type prev_cmd)
 
     case CMD_PICKUP:
     case CMD_PICKUP_QUANTITY:
+        if (remote_control_prevents_action())
+            break;
         pickup(cmd != CMD_PICKUP);
         break;
 
@@ -2787,10 +2835,16 @@ static keycode_type _get_next_keycode()
 static void _swing_at_target(coord_def move)
 {
     dist target;
-    target.target = you.pos() + move;
+    target.target = you.acting_as_pos() + move;
 
     if (never_harm_monster(&you, monster_at(target.target), true))
         return;
+
+    if (you.duration[DUR_REMOTE_CONTROL])
+    {
+        remote_control_move(move);
+        return;
+    }
 
     // Don't warn the player "too injured to fight recklessly" when they
     // explicitly request an attack.

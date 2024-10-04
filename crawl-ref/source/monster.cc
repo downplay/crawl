@@ -64,6 +64,7 @@
 #include "spl-monench.h"
 #include "spl-other.h"
 #include "spl-summoning.h"
+#include "spl-transloc.h"
 #include "spl-util.h"
 #include "state.h"
 #include "stringutil.h"
@@ -250,12 +251,13 @@ mon_attitude_type monster::temp_attitude() const
             ASSERT(agent->is_monster());
             return agent->as_monster()->attitude;
         }
-        return ATT_HOSTILE; // ???
+        // Missing agent could have been a monster who died
+        return ATT_HOSTILE;
     }
     if (has_ench(ENCH_CHARM) || has_ench(ENCH_FRIENDLY_BRIBED))
         return ATT_FRIENDLY;
-    else if (has_ench(ENCH_NEUTRAL_BRIBED))
-        return ATT_GOOD_NEUTRAL; // ???
+    else if (has_ench(ENCH_NEUTRAL_BRIBED) || has_ench(ENCH_REMOTE_CONTROL))
+        return ATT_GOOD_NEUTRAL;
     else
         return attitude;
 }
@@ -2548,6 +2550,8 @@ void monster::moveto(const coord_def& c, bool clear_net, bool clear_constrict)
         clear_invalid_constrictions(true);
         clear_far_engulf();
     }
+
+    check_remote_control_los(this);
 }
 
 bool monster::fumbles_attack()

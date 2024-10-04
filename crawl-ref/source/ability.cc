@@ -404,6 +404,8 @@ static vector<ability_def> &_get_ability_list()
             0, 0, 0, -1, {}, abflag::none },
         { ABIL_INVENT_GIZMO, "Invent Gizmo",
             0, 0, 0, -1, {}, abflag::none },
+        { ABIL_END_REMOTE_CONTROL, "End Remote control",
+            0, 0, 0, -1, {}, abflag::instant | abflag::conf_ok },
 
         // EVOKE abilities use Evocations and come from items.
         { ABIL_EVOKE_BLINK, "Evoke Blink",
@@ -1823,6 +1825,17 @@ static bool _check_ability_possible(const ability_def& abil, bool quiet = false)
     if (abil.ability >= ABIL_FIRST_WIZ)
         return you.wizard;
 #endif
+
+    // No other abilities allowed during remote control, you're too busy
+    if (you.duration[DUR_REMOTE_CONTROL])
+    {
+        if (abil.ability == ABIL_END_REMOTE_CONTROL)
+            return true;
+        if (!quiet)
+            mprf("It takes all of your concentration to sustain remote control.");
+        return false;
+    }
+
     if (you.berserk() && !testbits(abil.flags, abflag::berserk_ok))
     {
         if (!quiet)
@@ -2629,6 +2642,7 @@ unique_ptr<targeter> find_ability_targeter(ability_type ability)
     case ABIL_EVOKE_TURN_INVISIBLE:
     case ABIL_END_TRANSFORMATION:
     case ABIL_BEGIN_UNTRANSFORM:
+    case ABIL_END_REMOTE_CONTROL:
     case ABIL_ZIN_VITALISATION:
     case ABIL_TSO_DIVINE_SHIELD:
     case ABIL_YRED_RECALL_UNDEAD_HARVEST:
@@ -3224,6 +3238,12 @@ static spret _do_ability(const ability_def& abil, bool fail, dist *target,
     case ABIL_INVENT_GIZMO:
         if (!coglin_invent_gizmo())
             return spret::abort;
+        break;
+
+    case ABIL_END_REMOTE_CONTROL:
+        mprf("You relinquish control of %s and return to your own body.",
+             remote_control_puppet_name().c_str());
+        end_remote_control(true);
         break;
 
     // INVOCATIONS:
@@ -4188,6 +4208,9 @@ bool player_has_ability(ability_type abil, bool include_unusable)
     case ABIL_BEGIN_UNTRANSFORM:
         return you.form == you.default_form
                && you.default_form != transformation::none;
+    // spells
+    case ABIL_END_REMOTE_CONTROL:
+        return you.duration[DUR_REMOTE_CONTROL];
     // TODO: other god abilities
     case ABIL_RENOUNCE_RELIGION:
         return !you_worship(GOD_NO_GOD);
@@ -4265,6 +4288,7 @@ vector<talent> your_talents(bool check_confused, bool include_unusable, bool ign
             ABIL_EVOKE_TURN_INVISIBLE,
             ABIL_EVOKE_DISPATER,
             ABIL_EVOKE_OLGREB,
+            ABIL_END_REMOTE_CONTROL,
 #ifdef WIZARD
             ABIL_WIZ_BUILD_TERRAIN,
             ABIL_WIZ_SET_TERRAIN,

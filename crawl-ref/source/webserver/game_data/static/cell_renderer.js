@@ -828,6 +828,8 @@ function ($, view_data, gui, main, tileinfo_player, icons, dngn, enums,
                             this.draw_dngn(dngn.HALO_GD_NEUTRAL, x, y);
                         else if (fg.NEUTRAL)
                             this.draw_dngn(dngn.HALO_NEUTRAL, x, y);
+                        else if (fg.CONTROLLED)
+                            this.draw_dngn(dngn.HALO_CONTROL, x, y);
 
                         // Monster difficulty. Ghosts get a special highlight.
                         if (fg.GHOST)
@@ -951,6 +953,8 @@ function ($, view_data, gui, main, tileinfo_player, icons, dngn, enums,
                 this.draw_icon(icons.GOOD_NEUTRAL, x, y, undefined, undefined, img_scale);
             else if (fg.NEUTRAL)
                 this.draw_icon(icons.NEUTRAL, x, y, undefined, undefined, img_scale);
+            else if (fg.CONTROLLED)
+                this.draw_icon(icons.REMOTE_CONTROL, x, y, undefined, undefined, img_scale);
 
             var status_shift = 0;
             if (fg.PARALYSED)

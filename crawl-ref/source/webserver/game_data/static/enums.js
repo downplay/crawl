@@ -142,6 +142,7 @@ define(function () {
         PET        : 0x00010000,
         GD_NEUTRAL : 0x00020000,
         NEUTRAL    : 0x00030000,
+        CONTROLLED : 0x00050000,
     });
 
     fg_flags.flags.S_UNDER = 0x00040000;

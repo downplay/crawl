@@ -4384,6 +4384,17 @@ static const struct spell_desc spelldata[] =
 },
 
 {
+    SPELL_REMOTE_CONTROL, "Remote control",
+    spschool::translocation | spschool::hexes,
+    spflag::target | spflag::no_ghost | spflag::unclean,
+    9,
+    200,
+    LOS_RADIUS, LOS_RADIUS,
+    20,
+    TILEG_ABILITY_SIF_MUNA_AMNESIA,
+},
+
+{
     SPELL_NO_SPELL, "nonexistent spell",
     spschool::none,
     spflag::testing,

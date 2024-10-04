@@ -124,6 +124,7 @@ static bool _decrement_a_duration(duration_type dur, int delay,
                                  const char* expmsg = nullptr,
                                  msg_channel_type chan = MSGCH_DURATION)
 {
+
     ASSERT(you.duration[dur] >= 0);
     if (you.duration[dur] == 0)
         return false;
@@ -133,6 +134,9 @@ static bool _decrement_a_duration(duration_type dur, int delay,
     ASSERTM(!exploss || exploss * BASELINE_DELAY < exppoint,
             "expiration delay loss %d not less than duration expiration point %d",
             exploss * BASELINE_DELAY, exppoint);
+
+    if (dur == DUR_REMOTE_CONTROL)
+        mprf("dec: %i (%i, %i, %i): %s", delay, you.duration[dur], exploss, exppoint, endmsg);
 
     if (dur == DUR_SENTINEL_MARK && aura_is_active_on_player(OPHAN_MARK_KEY))
         return false;
@@ -516,6 +520,7 @@ void player_reacts_to_monsters()
         uncontrolled_blink(false, 3);
         ouch(roll_dice(2, 2), KILLED_BY_BLINKING);
     }
+    check_remote_control_los();
 }
 
 static bool _check_recite()

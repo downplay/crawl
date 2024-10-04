@@ -2411,7 +2411,9 @@ bool MonsterMenuEntry::get_tiles(vector<tile_def>& tileset) const
 
     tileset.emplace_back(ch);
 
-    if (m->attitude == ATT_FRIENDLY)
+    if (m->has_trivial_ench(ENCH_REMOTE_CONTROL))
+        tileset.emplace_back(TILE_FLAG_CONTROLLED);
+    else if (m->attitude == ATT_FRIENDLY)
         tileset.emplace_back(TILE_HALO_FRIENDLY);
     else if (m->attitude == ATT_GOOD_NEUTRAL)
         tileset.emplace_back(TILE_HALO_GD_NEUTRAL);

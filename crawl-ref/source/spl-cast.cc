@@ -1221,6 +1221,12 @@ unique_ptr<targeter> find_spell_targeter(spell_type spell, int pow, int range)
     case SPELL_GRAVITAS:
         return make_unique<targeter_smite>(&you, range, gravitas_radius(pow),
                                                         gravitas_radius(pow));
+    case SPELL_REMOTE_CONTROL:
+        return make_unique<targeter_smite>(&you, range, 0, 0, false,
+            [](const coord_def& p) -> bool {
+                auto target = monster_at(p);
+                return target && valid_remote_control_puppet(target);
+            });
     case SPELL_VIOLENT_UNRAVELLING:
         return make_unique<targeter_unravelling>();
     case SPELL_INFESTATION:
@@ -2364,6 +2370,9 @@ static spret _do_cast(spell_type spell, int powc, const dist& spd,
 
     case SPELL_GRAVITAS:
         return cast_gravitas(powc, beam.target, fail);
+
+    case SPELL_REMOTE_CONTROL:
+        return cast_remote_control(powc, beam.target, fail);
 
     case SPELL_VIOLENT_UNRAVELLING:
         return cast_unravelling(spd.target, powc, fail);

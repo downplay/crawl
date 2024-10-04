@@ -63,6 +63,8 @@ enum ability_type
     ABIL_MUD_BREATH,
     // Coglins
     ABIL_INVENT_GIZMO,
+    // Remote control
+    ABIL_END_REMOTE_CONTROL,
 
     // Note: this is getting dangerously close to ABIL_EVOKE_BERSERK! be careful
 

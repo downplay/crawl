@@ -47,6 +47,7 @@
 #include "stringutil.h"
 #include "spl-damage.h"
 #include "spl-summoning.h"
+#include "spl-transloc.h"
 #include "target-compass.h"
 #include "terrain.h"
 #include "traps.h"
@@ -786,6 +787,29 @@ static void _finalize_cancelled_rampage_move()
     update_acrobat_status();
 }
 
+static bool _confused_move_modify(coord_def &move)
+{
+    if (cancel_confused_move(false))
+        return true;
+
+    if (cancel_harmful_move())
+        return true;
+
+    if (!one_chance_in(3))
+    {
+        move.x = random2(3) - 1;
+        move.y = random2(3) - 1;
+        if (move.origin())
+        {
+            mpr("You're too confused to move!");
+            you.apply_berserk_penalty = true;
+            you.turn_is_over = true;
+            return true;
+        }
+    }
+    return false;
+}
+
 // Called when the player moves by walking/running. Also calls attack
 // function etc when necessary.
 void move_player_action(coord_def move)
@@ -798,6 +822,16 @@ void move_player_action(coord_def move)
 
     ASSERT(!in_bounds(you.pos()) || !cell_is_solid(you.pos())
            || you.wizmode_teleported_into_rock);
+
+    if (you.duration[DUR_REMOTE_CONTROL])
+    {
+        // The player can still be confused while remote controlling,
+        // and your monster movements will therefore be confused
+        if (you.confused() && _confused_move_modify(move))
+            return;
+        remote_control_move(move);
+        return;
+    }
 
     if (you.attribute[ATTR_HELD])
     {
@@ -821,24 +855,8 @@ void move_player_action(coord_def move)
             return;
         }
 
-        if (cancel_confused_move(false))
+        if (_confused_move_modify(move))
             return;
-
-        if (cancel_harmful_move())
-            return;
-
-        if (!one_chance_in(3))
-        {
-            move.x = random2(3) - 1;
-            move.y = random2(3) - 1;
-            if (move.origin())
-            {
-                mpr("You're too confused to move!");
-                you.apply_berserk_penalty = true;
-                you.turn_is_over = true;
-                return;
-            }
-        }
 
         const coord_def new_targ = you.pos() + move;
         if (!in_bounds(new_targ) || !you.can_pass_through(new_targ))

@@ -2019,7 +2019,8 @@ static int _player_evasion(int final_scale, bool ignore_temporary)
        + (_player_temporary_evasion_modifiers() * scale);
 
     // Cap EV at a very low level if the player cannot act or is a tree.
-    if ((you.cannot_act() || you.form == transformation::tree))
+    if ((you.cannot_act() || you.form == transformation::tree)
+        || you.duration[DUR_REMOTE_CONTROL])
     {
         final_evasion = min((2 + _player_evasion_size_factor() / 2) * scale,
                             final_evasion);

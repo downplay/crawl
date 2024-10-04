@@ -2177,7 +2177,9 @@ tileidx_t tileidx_monster(const monster_info& mons)
     else if (mons.is(MB_MAX_POISONED))
         ch |= TILE_FLAG_MAX_POISON;
 
-    if (mons.attitude == ATT_FRIENDLY)
+    if (mons.has_trivial_ench(ENCH_REMOTE_CONTROL))
+        ch |= TILE_FLAG_CONTROLLED;
+    else if (mons.attitude == ATT_FRIENDLY)
         ch |= TILE_FLAG_PET;
     else if (mons.attitude == ATT_GOOD_NEUTRAL)
         ch |= TILE_FLAG_GD_NEUTRAL;
@@ -3856,6 +3858,7 @@ tileidx_t tileidx_ability(const ability_type ability)
     // Others
     case ABIL_END_TRANSFORMATION:
     case ABIL_BEGIN_UNTRANSFORM:
+    case ABIL_END_REMOTE_CONTROL: // XX: Need tile
         return TILEG_ABILITY_END_TRANSFORMATION;
 
     // Species-specific abilities.

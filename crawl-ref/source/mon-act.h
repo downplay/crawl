@@ -32,7 +32,9 @@ bool mon_can_move_to_pos(const monster* mons, const coord_def& delta,
 bool handle_throw(monster* mons, bolt &beem, bool teleport, bool check_only);
 
 void handle_monsters(bool with_noise = false);
-void handle_monster_move(monster* mon);
+
+int force_monster_move(monster& mons, coord_def move);
+void handle_monster_move(monster* mon, coord_def force_move = {0, 0});
 
 void queue_monster_for_action(monster* mons);
 

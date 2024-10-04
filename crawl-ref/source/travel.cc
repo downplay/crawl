@@ -46,6 +46,7 @@
 #include "menu.h"
 #include "message.h"
 #include "mon-death.h"
+#include "mon-pathfind.h"
 #include "nearby-danger.h"
 #include "output.h"
 #include "place.h"
@@ -5117,7 +5118,7 @@ const int cmd_array[8] =
 
 static int _adjacent_cmd(const coord_def &gc, bool force)
 {
-    const coord_def dir = gc - you.pos();
+    const coord_def dir = gc - you.acting_as_pos();
     for (int i = 0; i < 8; i++)
     {
         if (dir_dx[i] != dir.x || dir_dy[i] != dir.y)
@@ -5154,6 +5155,18 @@ int click_travel(const coord_def &gc, bool force)
     if (cmd != CK_MOUSE_CMD)
         return cmd;
 
+    // When using remote control, only move one square per click for simplicity
+    if (you.acting_as()->is_monster())
+    {
+        monster_pathfind mp;
+        if (mp.init_pathfind(you.acting_as()->as_monster(), gc))
+        {
+            const coord_def dest = mp.next_pos(you.acting_as_pos());
+            return _adjacent_cmd(dest, force);
+        }
+    }
+
+    // Move along a travel path to the target
     if (click_travel_safe(gc))
     {
         map_cell &cell(env.map_knowledge(gc));
@@ -5168,10 +5181,9 @@ int click_travel(const coord_def &gc, bool force)
 
     // If not safe, then take one step towards the click.
     travel_pathfind tp;
-    tp.set_src_dst(you.pos(), gc);
+    tp.set_src_dst(you.acting_as_pos(), gc);
     tp.set_ignore_danger();
     const coord_def dest = tp.pathfind(RMODE_TRAVEL);
-
     if (!dest.x && !dest.y)
         return CK_MOUSE_CMD;
 

@@ -48,6 +48,7 @@
 #include "spl-clouds.h"
 #include "spl-damage.h"
 #include "spl-other.h"
+#include "spl-transloc.h"
 #include "state.h"
 #include "stringutil.h"
 #include "tag-version.h"
@@ -819,6 +820,9 @@ void floor_transition(dungeon_feature_type how,
         you.duration[DUR_BEOGH_CAN_RECRUIT] = 0;
         end_beogh_recruit_window();
     }
+
+    if (you.duration[DUR_REMOTE_CONTROL])
+        end_remote_control();
 
     // Fire level-leaving trigger.
     leaving_level_now(how);

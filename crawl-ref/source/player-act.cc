@@ -32,6 +32,7 @@
 #include "religion.h"
 #include "spl-damage.h"
 #include "spl-monench.h"
+#include "spl-transloc.h"
 #include "state.h"
 #include "teleport.h"
 #include "terrain.h"
@@ -59,6 +60,25 @@ bool player::alive() const
     // Simplistic, but if the player dies the game is over anyway, so
     // nobody can ask further questions.
     return !crawl_state.game_is_arena();
+}
+
+actor* player::acting_as()
+{
+    auto found = get_remote_control_puppet();
+    return found ? found : (actor*)this;
+}
+
+const actor* player::acting_as() const
+{
+    auto found = get_remote_control_puppet();
+    return found ? found : (actor*)this;
+}
+
+coord_def player::acting_as_pos() const
+{
+    coord_def as_pos = acting_as()->pos();
+    mprf("Acting as %i %i", as_pos.x, as_pos.y);
+    return in_bounds(as_pos) ? as_pos : you.pos();
 }
 
 // n.b. it might be better to use this as player::moveto's function signature
@@ -91,6 +111,7 @@ static void _player_moveto(const coord_def &c, bool real_movement, bool clear_ne
         you.clear_invalid_constrictions();
         you.clear_far_engulf();
     }
+    check_remote_control_los();
 }
 
 player_vanishes::player_vanishes(bool _movement)

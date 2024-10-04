@@ -33,6 +33,7 @@
 #include "losparam.h"
 #include "melee-attack.h" // armataur charge
 #include "message.h"
+#include "mon-act.h"
 #include "mon-behv.h"
 #include "mon-death.h"
 #include "mon-place.h"
@@ -50,6 +51,7 @@
 #include "spl-util.h"
 #include "stash.h"
 #include "state.h"
+#include "status.h"
 #include "stringutil.h"
 #include "target.h"
 #include "teleport.h"
@@ -1879,10 +1881,178 @@ spret cast_gravitas(int pow, const coord_def& where, bool fail)
     return spret::success;
 }
 
+spret cast_remote_control(int pow, const coord_def& where, bool fail)
+{
+    fail_check();
+
+    auto victim = monster_at(where);
+    if (!victim || !you.can_see(*victim))
+    {
+        mprf("There is nobody there to control.");
+        return spret::abort;
+    }
+    if (!valid_remote_control_puppet(victim))
+    {
+        // XX: Can we reach here? Need to display the reason
+        mprf("%s cannot be controlled.", victim->name(DESC_THE).c_str());
+        return spret::abort;
+    }
+
+    // Loosely similar to phantom mirror duration formula
+    const int dur = max(1, (100 - victim->check_willpower(&you, pow)) / 10);
+    victim->add_ench({ ENCH_REMOTE_CONTROL, 0, &you, dur * BASELINE_DELAY });
+    you.set_duration(DUR_REMOTE_CONTROL, dur);
+    you.props[REMOTE_CONTROL_PUPPET_KEY] = (int64_t)victim->mid;
+    you.props[REMOTE_CONTROL_MINHP_KEY] = div_round_up(you.hp, 2);
+    // Prone player's EV and SH need updating
+    you.redraw_evasion = true;
+    // you.redraw_armour_class = true;
+    return spret::success;
+}
+
+monster* get_remote_control_puppet()
+{
+    if (!you.duration[DUR_REMOTE_CONTROL] && !you.props[REMOTE_CONTROL_PUPPET_KEY].get_int64())
+        return nullptr;
+    return monster_by_mid(you.props[REMOTE_CONTROL_PUPPET_KEY].get_int64());
+}
+
+string remote_control_puppet_name(const monster* puppet)
+{
+    if (!puppet)
+        puppet = get_remote_control_puppet();
+    ASSERT(puppet);
+    // Forcing visible here, you might not be able to see it anymore for any
+    // reason but it's not a "something" as you definitely knew what it was.
+    return puppet->name(DESC_THE, true);
+}
+
+bool remote_control_prevents_action(bool quiet)
+{
+    if (you.duration[DUR_REMOTE_CONTROL])
+    {
+        if (!quiet)
+            mprf("You can't do that while remote controlling another.");
+        return true;
+    }
+    return false;
+}
+
+void remote_control_end_effect(bool quiet)
+{
+    auto puppet = get_remote_control_puppet();
+    you.props.erase(REMOTE_CONTROL_PUPPET_KEY);
+    if (!puppet)
+    {
+        // Puppet must have died (or moved off level with banish/shaft)
+        if (!quiet)
+            mprf("With nothing to control, your return your focus to your own body.");
+        return;
+    }
+    puppet->del_ench(ENCH_REMOTE_CONTROL);
+    you.redraw_evasion = true;
+    // you.redraw_armour_class = true;
+    if (quiet)
+        return;
+    mprf(MSGCH_MONSTER_WARNING, "%s slips from your grasp as you lose control.",
+         remote_control_puppet_name(puppet).c_str());
+}
+
+void end_remote_control(bool quiet)
+{
+    you.set_duration(DUR_REMOTE_CONTROL, 0);
+    remote_control_end_effect(quiet);
+}
+
+// Checked after player has lost HP
+void maybe_end_remote_control()
+{
+    if (you.duration[DUR_REMOTE_CONTROL]
+        && you.hp <= you.props[REMOTE_CONTROL_MINHP_KEY].get_int())
+    {
+        mprf(MSGCH_DANGER, "As your body suffers more injury than you can stand,"
+                           " you are forced to end your control of %s!",
+             remote_control_puppet_name().c_str());
+        end_remote_control(true);
+    }
+}
+
+void remote_control_move(coord_def move)
+{
+    auto puppet = you.acting_as()->as_monster();
+    ASSERT(puppet);
+    int energy = force_monster_move(*puppet, move);
+    mprf("Energy used: %i", energy);
+
+    if (!energy)
+        return;
+
+    // XX: Do we need both these?
+    // XX: Is energy calculated correctly, since move speed didn't seem fast enough on e.g. execs
+    //     ...maybe need to adjust by mon speed as well?
+    // XX: Prevent trying to attack player
+    you.time_taken = energy;
+    you.turn_is_over = true;
+
+    // Could have died already through combat
+    if (!puppet->alive())
+        return;
+
+    // Other monsters in sight may decide to attack their own ally
+    vector<pair<monster&,int>> observers;
+    for (monster_near_iterator mi(puppet, LOS_SOLID_SEE); mi; ++mi)
+    {
+        if (*mi == puppet || mons_is_firewood(**mi) || !you.see_cell(mi->pos())
+            || !mons_atts_aligned(puppet->real_attitude(), mi->temp_attitude()))
+        {
+            continue;
+        }
+        int closeness = LOS_MAX_RANGE - grid_distance(puppet->pos(), mi->pos());
+        if (closeness < 1)
+            continue;
+
+        observers.push_back({ **mi, closeness * closeness });
+    }
+    if (!observers.size())
+        return;
+    // XX: Maybe do random count from 0..3 (maybe weight with energy spent too)
+    monster& observer = *random_choose_weighted(observers);
+    observer.foe = env.mgrid(puppet->pos());
+    observer.target = puppet->pos();
+}
+
+void check_remote_control_los(monster *moved)
+{
+    if (!you.duration[DUR_REMOTE_CONTROL])
+        return;
+    if (moved == nullptr)
+        moved = get_remote_control_puppet();
+    else if (!moved->has_ench(ENCH_REMOTE_CONTROL))
+        return;
+    // At this point should be impossible to have one but not the other
+    ASSERT(moved && moved->has_ench(ENCH_REMOTE_CONTROL));
+    // Can be caused by monster moving, player getting moved, clouds shifting...
+    if (!you.see_cell_no_trans(moved->pos()))
+    {
+        // XX: Also make a Y/N prompt when we *try* to make the move? (Still possible to happen regardless)
+        mprf(MSGCH_MONSTER_WARNING, "You lose control of %s as you lose sight of them.",
+             remote_control_puppet_name().c_str());
+        end_remote_control(true);
+    }
+}
+
 static bool _can_beckon(const actor &beckoned)
 {
     return !beckoned.is_stationary()  // don't move statues, etc
         && !mons_is_tentacle_or_tentacle_segment(beckoned.type); // a mess...
+}
+
+bool valid_remote_control_puppet(const monster *target)
+{
+    // XX: Also check an ENCH_REMOTE_CONTROL_DONE or similar
+    // XX: Also be able to display the reason? (return string)
+    return _can_beckon(*target) && !mons_is_projectile(*target) && !target->is_stationary()
+            && !target->is_insubstantial() && !target->stasis();
 }
 
 /**
