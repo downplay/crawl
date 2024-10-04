@@ -256,6 +256,7 @@ enum monster_info_flags
     MB_CHARMER,
     MB_BYPASS_ARMOUR,
     MB_COMPOSTING,
+    MB_DAMPENED,
     NUM_MB_FLAGS
 };
 

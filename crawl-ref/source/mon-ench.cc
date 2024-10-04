@@ -2209,6 +2209,7 @@ static const char *enchant_names[] =
     "charmer",
     "bypass_armour",
     "composting",
+    "dampened",
     "buggy", // NUM_ENCHANTMENTS
 };
 
