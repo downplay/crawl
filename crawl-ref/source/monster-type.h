@@ -197,6 +197,7 @@ enum monster_type                      // env.mons[].type
     MONS_CRYSTAL_TOME,
     MONS_DIVINE_TOME,
     MONS_FROSTBOUND_TOME,
+    MONS_HUNGRY_TOME,
     MONS_STRANGE_MACHINE,
     MONS_PHARAOH_ANT,
     MONS_STEELBARB_WORM,
@@ -1330,6 +1331,7 @@ enum monster_type                      // env.mons[].type
     MONS_SHIELD_WALL,
     MONS_YAKTAUR_FUSILIER,
     MONS_SPIRIT_YAK,
+    MONS_HUNGRY_TOME,
 #endif
 
     NUM_MONSTERS,               // used for polymorph

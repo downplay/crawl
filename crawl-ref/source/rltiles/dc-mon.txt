@@ -657,6 +657,10 @@ earthen_tome MONS_EARTHEN_TOME
 crystal_tome MONS_CRYSTAL_TOME
 divine_tome MONS_DIVINE_TOME
 frostbound_tome MONS_FROSTBOUND_TOME
+%start
+%compose earthen_tome
+%compose UNUSED/monsters/ravenous_mimic 
+%finish MONS_HUNGRY_TOME
 %rim 1
 
 ## Humans ('@')

@@ -1,0 +1,19 @@
+name: "hungry walking tome"
+enum: hungry_tome
+glyph: {char: ";", colour: red}
+xp_mult: 25
+species: earthen_tome
+genus: walking_tome
+holiness: [nonliving]
+will: invuln
+attacks:
+ - {type: hit, damage: 35}
+hd: 15
+hp_10x: 1000
+ac: 10
+ev: 5
+spells: hungry_tome
+shout: rustle
+intelligence: brainless
+size: small
+shape: misc

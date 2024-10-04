@@ -1781,6 +1781,13 @@ static const mon_spellbook mspell_list[] =
       }
     },
 
+    { MST_HUNGRY_TOME,
+      {
+       { SPELL_STEAL_SPELLS, 60, MON_SPELL_WIZARD },
+       { SPELL_CONJURE_LIVING_SPELLS, 60, MON_SPELL_WIZARD },
+      }
+    },
+
     // ---------------------
     // Uniques' spellbooks
     // ---------------------
