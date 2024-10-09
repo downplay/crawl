@@ -13,6 +13,6 @@ ac: 2
 ev: 6
 intelligence: animal
 habitat: walls
-speed: 12
+energy: {swim: 8}
 size: tiny
 shape: fish
