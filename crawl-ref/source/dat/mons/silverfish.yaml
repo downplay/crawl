@@ -6,16 +6,16 @@ xp_mult: 6
 holiness: [holy]
 will: 40
 attacks:
- - {type: bite, flavour: silver, damage: 9}
- - {type: tail_slap, flavour: silver, damage: 7}
-hd: 8
+ - {type: bite, flavour: silver, damage: 13}
+ - {type: tail_slap, flavour: silver, damage: 10}
+hd: 15
 hp_10x: 240
 ac: 15
 ev: 12
 spells: silverfish
 intelligence: animal
 habitat: walls
-speed: 12
-energy: {swim: 10}
+speed: 10
+energy: {swim: 7}
 size: tiny
 shape: fish
