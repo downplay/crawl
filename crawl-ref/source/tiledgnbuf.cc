@@ -50,6 +50,10 @@ void DungeonCellBuffer::add_glyph(const char32_t &g, const VColour &col, const V
     m_buf_glyphs.get_font_wrapper().store(m_buf_glyphs, sx, sy, g, col, bg);
 }
 
+static const struct coord_def _buf_offset_coords[] = {
+    {0,16}, {16,16}, {16,0}, {16,-16},
+};
+
 void DungeonCellBuffer::add(const packed_cell &cell, int x, int y)
 {
     pack_background(x, y, cell);
@@ -62,6 +66,25 @@ void DungeonCellBuffer::add(const packed_cell &cell, int x, int y)
     // in the shoals, ink is handled in pack_cell_overlays(): don't overdraw
     if (cloud_idx == TILE_CLOUD_INK && player_in_branch(BRANCH_SHOALS))
         cloud_idx = 0;
+
+    for (int n=0; n < 4; n++)
+    {
+        if (cell.fg_underlay[n])
+        {
+            m_buf_doll.add(cell.fg_underlay[n], x, y, 1, false, false,
+                           _buf_offset_coords[n].x, _buf_offset_coords[n].y);
+            // Mask layer at lower z-index (to add rim around the entire blob)
+            m_buf_doll.add(cell.fg_underlay[n] + 1, x, y, -2, false, false,
+                           _buf_offset_coords[n].x, _buf_offset_coords[n].y);
+        }
+    }
+
+    if (fg_idx >= TILEP_MONS_COBALT_LICHEN
+        && fg_idx <= TILEP_MONS_COBALT_LICHEN_SAC)
+    {
+        // Mask layer at lower z-index (to add rim around the entire blob)
+        m_buf_doll.add(TILEP_MONS_COBALT_LICHEN_MASK, x, y, -2);
+    }
 
     if (fg_idx >= TILEP_MCACHE_START)
     {

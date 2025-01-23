@@ -1205,10 +1205,18 @@ wandering_mushroom MONS_WANDERING_MUSHROOM
 deathcap MONS_DEATHCAP
 sleepcap MONS_SLEEPCAP
 
-# %rim 1
 %sdir mon/fungi_plants
 cobalt_lichen MONS_COBALT_LICHEN
 
+%rim 1
+cobalt_lichen MONS_COBALT_LICHEN_MASK
+
+# %rim 0
+# cobalt_lichen_corner MONS_COBALT_LICHEN_CORNER
+# %rim 1
+# cobalt_lichen_corner MONS_COBALT_LICHEN_CORNER_MASK
+
+%rim 0
 %start
 %compose cobalt_lichen
 %compose cobalt_lichen_eyestalk1

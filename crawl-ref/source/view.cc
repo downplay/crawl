@@ -1697,6 +1697,41 @@ crawl_view_buffer view_dungeon(animation *a, bool anim_updates, view_renderer *r
     return vbuf;
 }
 
+static void _pack_underlays(coord_def gc, packed_cell& cell, const monster_info& mon)
+{
+    if (!in_bounds(gc))
+        return;
+    if (mons_species(mon.type) == MONS_COBALT_LICHEN)
+    {
+        int underlay_num = -1;
+        for (adjacent_iterator ri(gc, true); ri; ++ri)
+        {
+            int dx = ri->x - gc.x;
+            if (dx < 0)
+                continue;
+            int dy = ri->y - gc.y;
+            if (dy < 0 && dx < 1)
+                continue;
+            underlay_num++;
+            cell.fg_underlay[underlay_num] = 0;
+
+            if (!map_bounds(*ri))
+                continue;
+            const map_cell& adj_knowledge = env.map_knowledge(*ri);
+            if (!adj_knowledge.seen() && !adj_knowledge.mapped())
+                continue;
+            // Now we know this is a connection we *might* want to check, see if
+            // there's an applicable monster there first
+            if (!adj_knowledge.monsterinfo()
+                || mons_species(adj_knowledge.monsterinfo()->type) != MONS_COBALT_LICHEN)
+            {
+                continue;
+            }
+            cell.fg_underlay[underlay_num] = TILEP_MONS_COBALT_LICHEN;
+        }
+    }
+}
+
 void draw_cell(screen_cell_t *cell, const coord_def &gc,
                bool anim_updates, int flash_colour)
 {
@@ -1725,6 +1760,8 @@ void draw_cell(screen_cell_t *cell, const coord_def &gc,
     cell->tile.map_knowledge = map_bounds(gc) ? env.map_knowledge(gc) : map_cell();
     cell->flash_colour = BLACK;
     cell->flash_alpha = 0;
+    if (cell->tile.map_knowledge.monsterinfo())
+        _pack_underlays(gc, cell->tile, *cell->tile.map_knowledge.monsterinfo());
 #endif
 
     // Don't hide important information by recolouring monsters.

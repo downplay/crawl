@@ -18,6 +18,7 @@ struct packed_cell
     enum { MAX_DNGN_OVERLAY = 20 };
     int num_dngn_overlay;
     FixedVector<int, MAX_DNGN_OVERLAY> dngn_overlay;
+    FixedVector<int, 4> fg_underlay = {0,0,0,0};
 
     tileidx_t fg;
     tileidx_t bg;
