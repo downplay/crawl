@@ -61,6 +61,7 @@ enum item_rarity_type
 };
 
 #define AMU_REFLECT_SH 5*2
+#define TREE_COVER_SH  5
 
 /// Removed items that have item knowledge.
 extern const set<pair<object_class_type, int> > removed_items;

@@ -131,6 +131,11 @@ bool monster_inherently_flies(const monster &mons)
 
 static habitat_type _grid2habitat(dungeon_feature_type grid)
 {
+    // Handle trees first, otherwise Mangroves count as HT_WATER; which isn't
+    // really useful as water-based monsters can't occupy them anyway
+    if (feat_is_tree(grid))
+        return HT_FOREST;
+
     if (feat_is_water(grid))
         return HT_WATER;
 
@@ -157,6 +162,9 @@ dungeon_feature_type habitat2grid(habitat_type ht)
         return DNGN_LAVA;
     case HT_WALLS:
         return DNGN_ROCK_WALL;
+    case HT_FOREST:
+        // XX: Could this prevent dryad from spawning so regularly in swamp? (Same question for HT_WALLS and rockies)
+        return DNGN_TREE;
     case HT_LAND:
     case HT_AMPHIBIOUS:
     case HT_AMPHIBIOUS_LAVA:
@@ -3447,7 +3455,7 @@ habitat_type mons_class_secondary_habitat(monster_type mc)
         ht = HT_WATER;
     if (ht == HT_AMPHIBIOUS_LAVA)
         ht = HT_LAVA;
-    if (ht == HT_WALLS)
+    if (ht == HT_WALLS || ht == HT_FOREST)
         ht = HT_LAND;
     return ht;
 }
@@ -4132,16 +4140,18 @@ bool mons_class_can_pass(monster_type mc, dungeon_feature_type grid)
     // Wall monsters can move on most solid features; they are also prevented
     // from going more than one tile deep but this test is telling us
     // if they *can* exist on the terrain theoretically.
-    if (_mons_class_habitat(mc) == HT_WALLS)
+    auto habitat = _mons_class_habitat(mc);
+    if (habitat == HT_WALLS || habitat == HT_FOREST)
     {
         if (feat_is_permarock(grid))
             return false;
 
         // Aversion to even shallow water.
-        if (feat_is_water(grid) && !feat_is_tree(grid)) // Mangroves
+        if (habitat == HT_WALLS && feat_is_water(grid) && !feat_is_tree(grid)) // Mangroves
             return false;
 
-        if (feat_is_solid(grid))
+        if (feat_is_solid(grid) && habitat == HT_WALLS
+            || feat_is_tree(grid) && habitat == HT_FOREST)
         {
             // Prevent passing through runed doors and so on.
             if (is_notable_terrain(grid))

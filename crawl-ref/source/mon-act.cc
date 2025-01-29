@@ -648,7 +648,7 @@ static coord_def _find_best_step(monster* mons)
         return dir;
 
     // Wall monsters prefer their natural habitat.
-    if (mons_habitat(*mons) == HT_WALLS)
+    if (mons_habitat(*mons) == HT_WALLS || mons_habitat(*mons) == HT_FOREST)
         _tweak_wall_move(mons, dir);
 
     const coord_def newpos(mons->pos() + dir);

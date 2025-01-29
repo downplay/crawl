@@ -13,5 +13,6 @@ spells: dryad
 has_corpse: true
 shout: shout
 intelligence: human
+habitat: forest
 size: medium
 shape: humanoid

@@ -202,7 +202,8 @@ enum habitat_type
     HT_WATER,            // Water critters
     HT_LAVA,             // Lava critters
     HT_AMPHIBIOUS_LAVA,  // Amphibious w/ lava (salamanders)
-    HT_WALLS,            // Walls and floors
+    HT_WALLS,            // Walls (and floors)
+    HT_FOREST,           // Tree folk
 
     NUM_HABITATS
 };

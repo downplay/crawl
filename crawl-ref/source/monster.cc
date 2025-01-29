@@ -3135,6 +3135,9 @@ int monster::shield_class() const
     if (amulet && amulet->sub_type == AMU_REFLECTION)
         sh += AMU_REFLECT_SH;
 
+    if (mons_habitat(*this) == HT_FOREST && feat_is_tree(env.grid(pos())))
+        sh += TREE_COVER_SH;
+
     return sh;
 }
 

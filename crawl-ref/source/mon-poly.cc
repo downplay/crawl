@@ -436,7 +436,8 @@ static bool _habitat_matches(bool orig_flies, habitat_type orig_hab,
     {
         case HT_AMPHIBIOUS:
         case HT_AMPHIBIOUS_LAVA:
-        case HT_WALLS:
+        case HT_WALLS:  // XX: These make polymorph awkward; need to check adjacent
+        case HT_FOREST: // habitats and have monster leave their habitat if not compatible
             return new_hab == orig_hab;
         case HT_WATER:
             return new_hab == orig_hab || new_hab == HT_AMPHIBIOUS;
