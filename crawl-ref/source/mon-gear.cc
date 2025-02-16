@@ -247,13 +247,19 @@ struct mon_weapon_spec
  * @return                  Did we choose a weapon type?
  */
 static bool _apply_weapon_spec(const mon_weapon_spec &spec, item_def &item,
-                               bool &force_item, int &level)
+                               bool &force_item, int &level, bool force_archer)
 {
+    static auto ranged_weight = [](const pair<weapon_type, int>& entry) {
+        return is_ranged_weapon_type(entry.first) ? entry.second : 0;
+    };
 
-    const weapon_type *wpn_type
-        = random_choose_weighted(spec.types);
-    ASSERT(wpn_type);
-    if (*wpn_type == NUM_WEAPONS)
+    const weapon_type *wpn_type = force_archer
+        ? &random_choose_func<pair<weapon_type, int>>(spec.types, ranged_weight)->first
+        : random_choose_weighted(spec.types);
+
+    // With the archer filter it's possible to get no result
+    ASSERT(wpn_type || force_archer);
+    if (!wpn_type || *wpn_type == NUM_WEAPONS)
         return false;
 
     item.base_type = OBJ_WEAPONS;
@@ -300,11 +306,18 @@ static bool _apply_weapon_spec(const mon_weapon_spec &spec, item_def &item,
  * @param level         The quality of the weapon to make, usually absdepth.
  * @param melee_only    If this monster can be given both melee and ranged
  *                      weapons, whether to restrict this to melee weapons.
+ * @param force_archer  Only pick ranged weapons, if the monster has a choice
+ *                      of melee or ranged. (Can still result in melee weapons,
+ *                      where the weapon is picked via special cases rather than
+ *                      a weapon_list; these are fine because they're either
+ *                      always melee or never melee and can be filtered afterward.)
  * @return              The index of the newly-created weapon, or NON_ITEM if
  *                      none was made.
  */
-int make_mons_weapon(monster_type type, int level, bool melee_only)
+int make_mons_weapon(monster_type type, int level, bool melee_only, bool force_archer)
 {
+    ASSERT(!(melee_only && force_archer));
+
     rng::subgenerator item_rng;
 
     static const weapon_list GOBLIN_WEAPONS =
@@ -1104,7 +1117,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
     const mon_weapon_spec *secondary_spec = map_find(secondary_weapon_specs,
                                                      type);
     if (!secondary_spec || melee_only ||
-        !_apply_weapon_spec(*secondary_spec, item, force_item, level))
+        !_apply_weapon_spec(*secondary_spec, item, force_item, level, force_archer))
     {
         // either we're just giving only giving out primary weapons in this
         // call, or we didn't find a secondary weapon to give. either way,
@@ -1112,7 +1125,7 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
         const mon_weapon_spec *primary_spec = map_find(primary_weapon_specs,
                                                        type);
         if (primary_spec)
-            _apply_weapon_spec(*primary_spec, item, force_item, level);
+            _apply_weapon_spec(*primary_spec, item, force_item, level, false);
     }
 
     // special cases.
@@ -1414,7 +1427,8 @@ int make_mons_weapon(monster_type type, int level, bool melee_only)
  *                          to give the monster a melee weapon, after we've
  *                          already given them something else.
  */
-static void _give_weapon(monster *mon, int level, bool second_weapon = false)
+static void _give_weapon(monster *mon, int level, bool second_weapon = false,
+                         bool force_archer = false)
 {
     ASSERT(mon); // TODO: change to monster &mon
 
@@ -1427,7 +1441,10 @@ static void _give_weapon(monster *mon, int level, bool second_weapon = false)
         return;
     }
 
-    const int thing_created = make_mons_weapon(mon->type, level, second_weapon);
+    const auto real_type = mons_is_zombified(*mon) ? mons_zombie_base(*mon)
+                                                   : mon->type;
+    const int thing_created = make_mons_weapon(real_type, level, second_weapon,
+                                               !second_weapon && force_archer);
     if (thing_created == NON_ITEM)
         return;
 
@@ -2332,14 +2349,13 @@ void give_shield(monster *mons)
     _give_shield(mons, -1);
 }
 
-void give_item(monster *mons, int level_number, bool mons_summoned)
+void give_item(monster *mons, int level_number, bool mons_summoned, bool force_archer)
 {
     ASSERT(level_number > -1); // debugging absdepth0 changes
-
     _give_gold(mons, level_number);
     _give_talisman(mons, level_number);
     _give_wand(mons, level_number);
-    _give_weapon(mons, level_number);
+    _give_weapon(mons, level_number, false, force_archer);
     _give_ammo(mons, level_number, mons_summoned);
     _give_armour(mons, 1 + level_number / 2);
     _give_shield(mons, 1 + level_number / 2);
@@ -2363,6 +2379,18 @@ void view_monster_equipment(monster* mon)
         identify_item(item);
         item.flags |= ISFLAG_SEEN;
     }
+}
+
+bool is_melee_only(monster_type mt)
+{
+    int thing_created = make_mons_weapon(mt, 0, false, true);
+    if (thing_created == NON_ITEM)
+        return true;
+    const item_def &i = env.item[thing_created];
+    const bool result = is_range_weapon(i);
+    // Clean up (and reset flag if it was an unrand)
+    destroy_item(thing_created, true);
+    return !result;
 }
 
 // Reduced weight of axes compared to normal orcs, since they are much stronger
