@@ -1225,6 +1225,11 @@ cobalt_lichen MONS_COBALT_LICHEN
 %compose cobalt_lichen_maw
 %finish MONS_COBALT_LICHEN_MAW
 
+%start
+%compose cobalt_lichen
+%compose cobalt_lichen_sac
+%finish MONS_COBALT_LICHEN_SAC
+
 ## Goblins ('g')
 %sdir mon/unique
 ijyb MONS_IJYB

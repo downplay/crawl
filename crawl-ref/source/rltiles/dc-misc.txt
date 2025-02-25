@@ -419,6 +419,11 @@ cloud_bat_mist1
 cloud_bat_mist2
 cloud_bat_mist3
 
+cloud_spore0 CLOUD_SPORE
+cloud_spore1
+cloud_spore2
+cloud_spore3
+
 %sdir mon
 fungi_plants/ballistomycete_spore SPORE_OVERLAY
 

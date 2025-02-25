@@ -1,0 +1,21 @@
+name: "cobalt lichen sac"
+glyph: {char: "P", colour: lightblue}
+flags: [amorphous, unblindable, no_skeleton, herd]
+resists: {poison: 2, fire: -1}
+species: cobalt_lichen
+genus: fungus
+holiness: [plant]
+will: 100
+attacks:
+ - {type: spore, flavour: charm, damage: 28}
+hd: 13
+hp_10x: 220
+ac: 3
+ev: 5
+has_corpse: true
+intelligence: human
+habitat: walls
+speed: 10
+size: little
+shape: orb
+tile_variance: mod
