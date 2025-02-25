@@ -5178,6 +5178,7 @@ static string _flavour_base_desc(attack_flavour flavour)
         { AF_AIRSTRIKE,         "open air damage" },
         { AF_TRICKSTER,         "drain, daze, or confuse" },
         { AF_SHED,              "sheds detritus from its body" },
+        { AF_COMPOST,           "compost victims and heal allies with mycelia" },
         { AF_PLAIN,             "" },
     };
 

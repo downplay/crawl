@@ -996,6 +996,14 @@ are those eyes that are blinking?
 It is able to communicate via its mycelial network to let nearby lichen know
 of gaps in your vestments.
 %%%%
+cobalt lichen maw
+
+A brightly-coloured and rarely spotted crust lichen. But
+is that a jaw opening, and are those teeth?
+
+It is able to compost the flesh of its victims to provide healing nutrients to
+other lichen in its mycelial network.
+%%%%
 creeping inferno
 
 A formless mass of ancient fire, bound by heat and malevolence. It longs to

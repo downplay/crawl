@@ -91,6 +91,19 @@ static const vector<mon_aura_data> aura_map =
             return targ.is_monster()
                 && mons_species(targ.type) == MONS_COBALT_LICHEN;
         }, nullptr, nullptr, 2},
+
+    {MONS_COBALT_LICHEN_MAW,
+        ENCH_DOUBLED_HEALTH, 1, false,
+        NUM_DURATIONS, "",
+        [](const actor& targ) {
+            // Affects other lichens through the mycelial network
+            return targ.is_monster()
+                && mons_species(targ.type) == MONS_COBALT_LICHEN;
+        },
+        nullptr,
+        [](const monster& source) {
+            return source.has_ench(ENCH_COMPOSTING);
+        }, 2},
 };
 
 static mon_aura_data _get_aura_for(const monster& mon)
@@ -171,6 +184,10 @@ static bool _aura_could_affect(const mon_aura_data& aura, const monster& source,
     if (aura.radius > 0 && source.pos().distance_from(victim.pos()) > aura.radius)
         return false;
 
+    // Apply custom logic for aura activation
+    if (aura.active_source && !aura.active_source(source))
+        return false;
+
     // Auras do not apply to self
     if (victim.is_monster() && victim.as_monster() == &source)
         return false;
@@ -203,6 +220,10 @@ void mons_update_aura(const monster& mon)
         return;
 
     const mon_aura_data aura = _get_aura_for(mon);
+
+    // Apply custom logic for aura activation
+    if (aura.active_source && !aura.active_source(mon))
+        return;
 
     // Hostile auras are suppressed by the source being in a sanctuary
     if (aura.is_hostile && is_sanctuary(mon.pos()))

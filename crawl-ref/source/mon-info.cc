@@ -150,6 +150,7 @@ static map<enchant_type, monster_info_flags> trivial_ench_mb_mappings = {
     { ENCH_PYRRHIC_RECOLLECTION, MB_PYRRHIC_RECOLLECTION },
     { ENCH_CHARMER,         MB_CHARMER },
     { ENCH_BYPASS_ARMOUR,   MB_BYPASS_ARMOUR },
+    { ENCH_COMPOSTING,      MB_COMPOSTING },
 };
 
 static monster_info_flags ench_to_mb(const monster& mons, enchant_type ench)

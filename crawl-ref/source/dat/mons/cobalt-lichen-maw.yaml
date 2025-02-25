@@ -1,0 +1,22 @@
+name: "cobalt lichen maw"
+glyph: {char: "V", colour: lightblue}
+flags: [eat_doors, unblindable, amorphous, no_skeleton, herd, has_aura]
+resists: {poison: 1, fire: 1, cold: -1}
+species: cobalt_lichen
+genus: fungus
+holiness: [plant]
+will: 65
+attacks:
+ - {type: bite, flavour: compost, damage: 30}
+hd: 14
+hp_10x: 320
+ac: 8
+ev: 4
+has_corpse: true
+shout: gurgle
+intelligence: animal
+habitat: walls
+speed: 12
+size: little
+shape: fungus
+tile_variance: mod
