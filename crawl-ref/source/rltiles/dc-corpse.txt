@@ -163,6 +163,9 @@ apis CORPSE_APIS
 %compose mold_glowing4
 %finish CORPSE_WOLF_LICHEN
 
+%sdir mon/fungi_plants
+cobalt_lichen CORPSE_COBALT_LICHEN
+
 ## Formicids ('a')
 %sdir mon/demihumanoids
 formicid CORPSE_FORMICID

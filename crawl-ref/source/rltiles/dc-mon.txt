@@ -1206,6 +1206,10 @@ mold_glowing2
 mold_glowing3
 mold_glowing4
 
+%rim 1
+%sdir mon/fungi_plants
+cobalt_lichen MONS_COBALT_LICHEN
+
 ## Goblins ('g')
 %sdir mon/unique
 ijyb MONS_IJYB
