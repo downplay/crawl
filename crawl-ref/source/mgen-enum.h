@@ -141,6 +141,7 @@ enum band_type
     BAND_SKELETON_ARCHERS,
     BAND_ZOMBIE_ARCHERS,
     BAND_ROCK_FISH,
+    BAND_WOLF_LICHENS,
     NUM_BANDS                   // always last
 };
 
