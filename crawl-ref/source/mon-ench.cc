@@ -1010,6 +1010,11 @@ void monster::remove_enchantment_effect(const mon_enchant &me, bool quiet)
         spells.push_back({SPELL_BLINK_CLOSE, 15, MON_SPELL_WIZARD});
         break;
 
+    case ENCH_BYPASS_ARMOUR:
+        if (!quiet)
+            simple_monster_message(*this, " is no longer able to find chinks in armour.");
+        break;
+
     default:
         break;
     }
@@ -1428,6 +1433,7 @@ void monster::apply_enchantment(const mon_enchant &me)
     case ENCH_DEEP_SLEEP:
     case ENCH_DROWSY:
     case ENCH_PYRRHIC_RECOLLECTION:
+    case ENCH_BYPASS_ARMOUR:
         decay_enchantment(en);
         break;
 
@@ -2194,6 +2200,7 @@ static const char *enchant_names[] =
     "deep sleep", "drowsy",
     "vampire thrall", "pyrrhic recollection",
     "charmer",
+    "bypass_armour",
     "buggy", // NUM_ENCHANTMENTS
 };
 

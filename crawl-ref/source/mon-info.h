@@ -254,6 +254,7 @@ enum monster_info_flags
     MB_VAMPIRE_THRALL,
     MB_PYRRHIC_RECOLLECTION,
     MB_CHARMER,
+    MB_BYPASS_ARMOUR,
     NUM_MB_FLAGS
 };
 

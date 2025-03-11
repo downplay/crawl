@@ -2055,6 +2055,7 @@ static const map<monster_type, band_set> bands_by_leader = {
     { MONS_THERMIC_DYNAMO, { {}, {{ BAND_THERMIC_DYNAMOS, {0, 1} }}}},
     { MONS_WOLF_LICHEN, { {}, {{ BAND_WOLF_LICHENS, {0, 1} }}}},
     { MONS_COBALT_LICHEN, { {}, {{ BAND_COBALT_LICHENS, {0, 1} }}}},
+    { MONS_COBALT_LICHEN_EYESTALK, { {}, {{ BAND_COBALT_LICHENS, {0, 1} }}}},
 };
 
 static band_type _choose_band(monster_type mon_type, int *band_size_p,
@@ -2240,6 +2241,7 @@ static band_type _choose_band(monster_type mon_type, int *band_size_p,
         break;
 
     case MONS_COBALT_LICHEN:
+    case MONS_COBALT_LICHEN_EYESTALK:
         band_size = random_range(2 + env.absdepth0 / 5, 2 + env.absdepth0 / 2);
         break;
 
@@ -2762,6 +2764,7 @@ static monster_type _band_member(band_type band, int which,
         if (which <= target)
         {
             return random_choose_weighted(
+                20, MONS_COBALT_LICHEN_EYESTALK,
                 1,  MONS_SLEEPCAP);
         }
         return MONS_COBALT_LICHEN;

@@ -2400,6 +2400,7 @@ static const map<monster_info_flags, tileidx_t> monster_status_icons = {
     { MB_VEXED, TILEI_VEXED },
     { MB_VAMPIRE_THRALL, TILEI_VAMPIRE_THRALL },
     { MB_PYRRHIC_RECOLLECTION, TILEI_PYRRHIC },
+    { MB_BYPASS_ARMOUR, TILEI_BYPASS_ARMOUR },
 };
 
 set<tileidx_t> status_icons_for(const monster_info &mons)

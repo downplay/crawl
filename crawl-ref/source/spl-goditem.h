@@ -74,6 +74,7 @@ const enchant_type dispellable_enchantments[] =
     ENCH_RIMEBLIGHT,
     ENCH_MAGNETISED,
     ENCH_BLINKITIS,
+    ENCH_BYPASS_ARMOUR,
 };
 
 bool player_is_debuffable();

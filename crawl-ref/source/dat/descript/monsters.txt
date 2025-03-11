@@ -988,6 +988,14 @@ why is it flowing at speed across the floor and up the walls?
 It is able to flow past you to flank you from behind, and it is able to move
 on and through walls.
 %%%%
+cobalt lichen eyestalk
+
+A brightly-coloured and rarely spotted crust lichen. But
+are those eyes that are blinking?
+
+It is able to communicate via its mycelial network to let nearby lichen know
+of gaps in your vestments.
+%%%%
 creeping inferno
 
 A formless mass of ancient fire, bound by heat and malevolence. It longs to

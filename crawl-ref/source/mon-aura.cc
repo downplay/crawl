@@ -82,6 +82,15 @@ static const vector<mon_aura_data> aura_map =
     {MONS_PHALANX_BEETLE,
         ENCH_NONE, 1, false, DUR_PHALANX_BARRIER, PHALANX_BARRIER_KEY,
          nullptr, nullptr, nullptr, 1},
+
+    {MONS_COBALT_LICHEN_EYESTALK,
+        ENCH_BYPASS_ARMOUR, 1, false,
+        NUM_DURATIONS, "",
+        [](const actor& targ) {
+            // Affects other lichens through the mycelial network
+            return targ.is_monster()
+                && mons_species(targ.type) == MONS_COBALT_LICHEN;
+        }, nullptr, nullptr, 2},
 };
 
 static mon_aura_data _get_aura_for(const monster& mon)
