@@ -18,7 +18,8 @@ struct mon_aura_data
     string player_key;
     function<bool(const actor& targ)> valid_target;
     function<void(const monster& source)> player_msg;
-    bool adjacent_only;
+    function<bool(const monster& source)> active_source;
+    int radius;
 
     mon_aura_data(monster_type _mon_source, enchant_type _ench_type,
                   int _base_duration, bool _is_hostile,
@@ -26,13 +27,15 @@ struct mon_aura_data
                   string _player_key = "",
                   function<bool(const actor& targ)> _valid_target = nullptr,
                   function<void(const monster& source)> _player_msg = nullptr,
-                  bool _adjacent_only = false):
+                  function<bool(const monster& source)> _active_source = nullptr,
+                  int _radius = 0):
                   mon_source(_mon_source), ench_type(_ench_type),
                   base_duration(_base_duration), is_hostile(_is_hostile),
                   dur_type(_dur_type), player_key(_player_key),
                   valid_target(_valid_target),
                   player_msg(_player_msg),
-                  adjacent_only(_adjacent_only)
+                  active_source(_active_source),
+                  radius(_radius)
                   {}
 };
 
@@ -78,7 +81,7 @@ static const vector<mon_aura_data> aura_map =
 
     {MONS_PHALANX_BEETLE,
         ENCH_NONE, 1, false, DUR_PHALANX_BARRIER, PHALANX_BARRIER_KEY,
-         nullptr, nullptr, true},
+         nullptr, nullptr, nullptr, 1},
 };
 
 static mon_aura_data _get_aura_for(const monster& mon)
@@ -156,7 +159,7 @@ bool mons_has_aura_of_type(const monster& mon, duration_type type)
 static bool _aura_could_affect(const mon_aura_data& aura, const monster& source,
                                const actor& victim)
 {
-    if (aura.adjacent_only && !adjacent(source.pos(), victim.pos()))
+    if (aura.radius > 0 && source.pos().distance_from(victim.pos()) > aura.radius)
         return false;
 
     // Auras do not apply to self
