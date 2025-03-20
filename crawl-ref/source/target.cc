@@ -209,8 +209,6 @@ targeter_beam::targeter_beam(const actor *act, int r, zap_type zap,
     beam.target = aim;
     beam.ex_size = min_ex_rad;
     beam.aimed_at_spot = true;
-
-    penetrates_targets = beam.pierce;
 }
 
 bool targeter_beam::set_aim(coord_def a)
@@ -219,7 +217,6 @@ bool targeter_beam::set_aim(coord_def a)
         return false;
 
     bolt tempbeam = beam;
-
     tempbeam.target = aim;
     tempbeam.path_taken.clear();
     tempbeam.fire();
@@ -292,6 +289,7 @@ aff_type targeter_beam::is_affected(coord_def loc)
     int visit_count = 0;
     coord_def c;
     aff_type current = AFF_YES;
+    aff_type result = current;
     for (auto pc : path_taken)
     {
         if (cell_is_solid(pc)
@@ -317,11 +315,13 @@ aff_type targeter_beam::is_affected(coord_def loc)
                     return AFF_NO;
             }
             else
+            {
+                result = current;
                 continue;
+            }
         }
-        if (anyone_there(pc)
-            && !penetrates_targets
-            && !beam.ignores_monster(monster_at(pc)))
+        if (anyone_there(pc) && !visit_count
+            && !beam.pierce && !beam.ignores_monster(monster_at(pc)))
         {
             // We assume an exploding spell will always stop here.
             if (max_expl_rad > 0)
@@ -352,7 +352,7 @@ aff_type targeter_beam::is_affected(coord_def loc)
     }
 
     return visit_count == 0 ? AFF_NO :
-           visit_count == 1 ? AFF_YES :
+           visit_count == 1 ? result :
                               AFF_MULTIPLE;
 }
 
