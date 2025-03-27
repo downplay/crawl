@@ -782,7 +782,7 @@ MARKER:     ! = lua:fog_machine { \
 # player complete the rest of the map.
 ITEM:       potion of haste / potion of resistance w:5 / any potion w:20 \
             / scroll of silence w:5 / scroll of fog w:5 / any scroll w:20
-ITEM:       scarf ego:repulsion / book of vapours / condenser vane \
+ITEM:       scarf ego:repulsion / book of vapours / any area misc \
             / staff of air
 # Main loot, including some thematic items that are good even if you don't care
 # about flight.
@@ -2475,7 +2475,7 @@ MONS:   strange machine
 ITEM:   hat good_item / pair of boots good_item / scarf good_item /\
         cloak good_item / pair of gloves good_item / randbook disc:hexes /\
         any book w:35 / any armour good_item w:5
-ITEM:   phantom mirror
+ITEM:   any proxy misc
 KFEAT:  ~ = closed_clear_door
 SUBST:  ':cc., ":cc., -:mV, 1 = 11..., 2 = 2...
 NSUBST: d = 1:e / *:d, 3 = 2:3 / * = 3..., 4 = 1:4 / *= 42.., A = 1:< / *:A

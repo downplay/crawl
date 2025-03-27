@@ -2002,7 +2002,7 @@ void remote_control_move(coord_def move)
     vector<pair<monster&,int>> observers;
     for (monster_near_iterator mi(puppet, LOS_SOLID_SEE); mi; ++mi)
     {
-        if (*mi == puppet || mons_is_firewood(**mi) || !you.see_cell(mi->pos())
+        if (*mi == puppet || mi->is_firewood() || !you.see_cell(mi->pos())
             || !mons_atts_aligned(puppet->real_attitude(), mi->temp_attitude()))
         {
             continue;

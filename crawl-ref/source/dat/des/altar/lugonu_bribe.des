@@ -35,7 +35,7 @@ function callback.tgw_lugonu_bribe_lugonu_item (data, triggerable,
          Gozag = "randbook owner:Lugonu spells:animate_dead numspells:1",
          Kikubaaqudgha = "rat corpse / kobold corpse",
          Okawaru = "any ally scroll pre_id q:3 / any ally misc /\
-                    phantom mirror",
+                    any proxy misc",
          ["Sif Muna"] = "plate armour randart plus:-1 artprops:-cast:1&&int:-6",
          Trog = "manual of Spellcasting / manual of Air Magic w:5 /\
                  manual of Earth Magic w:5 / manual of Fire Magic w:5 /\

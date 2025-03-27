@@ -3058,6 +3058,9 @@ static tileidx_t _tileidx_misc(const item_def &item)
     case MISC_PHANTOM_MIRROR:
         return TILE_MISC_PHANTOM_MIRROR;
 
+    case MISC_VOODOO_PAW:
+        return TILE_MISC_PHANTOM_MIRROR;
+
     case MISC_ZIGGURAT:
         return TILE_MISC_ZIGGURAT;
 

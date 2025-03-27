@@ -1624,6 +1624,16 @@ A collection of spells that assault everything in sight of the caster,
 unrestrained by petty limitations like 'needing a clear shot' or 'concern about
 collateral damage'.
 %%%%
+voodoo paw
+
+An ancient embalmed hand, removed unwillingly from its previous owner and bound
+with powerful magic allowing it to be used to reach into the mind of another and
+control their actions for a brief period. The target may be compelled to move
+in any direction and initiate combat with whomever you choose, however their
+resolve will still be strong enough to not perform actions that would result in
+immediate death. The link can be broken when you choose, or if your own body
+takes too much damage, or if the target leaves your sight.
+%%%%
 wand of acid
 
 A magical device which throws bolts of corrosive acid.

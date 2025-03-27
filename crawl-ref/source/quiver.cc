@@ -1809,6 +1809,7 @@ namespace quiver
             case MISC_HORN_OF_GERYON:
             case MISC_QUAD_DAMAGE:
             case MISC_PHANTOM_MIRROR:
+            case MISC_VOODOO_PAW:
             case MISC_GRAVITAMBOURINE:
                 return false;
             default:
@@ -1840,6 +1841,7 @@ namespace quiver
             case MISC_PHIAL_OF_FLOODS:
             case MISC_LIGHTNING_ROD:
             case MISC_PHANTOM_MIRROR:
+            case MISC_VOODOO_PAW:
                 return true;
             default:
                 return false;

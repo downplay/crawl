@@ -1684,7 +1684,7 @@ misc_item_type get_misc_item_type(int force_type, bool exclude)
             (misc_item_type)item_for_set(ITEM_SET_CONTROL_MISCELLANY),
             MISC_LIGHTNING_ROD,
             (misc_item_type)item_for_set(ITEM_SET_ALLY_MISCELLANY),
-            MISC_PHANTOM_MIRROR,
+            (misc_item_type)item_for_set(ITEM_SET_PROXY_MISCELLANY),
             (misc_item_type)item_for_set(ITEM_SET_AREA_MISCELLANY)
         };
     }
@@ -1696,6 +1696,7 @@ misc_item_type get_misc_item_type(int force_type, bool exclude)
             MISC_BOX_OF_BEASTS,
             MISC_SACK_OF_SPIDERS,
             MISC_PHANTOM_MIRROR,
+            MISC_VOODOO_PAW,
             MISC_CONDENSER_VANE,
             MISC_TIN_OF_TREMORSTONES,
         };

@@ -548,9 +548,11 @@ static void _wanderer_random_evokable()
             (misc_item_type)item_for_set(ITEM_SET_ALLY_MISCELLANY);
         const auto control_evoker_type =
             (misc_item_type)item_for_set(ITEM_SET_CONTROL_MISCELLANY);
+        const auto proxy_evoker_type =
+            (misc_item_type)item_for_set(ITEM_SET_PROXY_MISCELLANY);
         misc_item_type selected_evoker =
               random_choose(ally_evoker_type, control_evoker_type,
-                            MISC_PHANTOM_MIRROR, area_evoker_type,
+                            proxy_evoker_type, area_evoker_type,
                             MISC_LIGHTNING_ROD);
 
         newgame_make_item(OBJ_MISCELLANY, selected_evoker, 1);

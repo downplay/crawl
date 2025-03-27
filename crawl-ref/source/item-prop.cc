@@ -926,7 +926,8 @@ static const item_set_def item_sets[] =
     { "ally misc",          OBJ_MISCELLANY, { MISC_BOX_OF_BEASTS,
                                               MISC_SACK_OF_SPIDERS } },
     { "control misc",       OBJ_MISCELLANY, { MISC_PHIAL_OF_FLOODS,
-                                              MISC_GRAVITAMBOURINE,
+                                              MISC_GRAVITAMBOURINE } },
+    { "proxy misc",         OBJ_MISCELLANY, { MISC_PHANTOM_MIRROR,
                                               MISC_VOODOO_PAW } },
 };
 COMPILE_CHECK(ARRAYSZ(item_sets) == NUM_ITEM_SET_TYPES);
