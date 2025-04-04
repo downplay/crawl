@@ -105,6 +105,7 @@ my %field_type = (
     melee_effects_func => "func",
     launch_func        => "func",
     death_effects_func => "func",
+    hitfunc_func       => "func",
 
     plus      => "num",
     plus2     => "num",
@@ -219,7 +220,7 @@ sub finish_art
         $funcs = {};
     }
 
-    foreach my $func_name (qw(equip unequip world_reacts melee_effects launch death_effects))
+    foreach my $func_name (qw(equip unequip world_reacts melee_effects launch death_effects hitfunc))
     {
         my $val;
         if ($funcs->{$func_name})
@@ -577,7 +578,7 @@ my @art_order = (
 # end TAG_MAJOR_VERSION
 
     "equip_func", "unequip_func", "world_reacts_func", "melee_effects_func",
-    "launch_func", "death_effects_func"
+    "launch_func", "death_effects_func", "hitfunc_func"
 );
 
 sub art_to_str
@@ -1064,6 +1065,7 @@ my %valid_func = (
     melee_effects => 1,
     launch        => 1,
     death_effects => 1,
+    hitfunc       => 1,
 );
 
 sub read_funcs
@@ -1082,7 +1084,7 @@ sub read_funcs
 
             if (!$valid_func{$func})
             {
-                push(@warnings, "Unrecognized func '$func' for artefact " .
+                push(@warnings, "Unrecognised func '$func' for artefact " .
                                 "'$enum'");
                 next;
             }
