@@ -7963,6 +7963,11 @@ void player_beam_tracer::blocked(string message) noexcept
     blocked_count++;
 }
 
+bool player_beam_tracer::was_cancelled() noexcept
+{
+    return cancelled;
+}
+
 bool targeting_tracer::has_hit_foe() noexcept
 {
     return foe_info.count != 0;
