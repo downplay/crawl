@@ -196,5 +196,6 @@ enum zap_type
     ZAP_SHOOTING_STAR,
     ZAP_DIMINISH_SPELLS,
     ZAP_MISSILE_TRACER,
+    ZAP_UNGOLD,
     NUM_ZAPS
 };
