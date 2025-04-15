@@ -135,6 +135,7 @@ struct targeting_tracer : beam_tracer
 struct bolt
 {
     bolt();
+    virtual ~bolt() = default;
 
     // INPUT parameters set by caller
     spell_type  origin_spell = SPELL_NO_SPELL; // may remain SPELL_NO_SPELL for
