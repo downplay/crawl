@@ -2751,7 +2751,7 @@ _mon_hex_zap(ZAP_ILL_OMEN, BEAM_ILL_OMEN),
     ZAP_UNGOLD,
     "ungold silver",
     200,
-    new multiply_dice_calculator<10, 1, 20, 10>,  // 20d10 at max power
+    new multiply_dice_calculator<5, 1, 20, 6>,  // 15d6 at max power
     new tohit_calculator<15, 1, 12>,
     nullptr,
     nullptr,
