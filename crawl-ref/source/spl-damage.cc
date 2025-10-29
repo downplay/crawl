@@ -2209,7 +2209,7 @@ spret cast_ungoldify(coord_def target, int powc, bool fail)
 
     fail_check();
 
-    const int range = spell_range(SPELL_UNGOLDIFY, *you, powc);
+    const int range = spell_range(SPELL_UNGOLDIFY, &you, powc);
 
     // Set up the beams using the targetter
     targeter_widebeam hitfunc(&you, range, ungoldify_beam_width());
