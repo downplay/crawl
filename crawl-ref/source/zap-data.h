@@ -1085,7 +1085,6 @@ _mon_hex_zap(ZAP_BANISHMENT, BEAM_BANISH),
 {
     ZAP_MISSILE_TRACER,
     "missile tracer",
-    100,
     new dicedef_calculator<1, 1, 0, 1>,
     new tohit_calculator<0, 0, 1>,
     nullptr,
