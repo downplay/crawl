@@ -7979,6 +7979,11 @@ void player_beam_tracer::blocked(string message) noexcept
     blocked_count++;
 }
 
+void player_beam_tracer::cancel() noexcept
+{
+    cancelled = true;
+}
+
 bool player_beam_tracer::was_cancelled() noexcept
 {
     return cancelled;

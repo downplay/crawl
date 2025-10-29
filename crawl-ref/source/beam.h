@@ -100,6 +100,7 @@ struct player_beam_tracer : beam_tracer
     int foe_count = 0;
     string blocked_message;
     int blocked_count = 0;
+    bool cancelled = false;
 
     player_beam_tracer() {}
 
