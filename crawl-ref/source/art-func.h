@@ -899,7 +899,7 @@ static void _DAMNATION_launch(bolt* beam)
     expl->name   = "damnation";
     expl->tile_explode = TILE_BOLT_DAMNATION;
 
-    beam.special_explosion = expl;
+    beam->special_explosion = expl;
 }
 
 ///////////////////////////////////////////////////
