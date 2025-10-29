@@ -263,6 +263,7 @@ private:
     bool nightvision = false;
 
     bool can_trigger_bullseye = false;
+    bool wall_monster_hit = false;
 
 public:
     bool is_enchantment() const; // no block/dodge, use willpower

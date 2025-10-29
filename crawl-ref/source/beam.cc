@@ -1238,7 +1238,7 @@ void bolt::do_fire()
 
     // Tracks if the *last* cell seen was a wall monster, therefore pretend
     // next cell is solid for purposes of bouncing or stopping the beam.
-    bool wall_monster_hit = false;
+    wall_monster_hit = false;
 
     // Note: nothing but this loop should be changing the ray.
     while (map_bounds(pos()))
