@@ -1226,6 +1226,11 @@ bool bolt::begin_fire()
         // Take *one* step, so as not to hurt the source.
         ray.advance();
     }
+
+    // Tracks if the *last* cell seen was a wall monster, therefore pretend
+    // next cell is solid for purposes of bouncing or stopping the beam.
+    wall_monster_hit = false;
+
     return true;
 }
 
@@ -1235,10 +1240,6 @@ void bolt::do_fire()
         return;
 
     cursor_control coff(false);
-
-    // Tracks if the *last* cell seen was a wall monster, therefore pretend
-    // next cell is solid for purposes of bouncing or stopping the beam.
-    wall_monster_hit = false;
 
     // Note: nothing but this loop should be changing the ray.
     while (map_bounds(pos()))
@@ -8157,7 +8158,12 @@ void multi_bolt_fire(vector<bolt> bolts, int delay)
         // right now for a multi beam as refactoring this is non-trivial
         ASSERT(!beam.special_explosion && !beam.is_tracer());
 
+        mprf("Initting Fire %i %i", beam.source.x, beam.source.y);
+
+        // Reset some things that might have been initialized during aiming
         beam.path_taken.clear();
+        beam.tracer = nullptr;
+        beam.redraw_per_cell = false;
         if (!beam.begin_fire())
             return;
         active_beams++;
@@ -8170,9 +8176,9 @@ void multi_bolt_fire(vector<bolt> bolts, int delay)
     {
         for (auto& component : components)
         {
-            auto& beam = component.beam;
             if (component.finished)
                 continue;
+            auto& beam = component.beam;
             if (!beam.advance_fire())
             {
                 active_beams--;

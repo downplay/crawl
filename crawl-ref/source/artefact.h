@@ -85,6 +85,7 @@ struct unrandart_entry
     void (*launch)(bolt* beam);
     void (*death_effects)(item_def* item, monster* mons, killer_type killer);
     unique_ptr<targeter> (*hitfunc)(const item_def* item);
+    void (*fire)(bolt* beam);
 };
 
 bool is_artefact(const item_def &item);

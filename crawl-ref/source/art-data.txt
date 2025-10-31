@@ -1943,6 +1943,7 @@ TILE_EQ:  cardinals_crossbow
 BRAND:    SPWPN_HOLY_WRATH
 DBRAND:   Triple: It fires three parallel bolts.
 +Compass: It can only be fired in cardinal and orthogonal directions.
+LIFE:     -1
 
 # This entry must always be last.
 ENUM:   DUMMY2

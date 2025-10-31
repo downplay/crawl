@@ -2903,21 +2903,18 @@ mprf("DO_TARGET");
         // impractical, because each code path (except throwing) is called from
         // many places.
         shared_ptr<action> initial = get();
-        // clear_messages(); // this kind of looks better as a force clear, but
+        clear_messages(); // this kind of looks better as a force clear, but
                           // for consistency with direct targeting commands,
                           // I will leave it as non-force
-        // msgwin_temporary_mode tmp;
+        msgwin_temporary_mode tmp;
         bool force_restore_initial;
 
         command_type what_happened = CMD_NO_CMD;
-        mprf(MSGCH_DIAGNOSTICS, "About to do_target (1)");
         do
         {
-            mprf("About to do_target (2)");
             flush_prev_message();
             msgwin_clear_temporary();
             force_restore_initial = false;
-            mprf("About to do_target (3)");
             auto a = do_target();
 
             // the point of this: if you cycle to or select some item, fire it,

@@ -844,6 +844,15 @@ static void _player_shoot(bolt &pbolt, item_def &item, item_def const *launcher)
             attk.attack();
         }
     }
+    else if (is_unrandom_artefact(*launcher)
+             && get_unrand_entry(launcher->unrand_idx)->fire)
+    {
+        // XX: unrands with a fire method won't work properly with Primordial
+        // nightfall; this isn't terrible for Cardinal's Crossbow but needs to
+        // be reviewed on additionally cases (and maybe they should handle that
+        // case individually)
+        get_unrand_entry(launcher->unrand_idx)->fire(&pbolt);
+    }
     else
         pbolt.fire();
 

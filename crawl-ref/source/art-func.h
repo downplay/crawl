@@ -904,10 +904,33 @@ static void _DAMNATION_launch(bolt* beam)
 
 ///////////////////////////////////////////////////
 
-static unique_ptr<targeter> _CARDINALS_CROSSBOW_hitfunc(const item_def* launcher)
+static unique_ptr<targeter> _CARDINALS_CROSSBOW_hitfunc(const item_def*)
 {
     auto hitfunc = make_unique<targeter_widebeam>(&you, you.current_vision, 3);
     return hitfunc;
+}
+
+static void _CARDINALS_CROSSBOW_fire(bolt* beam)
+{
+    targeter_widebeam hitfunc(&you, you.current_vision, 3);
+    hitfunc.set_aim(beam->target);
+    vector<bolt> bolts;
+    const int original_draw_delay = beam->draw_delay;
+    beam->draw_delay = 0;
+    for (widebeam_beam item : hitfunc.beams)
+    {
+        bolt copy = *beam;
+        copy.target = item.end;
+        copy.source = item.start;
+        // Could cause a bolt to take a different path than the player saw if
+        // aiming wasn't strictly in a compass direction. If not doing this
+        // then the ray might follow the old target and source as it was
+        // chosen during aiming.
+        copy.chose_ray = false;
+        // copy.ray = ray_def();
+        bolts.push_back(copy);
+    }
+    multi_bolt_fire(bolts, original_draw_delay);
 }
 
 ///////////////////////////////////////////////////
