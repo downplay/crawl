@@ -719,6 +719,17 @@ LUARET1(you_see_cell_rel, boolean,
 LUARET1(you_see_cell_no_trans_rel, boolean,
         you.see_cell_no_trans(coord_def(luaL_safe_checkint(ls, 1), luaL_safe_checkint(ls, 2)) + you.pos()))
 
+/*** Can your current launcher target this cell?
+ * Checks line of sight treating transparent rock and stone as opaque.
+ * Uses player-centered coordinates.
+ * @tparam int x
+ * @tparam int y
+ * @treturn boolean
+ * @function launcher_can_target
+ */
+// LUARET1(you_launcher_can_target_rel, boolean,
+//         you.launcher_can_target(coord_def(luaL_safe_checkint(ls, 1), luaL_safe_checkint(ls, 2)) + you.pos()))
+
 /*** Can you see this cell without something solid in the way?
  * Checks line of sight treating all solid features as opaque.
  * Uses player-centered coordinates.
