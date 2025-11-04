@@ -1933,6 +1933,7 @@ TILE_EQ:  scarf_invisibility
 BOOL:     inv, nogen
 
 NAME:     Cardinal's Crossbow
+INSCRIP:  triple compass
 OBJ:      OBJ_WEAPONS/WPN_TRIPLE_CROSSBOW
 TYPE:     triple triple crossbow
 PLUS:     +9

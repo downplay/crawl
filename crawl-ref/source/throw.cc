@@ -596,7 +596,6 @@ static void _player_shoot(bolt &pbolt, item_def &item, item_def const *launcher)
 // in mons_throw().
 void throw_it(quiver::action &a)
 {
-    mprf("THROW IT");
     const item_def *primary = a.get_launcher();
     const item_def *offhand = you.offhand_weapon();
     if (offhand && (!primary || !is_range_weapon(*offhand)))
