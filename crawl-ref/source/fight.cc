@@ -380,6 +380,12 @@ static bool _autofire_at(actor *defender)
 {
     if (!_can_shoot_with(you.weapon()) || you.duration[DUR_CONFUSING_TOUCH])
         return false;
+    // The Musket will always melee attack if in range
+    if (you.weapon() && is_unrandom_artefact(*you.weapon(), UNRAND_BAYONET_MUSKET)
+        && you.pos().distance_from(defender->pos()) <= you.reach_range())
+    {
+        return false;
+    }
     dist t;
     t.target = defender->pos();
     shared_ptr<quiver::action> ract = quiver::find_ammo_action();

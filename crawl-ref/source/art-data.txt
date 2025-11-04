@@ -1945,6 +1945,20 @@ DBRAND:   Triple: It fires three parallel bolts.
 +Compass: It can only be fired in cardinal and orthogonal directions.
 LIFE:     -1
 
+# Bad naming pun. Maybe it should get an Elec brand to fit the theme.
+# TODO: Consider the base type here; maybe use Orcbow/Shortbow.
+ENUM:     BAYONET_MUSKET
+NAME:     Elongated Musket
+OBJ:      OBJ_WEAPONS/WPN_ARBALEST
+FALLBACK: OBJ_WEAPONS/WPN_HAND_CANNON
+TYPE:     musket
+PLUS:     +14
+COLOUR:   LIGHTGREY
+VALUE:    1400
+DESCRIP:  Bayonet:  Has a large knife strapped firmly to the end of the barrel,
+ allowing it to be used for close-quarters combat, and can reach further than
+ a normal blade to score sneak attacks at distance.
+
 # This entry must always be last.
 ENUM:   DUMMY2
 NAME:   DUMMY UNRANDART 2

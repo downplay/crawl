@@ -2226,6 +2226,8 @@ void populate_fake_projectile(const item_def &wep, item_def &fake_proj)
     fake_proj.rnd       = 1;
     if (is_unrandom_artefact(wep, UNRAND_DAMNATION))
         fake_proj.props[DAMNATION_BOLT_KEY] = true;
+    else if (is_unrandom_artefact(wep, UNRAND_BAYONET_MUSKET))
+        fake_proj.sub_type = MI_SLUG;
 }
 
 /**
@@ -2328,7 +2330,8 @@ int weapon_reach(const item_def &item)
     if (is_unrandom_artefact(item, UNRAND_RIFT))
         return 3;
     if (item_attack_skill(item) == SK_POLEARMS
-        || is_unrandom_artefact(item, UNRAND_LOCHABER_AXE))
+        || is_unrandom_artefact(item, UNRAND_LOCHABER_AXE)
+        || is_unrandom_artefact(item, UNRAND_BAYONET_MUSKET))
     {
         return 2;
     }

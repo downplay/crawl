@@ -1035,6 +1035,7 @@ bool player::weapon_is_good_stab(const item_def *weapon) const
     return wpn_skill == SK_SHORT_BLADES
            || you.get_mutation_level(MUT_PAWS)
            || you.form == transformation::spider
+           || weapon && is_unrandom_artefact(*weapon, UNRAND_BAYONET_MUSKET)
            || you.unrand_equipped(UNRAND_HOOD_ASSASSIN)
               && (!weapon || is_melee_weapon(*weapon));
 }

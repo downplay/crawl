@@ -933,6 +933,12 @@ static void _CARDINALS_CROSSBOW_fire(bolt* beam)
     multi_bolt_fire(bolts, original_draw_delay);
 }
 
+static unique_ptr<targeter> _BAYONET_MUSKET_hitfunc(const item_def*)
+{
+    auto hitfunc = make_unique<targeter_beam_no_melee>(&you, you.current_vision, 3);
+    return hitfunc;
+}
+
 ///////////////////////////////////////////////////
 
 /**

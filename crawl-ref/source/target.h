@@ -803,3 +803,14 @@ public:
     targeter_paragon_deploy(int range);
     bool valid_aim(coord_def a) override;
 };
+
+class targeter_beam_no_melee : public targeter_beam
+{
+public:
+    targeter_beam_no_melee(const actor *act, int range, int min_range);
+    // bool valid_aim(coord_def a) override;
+    aff_type is_affected(coord_def loc) override;
+
+private:
+    int min_range;
+};

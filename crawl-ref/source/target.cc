@@ -3019,3 +3019,25 @@ bool targeter_paragon_deploy::valid_aim(coord_def a)
 
     return true;
 }
+
+targeter_beam_no_melee::targeter_beam_no_melee(const actor *act, int range, int min_range)
+    : targeter_beam(act, range, ZAP_MISSILE_TRACER, 0, 0, 0), min_range(min_range)
+{
+}
+
+aff_type targeter_beam_no_melee::is_affected(coord_def loc)
+{
+    aff_type beam_aff = targeter_beam::is_affected(loc);
+    if (beam_aff <= AFF_NO)
+        return beam_aff;
+    if (origin.distance_from(loc) < min_range)
+        return AFF_NO;
+    for (auto pc : path_taken)
+    {
+        if (pc.distance_from(loc) >= min_range)
+            break;
+        if (anyone_there(pc) && !beam.ignores_monster(monster_at(pc)))
+            return AFF_NO;
+    }
+    return beam_aff;
+}
